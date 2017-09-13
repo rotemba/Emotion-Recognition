@@ -3,14 +3,12 @@ import time
 import sys
 import os
 import csv
+import numpy
+from numpy import genfromtxt
+from init import initRelationTable
 
 
-path = os.getcwd()
-print("Hello world")
 
-print (path)
-
-print("my name is ofer")
 
 
 def initTwitterDB(s):
@@ -54,12 +52,80 @@ def initTwitterDB(s):
                         counter += 1
 
 
+def createEmotionRelationDB(table1, table2):
+    print("going to create the DB function")
+    databaseexisted = os.path.isfile('emotions.db')
+    if not databaseexisted:
+        print("going to create the DB")
+        dbcon = sqlite3.connect("emotions.db")
+        with dbcon:
+            cursor = dbcon.cursor()
+            cursor.execute("""CREATE TABLE Relations(X INTEGER NOT NULL,
+                                                     Y INTEGER NOT NULL,
+                                                    Value REAL NOT NULL)""")
+            print ("creating cartesian emotions table")
+            relationArray = genfromtxt(table1, delimiter=',')
+            rows = len(relationArray)
+            cols = len(relationArray)
+
+            print relationArray
+            for row in range(0,rows):
+                for col in range(0,cols):
+                    cursor.execute("INSERT  INTO Relations VALUES (?,?,?)", (row, col, relationArray[row][col]))
+                    print ("added value (%d) to the DB",  relationArray[row][col])
+            print ("end of the prog")
+            cursor.execute("SELECT * FROM Relations WHERE X = (?)", 30)
+            data = cursor.fetchall()
+            print(data)
+    print ("DB EXIST")
+
+
+
+
+
+
+
+
+def basic_actions_on_db(dbcon):
+    print ("basic actions on DB function")
+    with dbcon:
+        cursor = dbcon.cursor()
+        number = 30
+        cursor.execute("SELECT * FROM Relations WHERE X=180 ORDER BY VALUE DESC")
+        # SELECT * FROM Relations WHERE X = 181  ORDER BY VALUE  DESC
+        print cursor.fetchall()
+        #data= cursor.fetchall()
+        #print (data)
+
+    print ("end of basic actions on DB function")
+
+
+
+def angel_between_two_emotions(emotion1, emotion2):
+    #the emotions are strings and need to change them to numbers and then make the query
+
+
+def vectorian_angel_between_two_vectors(vec1,vec2):
+    #each vector is 50 dims and we need to return a number.
+
+
+
+
 def main(s):
-    initTwitterDB(s)
+    #initTwitterDB(s)
+    print("here 2nd")
+    dbcon = initRelationTable()
+
+    basic_actions_on_db(dbcon)
+    pathOfCartesianEmotions="files/cartesian.csv"
+    #createEmotionRelationDB(pathOfEmotionRealations,pathOfCartesianEmotions)
+    print("end of main")
 
 
 
 if __name__ == '__main__':
+    print("here 1st")
+
     twiter_path = "files/twitter_dict.csv"
     main(twiter_path)
 
