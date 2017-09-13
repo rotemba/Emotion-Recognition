@@ -4,6 +4,7 @@ import sys
 import os
 import csv
 import numpy
+import math
 from numpy import genfromtxt
 from init import initRelationTable
 
@@ -104,9 +105,22 @@ def basic_actions_on_db(dbcon):
 def angel_between_two_emotions(emotion1, emotion2):
     #the emotions are strings and need to change them to numbers and then make the query
 
-
+# expected input example: [1,2,3,4] and [6,7,8,9].
 def vectorian_angel_between_two_vectors(vec1,vec2):
     #each vector is 50 dims and we need to return a number.
+    #link with better implementation:
+    # TODO: https://stackoverflow.com/questions/2827393/angles-between-two-n-dimensional-vectors-in-python/13849249#13849249
+    return angle (vec1,vec2)
+
+
+def dotproduct(v1, v2):
+    return sum((a * b) for a, b in zip(v1, v2))
+
+def length(v):
+    return math.sqrt(dotproduct(v, v))
+
+def angle(v1, v2):
+    return math.acos(dotproduct(v1, v2) / (length(v1) * length(v2)))
 
 
 
