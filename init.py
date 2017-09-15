@@ -6,7 +6,7 @@ import os
 
 def initRelationTable():
     DBName= "emotions.db"
-    pathOfEmotionRealations = "files/emotionsAngelsToDB.csv"
+    pathOfEmotionRealations = "files/twitter_dict.csv"
     print("going to create the DB function")
     databaseexisted = os.path.isfile('emotions.db')
     if not databaseexisted:
