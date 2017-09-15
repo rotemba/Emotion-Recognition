@@ -1,145 +1,57 @@
 import sqlite3
-import time
-import sys
+import os
+
+from numpy import genfromtxt
+import sqlite3
 import os
 import csv
-import numpy
-import math
-from numpy import genfromtxt
-from init import initRelationTable
 
 
 
+path = os.getcwd()
 
 
 def initTwitterDB(s):
-    databaseexisted = os.path.isfile('twitter.db')
+    databaseexisted = os.path.isfile('Emotions.db')
     if not databaseexisted:
-        dbcon = sqlite3.connect("twitter.db")
+        str = ("ID INTEGER NOT NULL REFERENCES  EmotionsID(ID), %s" % ','.join("X%d REAL" % i for i in range(50)))
+        dbcon = sqlite3.connect("Emotions.db")
         with dbcon:
             cursor = dbcon.cursor()
-            cursor.execute("CREATE TABLE TaskTimes(TaskID INTEGER PRIMARY KEY NOT NULL ,DoEvery INTEGER NOT NULL , NumTimes INTEGER NOT NULL )")
-            cursor.execute("CREATE TABLE Tasks(TaskId INTEGER NOT NULL  REFERENCES  TaskTimes(TaskId),TaskName TEXT NOT NULL, Parameter INTEGER)")
-            cursor.execute("CREATE TABLE Rooms(RoomNumber INTEGER PRIMARY KEY NOT NULL)")
-            cursor.execute("CREATE TABLE Residents(RoomNumber INTEGER NOT NULL REFERENCES Rooms(RoomNumber),FirstName TEXT NOT NULL, LastName TEXT NOT NULL)")
-            inputfilename = s
-            with open(inputfilename) as inputfile:
-                counter = 0;
-                for line in inputfile:
-                    line.replace("\n", "")
-                    tablename = line.split(",")
-                    length = len(tablename)
-                    if tablename[0] == "room":
-                        roomnum = int(tablename[1])
-                        cursor.execute("INSERT INTO Rooms VALUES (?)", (int(tablename[1]),))
-                        x = 2;
-                        if length > x:
-                            privatename = str(tablename[2])
-                            lastname = str(tablename[3])
-                            lastname.replace('\n','')
-                            cursor.execute("INSERT INTO Residents VALUES (?,?,?)", (roomnum, privatename, lastname,))
-                    else:  # update taskTimes and taskId
-                        doevery = int(tablename[1])
-                        if tablename[0] == "clean":
-                            # handle clean task
-                            numoftimes = int(tablename[2])
-                            roomnum = 0
-                        else:
-                            numoftimes = int(tablename[3])
-                            roomnum = int(tablename[2])
-                        tasktype = tablename[0]
-                        cursor.execute("INSERT INTO TaskTimes VALUES(?,?,?)", (counter, doevery, numoftimes,))
-                        cursor.execute("INSERT INTO Tasks VALUES(?,?,?)", (counter, tasktype, roomnum,))
-                        counter += 1
+            cursor.execute("CREATE TABLE EmotionsID(ID INTEGER PRIMARY KEY NOT NULL ,Emotion_name TEXT NOT NULL )")
+            cursor.execute("CREATE TABLE Twitter (%s)" % str )
+            print("DONE creating the DB")
+            pathOfTwitter = "files/twitter_dict.csv"
+            fileObject = csv.reader(pathOfTwitter)
 
+            twitDict = genfromtxt(pathOfTwitter, delimiter=',', dtype=None)
+            row_count = 374
+            print ("Inserting data to table")
 
-def createEmotionRelationDB(table1, table2):
-    print("going to create the DB function")
-    databaseexisted = os.path.isfile('emotions.db')
-    if not databaseexisted:
-        print("going to create the DB")
-        dbcon = sqlite3.connect("emotions.db")
-        with dbcon:
-            cursor = dbcon.cursor()
-            cursor.execute("""CREATE TABLE Relations(X INTEGER NOT NULL,
-                                                     Y INTEGER NOT NULL,
-                                                    Value REAL NOT NULL)""")
-            print ("creating cartesian emotions table")
-            relationArray = genfromtxt(table1, delimiter=',')
-            rows = len(relationArray)
-            cols = len(relationArray)
+            str = '?'
+            for x in range(0, 50):
+                str = str + ',?'
 
-            print relationArray
-            for row in range(0,rows):
-                for col in range(0,cols):
-                    cursor.execute("INSERT  INTO Relations VALUES (?,?,?)", (row, col, relationArray[row][col]))
-                    print ("added value (%d) to the DB",  relationArray[row][col])
-            print ("end of the prog")
-            cursor.execute("SELECT * FROM Relations WHERE X = (?)", 30)
-            data = cursor.fetchall()
-            print(data)
-    print ("DB EXIST")
-
-
-
-
-
-
-
-
-def basic_actions_on_db(dbcon):
-    print ("basic actions on DB function")
-    with dbcon:
-        cursor = dbcon.cursor()
-        number = 30
-        cursor.execute("SELECT * FROM Relations WHERE X=180 ORDER BY VALUE DESC")
-        # SELECT * FROM Relations WHERE X = 181  ORDER BY VALUE  DESC
-        print cursor.fetchall()
-        #data= cursor.fetchall()
-        #print (data)
-
-    print ("end of basic actions on DB function")
-
-
-
-def angel_between_two_emotions(emotion1, emotion2):
-    #the emotions are strings and need to change them to numbers and then make the query
-
-# expected input example: [1,2,3,4] and [6,7,8,9].
-def vectorian_angel_between_two_vectors(vec1,vec2):
-    #each vector is 50 dims and we need to return a number.
-    #link with better implementation:
-    # TODO: https://stackoverflow.com/questions/2827393/angles-between-two-n-dimensional-vectors-in-python/13849249#13849249
-    return angle (vec1,vec2)
-
-
-def dotproduct(v1, v2):
-    return sum((a * b) for a, b in zip(v1, v2))
-
-def length(v):
-    return math.sqrt(dotproduct(v, v))
-
-def angle(v1, v2):
-    return math.acos(dotproduct(v1, v2) / (length(v1) * length(v2)))
-
-
-
+            for row in range(1, row_count):
+                cursor.execute('''INSERT INTO Twitter VALUES (%s)''' % str,(row, twitDict[row][1],twitDict[row][2],twitDict[row][3],twitDict[row][4],twitDict[row][5],twitDict[row][6],twitDict[row][7],twitDict[row][8],twitDict[row][9],twitDict[row][10],
+                                      twitDict[row][11],twitDict[row][12],twitDict[row][13],twitDict[row][14],twitDict[row][15],twitDict[row][16],twitDict[row][17],twitDict[row][18],twitDict[row][19],twitDict[row][20],
+                                      twitDict[row][21],twitDict[row][22],twitDict[row][23],twitDict[row][24],twitDict[row][25],twitDict[row][26],twitDict[row][27],twitDict[row][28],twitDict[row][29],twitDict[row][30],
+                                      twitDict[row][31],twitDict[row][32],twitDict[row][33],twitDict[row][34],twitDict[row][35],twitDict[row][36],twitDict[row][37],twitDict[row][38],twitDict[row][39],twitDict[row][40],
+                                      twitDict[row][41],twitDict[row][42],twitDict[row][43],twitDict[row][44],twitDict[row][45],twitDict[row][46],twitDict[row][47],twitDict[row][48],twitDict[row][49],twitDict[row][50]))
+            print ("Twitter vectors are inside the DB")
+            for row in range(1, row_count):
+                cursor.execute('''INSERT INTO EmotionsID(ID, Emotion_name) VALUES (?,?)''' ,(row,twitDict[row][0]))
+            dbcon.commit()
+            print ("Twitter emotions names are inside the DB")
 
 def main(s):
-    #initTwitterDB(s)
-    print("here 2nd")
-    dbcon = initRelationTable()
-
-    basic_actions_on_db(dbcon)
-    pathOfCartesianEmotions="files/cartesian.csv"
-    #createEmotionRelationDB(pathOfEmotionRealations,pathOfCartesianEmotions)
-    print("end of main")
+    print(1)
+    initTwitterDB(s)
 
 
 
 if __name__ == '__main__':
-    print("here 1st")
-
+    print(2)
     twiter_path = "files/twitter_dict.csv"
     main(twiter_path)
 
