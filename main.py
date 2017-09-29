@@ -104,7 +104,7 @@ def main():
     dbcon=initEmoitionsDB()
     print(3)
     basicQueries(dbcon)
-
+    print(4)
 
 
 if __name__ == '__main__':
