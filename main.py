@@ -12,15 +12,18 @@ def angels_between_two_emotions (dbcon,emotion1, emotion2):
     print ("angel between two emotions function")
     with dbcon:
         cursor=dbcon.cursor()
-        #CT EmotionsID.ID, Relations."Value" FROM EmotionsID JOIN Relations ON EmotionsID.ID = Relations.X WHERE Emotion_name =""")
-        cursor.execute("SELECT ID FROM EmotionsID WHERE Emotion_name = ?", (emotion1,))
-        id1=cursor.fetchone();
-        cursor.execute("SELECT ID FROM EmotionsID WHERE Emotion_name = ?", (emotion2,))
-        id2 = cursor.fetchone();
-        print (emotion1 + " : " + str(id1[0]) )
-        print (emotion2 + " : " + str(id2[0]))
-
-        cursor.execute("SELECT VALUE FROM Relations WHERE X = (?) AND  Y = (?)", (id1[0],id2[0],) )
+        #SELECT EmotionsID.ID, Relations."Value" FROM EmotionsID JOIN Relations ON EmotionsID.ID = Relations.X WHERE Emotion_name =""")
+        #cursor.execute("SELECT ID FROM EmotionsID WHERE Emotion_name = ?", (emotion1,))
+        #id1=cursor.fetchone();
+        id1=emotionNameToEmotionID(dbcon,emotion1)
+        #cursor.execute("SELECT ID FROM EmotionsID WHERE Emotion_name = ?", (emotion2,))
+        #id2 = cursor.fetchone();
+        id2=emotionNameToEmotionID(dbcon,emotion2)
+        #print (emotion1 + " : " + str(id1[0]) )
+        #print (emotion2 + " : " + str(id2[0]))
+        print ("emotion1 :" + str(id1))
+        print ("emotion2 :" + str(id2))
+        cursor.execute("SELECT VALUE FROM Relations WHERE X = (?) AND  Y = (?)", (id1,id2,) )
         angel=cursor.fetchone()
         print ("angel between " + emotion1 + " and " + emotion2 +" is : " +str(angel[0]))
 
@@ -33,8 +36,8 @@ def angels_between_two_emotions (dbcon,emotion1, emotion2):
 
 
 def basicQueries(dbcon):
-    options=["nothing","angles between 2 emotions",'create a new vector', 'get vector of emotion']
-    optDict={1: angels, 2: createVector}
+    options=["nothing","angles between 2 emotions",'create a new vector','findClosestEmotion', 'get vector of emotion']
+    optDict={1: angels, 2: createVector, 3: findClosestEmotion}
     print("please choose the query to run:")
     print options
     for i in options:
@@ -61,6 +64,39 @@ def angels (dbcon):
 
 def createVector(dbcon):
     print("creating vector")
+
+def findClosestEmotion(dbcon):
+    print("this function will find the closest emotion")
+    emotion1 = raw_input("put emotion name please")
+    with dbcon:
+        cursor=dbcon.cursor()
+        #CT EmotionsID.ID, Relations."Value" FROM EmotionsID JOIN Relations ON EmotionsID.ID = Relations.X WHERE Emotion_name =""")
+        cursor.execute("SELECT ID FROM EmotionsID WHERE Emotion_name = ?", (emotion1,))
+        id1=cursor.fetchone()
+        print (emotion1 + " : " + str(id1[0]) )
+        cursor.execute("SELECT * FROM Relations WHERE X = (?) ORDER BY VALUE DESC ", (id1[0],) )
+        for i in range(1,4):
+            data = cursor.fetchone()
+            print (str(i)+":[" + emotion1 + "," + emotionIDToName(dbcon, data[1]) + "] similarity:" + str(data[2]))
+
+
+def emotionIDToName(dbcon, emotionID):
+    with dbcon:
+        cursor=dbcon.cursor()
+        cursor.execute("SELECT Emotion_name FROM EmotionsID WHERE ID = ?", (emotionID,))
+        name=cursor.fetchone()
+        #print("got id number:" + str(emotionID) +" - name: "+ name[0])
+        return (name[0])
+
+
+
+def emotionNameToEmotionID(dbcon,emotionName):
+    with dbcon:
+        cursor=dbcon.cursor()
+        cursor.execute("SELECT ID FROM EmotionsID WHERE Emotion_name = ?", (emotionName,))
+        emotionID=cursor.fetchone()
+        #print("got emotion name:" + emotionName +" - id: "+ str(emotionID[0]))
+        return (emotionID[0])
 
 
 def main():
