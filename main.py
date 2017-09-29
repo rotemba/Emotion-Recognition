@@ -33,7 +33,7 @@ def angels_between_two_emotions (dbcon,emotion1, emotion2):
 
 
 def basicQueries(dbcon):
-    options=["angles between 2 emotions",'create a new vector', 'get vector of emotion']
+    options=["nothing","angles between 2 emotions",'create a new vector', 'get vector of emotion']
     optDict={1: angels, 2: createVector}
     print("please choose the query to run:")
     print options
