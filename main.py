@@ -5,89 +5,112 @@ from numpy import genfromtxt
 import sqlite3
 import os
 import csv
+from init import initEmoitionsDB
 
 
-
-path = os.getcwd()
-
-
-def initTwitterDB(s):
-    databaseexisted = os.path.isfile('Emotions.db')
-    dbcon = sqlite3.connect("Emotions.db")
-    if not databaseexisted:
-        str = ("ID INTEGER NOT NULL REFERENCES  EmotionsID(ID), %s" % ','.join("X%d REAL" % i for i in range(50)))
-
-        with dbcon:
-            cursor = dbcon.cursor()
-            cursor.execute("CREATE TABLE EmotionsID(ID INTEGER PRIMARY KEY NOT NULL ,Emotion_name TEXT NOT NULL )")
-            cursor.execute("CREATE TABLE Twitter (%s)" % str )
-            cursor.execute("""CREATE TABLE Relations(X INTEGER NOT NULL,
-                                                               Y INTEGER NOT NULL,
-                                                              Value REAL NOT NULL)""")
-            print ("creating cartesian emotions table")
-
-
-
-            print("DONE creating the DB")
-            pathOfTwitter = "files/twitter_dict.csv"
-            pathOfEmotionRealations = "files/emotions_angels.csv"
-
-            fileObject = csv.reader(pathOfTwitter)
-
-            relationArray = genfromtxt(pathOfEmotionRealations, delimiter=',')
-            twitDict = genfromtxt(pathOfTwitter, delimiter=',', dtype=None)
-            row_count = 374
-            print ("Inserting data to table")
-
-            str = '?'
-            for x in range(0, 50):
-                str = str + ',?'
-
-            for row in range(1, row_count):
-                cursor.execute('''INSERT INTO Twitter VALUES (%s)''' % str,(row, twitDict[row][1],twitDict[row][2],twitDict[row][3],twitDict[row][4],twitDict[row][5],twitDict[row][6],twitDict[row][7],twitDict[row][8],twitDict[row][9],twitDict[row][10],
-                                      twitDict[row][11],twitDict[row][12],twitDict[row][13],twitDict[row][14],twitDict[row][15],twitDict[row][16],twitDict[row][17],twitDict[row][18],twitDict[row][19],twitDict[row][20],
-                                      twitDict[row][21],twitDict[row][22],twitDict[row][23],twitDict[row][24],twitDict[row][25],twitDict[row][26],twitDict[row][27],twitDict[row][28],twitDict[row][29],twitDict[row][30],
-                                      twitDict[row][31],twitDict[row][32],twitDict[row][33],twitDict[row][34],twitDict[row][35],twitDict[row][36],twitDict[row][37],twitDict[row][38],twitDict[row][39],twitDict[row][40],
-                                      twitDict[row][41],twitDict[row][42],twitDict[row][43],twitDict[row][44],twitDict[row][45],twitDict[row][46],twitDict[row][47],twitDict[row][48],twitDict[row][49],twitDict[row][50]))
-            print ("Twitter vectors are inside the DB")
-            for row in range(1, row_count):
-                cursor.execute('''INSERT INTO EmotionsID(ID, Emotion_name) VALUES (?,?)''' ,(row,twitDict[row][0]))
-            dbcon.commit()
-            print ("Twitter emotions names are inside the DB")
-
-
-            #print relationArray[1][0]
-
-            for row in range(1, row_count):
-                for col in range(1, row_count):
-                    cursor.execute('''INSERT INTO Relations VALUES (?,?,?)''', (row, col, relationArray[row][col]))
-                    #print ("added value (%r) to the DB at index %d,%d" % (relationArray[row][col], row, col))
-
-            dbcon.commit()
-    return dbcon
-
-def angels_between_two_emotions (dbcon,emotion1 = 'None', emotion2 = 'None'):
+def angels_between_two_emotions (dbcon,emotion1, emotion2):
     print ("angel between two emotions function")
-    cursor = dbcon.cursor()
-    cursor.execute("SELECT ID FROM EmotionsID WHERE Emotion_name= 'thoughtfulness' ")
-    id = cursor.fetchone()
+    with dbcon:
+        cursor=dbcon.cursor()
+        #SELECT EmotionsID.ID, Relations."Value" FROM EmotionsID JOIN Relations ON EmotionsID.ID = Relations.X WHERE Emotion_name =""")
+        #cursor.execute("SELECT ID FROM EmotionsID WHERE Emotion_name = ?", (emotion1,))
+        #id1=cursor.fetchone();
+        id1=emotionNameToEmotionID(dbcon,emotion1)
+        #cursor.execute("SELECT ID FROM EmotionsID WHERE Emotion_name = ?", (emotion2,))
+        #id2 = cursor.fetchone();
+        id2=emotionNameToEmotionID(dbcon,emotion2)
+        #print (emotion1 + " : " + str(id1[0]) )
+        #print (emotion2 + " : " + str(id2[0]))
+        print ("emotion1 :" + str(id1))
+        print ("emotion2 :" + str(id2))
+        cursor.execute("SELECT VALUE FROM Relations WHERE X = (?) AND  Y = (?)", (id1,id2,) )
+        angel=cursor.fetchone()
+        print ("angel between " + emotion1 + " and " + emotion2 +" is : " +str(angel[0]))
 
-    print(first(id))
-    #SELECT ID FROM EmotionID WHERE Emotion_name = thoughtfulness  ORDER BY VALUE  DESC
+
+        #cursor.execute("""SELECT TaskTimes.TaskID,DoEvery,NumTimes,Tasks.TaskName,Parameter
+        #                      FROM TaskTimes JOIN Tasks ON TaskTimes.TaskID = Tasks.TaskID
+        #                      WHERE TaskTimes.NumTimes > 0 """)
+    #SELECT * FROM Relations WHERE X = 181  ORDER BY VALUE  DESC
     #SELECT VALUE FROM Relations WHERE X = 180 AND Y = 40
 
-def main(s):
-    print(2)
-    dbcon = initTwitterDB(s)
-    angels_between_two_emotions(dbcon)
+
+def basicQueries(dbcon):
+    options=["nothing","angles between 2 emotions",'create a new vector','findClosestEmotion', 'get vector of emotion']
+    optDict={1: angels, 2: createVector, 3: findClosestEmotion}
+    print("please choose the query to run:")
+    print options
+    for i in options:
+        print (  ""+str(options.index(i))+" - "+ i)
+    num_of_query = input("choose query :")
+    print ("query chosen:: %d", num_of_query)
+    optDict[num_of_query](dbcon)
+
+def angels (dbcon):
+    print ("angels between 2 vectors")
+    with dbcon:
+        cursor = dbcon.cursor()
+        cursor.execute("SELECT Emotion_name FROM EmotionsID")
+        data= cursor.fetchall()
+        for row in data:
+            print row[0]
 
 
+
+    emotion1 = raw_input("put first emotions please")
+    emotion2 = raw_input("put second emotions please")
+    angels_between_two_emotions(dbcon,emotion1,emotion2)
+
+
+def createVector(dbcon):
+    print("creating vector")
+
+def findClosestEmotion(dbcon):
+    print("this function will find the closest emotion")
+    emotion1 = raw_input("put emotion name please")
+    with dbcon:
+        cursor=dbcon.cursor()
+        #CT EmotionsID.ID, Relations."Value" FROM EmotionsID JOIN Relations ON EmotionsID.ID = Relations.X WHERE Emotion_name =""")
+        cursor.execute("SELECT ID FROM EmotionsID WHERE Emotion_name = ?", (emotion1,))
+        id1=cursor.fetchone()
+        print (emotion1 + " : " + str(id1[0]) )
+        cursor.execute("SELECT * FROM Relations WHERE X = (?) ORDER BY VALUE DESC ", (id1[0],) )
+        for i in range(1,4):
+            data = cursor.fetchone()
+            print (str(i)+":[" + emotion1 + "," + emotionIDToName(dbcon, data[1]) + "] similarity:" + str(data[2]))
+
+
+def emotionIDToName(dbcon, emotionID):
+    with dbcon:
+        cursor=dbcon.cursor()
+        cursor.execute("SELECT Emotion_name FROM EmotionsID WHERE ID = ?", (emotionID,))
+        name=cursor.fetchone()
+        #print("got id number:" + str(emotionID) +" - name: "+ name[0])
+        return (name[0])
+
+
+
+def emotionNameToEmotionID(dbcon,emotionName):
+    with dbcon:
+        cursor=dbcon.cursor()
+        cursor.execute("SELECT ID FROM EmotionsID WHERE Emotion_name = ?", (emotionName,))
+        emotionID=cursor.fetchone()
+        #print("got emotion name:" + emotionName +" - id: "+ str(emotionID[0]))
+        return (emotionID[0])
+
+
+def main():
+    print(1)
+    dbcon=initEmoitionsDB()
+    print(3)
+    basicQueries(dbcon)
+    print(4)
 
 
 if __name__ == '__main__':
-    print(1)
-    twiter_path = "files/twitter_dict.csv"
-    main(twiter_path)
+    print(2)
+
+    main()
 
 
 
