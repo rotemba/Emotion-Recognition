@@ -36,15 +36,20 @@ def angels_between_two_emotions (dbcon,emotion1, emotion2):
 
 
 def basicQueries(dbcon):
-    options=["nothing","angles between 2 emotions",'create a new vector','findClosestEmotion', 'get vector of emotion']
-    optDict={1: angels, 2: createVector, 3: findClosestEmotion}
-    print("please choose the query to run:")
-    print options
-    for i in options:
-        print (  ""+str(options.index(i))+" - "+ i)
-    num_of_query = input("choose query :")
-    print ("query chosen:: %d", num_of_query)
-    optDict[num_of_query](dbcon)
+    while True:
+        options=["Exit","angles between 2 emotions",'create a new vector','findClosestEmotion','findOppositeEmotion', 'get vector of emotion']
+        optDict={0: exit, 1: angels, 2: createVector, 3: findClosestEmotion,4: findOppositeEmotion}
+        print("please choose the query to run:")
+        print options
+        for i in options:
+            print (  ""+str(options.index(i))+" - "+ i)
+        #input("Press Enter to continue...")
+        num_of_query = input("choose query :")
+        print ("query chosen:: %s" % options[num_of_query])
+        if num_of_query > 0:
+            optDict[num_of_query](dbcon)
+        else:
+            break
 
 def angels (dbcon):
     print ("angels between 2 vectors")
@@ -79,6 +84,20 @@ def findClosestEmotion(dbcon):
             data = cursor.fetchone()
             print (str(i)+":[" + emotion1 + "," + emotionIDToName(dbcon, data[1]) + "] similarity:" + str(data[2]))
 
+def findOppositeEmotion(dbcon):
+    print("this function will find the opposite emotion")
+    emotion1 = raw_input("put emotion name please")
+    with dbcon:
+        cursor=dbcon.cursor()
+        #CT EmotionsID.ID, Relations."Value" FROM EmotionsID JOIN Relations ON EmotionsID.ID = Relations.X WHERE Emotion_name =""")
+        cursor.execute("SELECT ID FROM EmotionsID WHERE Emotion_name = ?", (emotion1,))
+        id1=cursor.fetchone()
+        print (emotion1 + " : " + str(id1[0]) )
+        cursor.execute("SELECT * FROM Relations WHERE X = (?) ORDER BY VALUE ASC ", (id1[0],) )
+        for i in range(1,4):
+            data = cursor.fetchone()
+            print (str(i)+":[" + emotion1 + "," + emotionIDToName(dbcon, data[1]) + "] similarity:" + str(data[2]))
+
 
 def emotionIDToName(dbcon, emotionID):
     with dbcon:
@@ -100,7 +119,7 @@ def emotionNameToEmotionID(dbcon,emotionName):
 
 
 def main():
-    print(1)
+    print(2)
     dbcon=initEmoitionsDB()
     print(3)
     basicQueries(dbcon)
@@ -108,7 +127,7 @@ def main():
 
 
 if __name__ == '__main__':
-    print(2)
+    print(1)
 
     main()
 
