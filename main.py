@@ -37,8 +37,8 @@ def angels_between_two_emotions (dbcon,emotion1, emotion2):
 
 def basicQueries(dbcon):
     while True:
-        options=["Exit","angles between 2 emotions",'create a new vector','findClosestEmotion','findOppositeEmotion', 'get vector of emotion']
-        optDict={0: exit, 1: angels, 2: createVector, 3: findClosestEmotion,4: findOppositeEmotion}
+        options=["Exit","angles between 2 emotions",'create a new vector','findClosestEmotion','findOppositeEmotion', 'get vector of emotion','computeNewVec']
+        optDict={0: exit, 1: angels, 2: createVector, 3: findClosestEmotion,4: findOppositeEmotion, 5:getVector, 6:computeNewVec}
         print("please choose the query to run:")
         print options
         for i in options:
@@ -116,6 +116,45 @@ def emotionNameToEmotionID(dbcon,emotionName):
         emotionID=cursor.fetchone()
         #print("got emotion name:" + emotionName +" - id: "+ str(emotionID[0]))
         return (emotionID[0])
+
+def getVectorOfEmotion(dbcon, emotionID):
+    with dbcon:
+        cursor = dbcon.cursor()
+        cursor.execute("SELECT * FROM Twitter WHERE ID = ?", (emotionID,))
+        vector=cursor.fetchone()
+        return (vector[1:len(vector)])
+
+def prettyFloat(num):
+        return "%0.4f" % num
+
+
+
+
+def getVector(dbcon):
+    print("this function will retrive the vector of emotion and print it.")
+    emotion1 = raw_input("put emotion name please")
+    vector= getVectorOfEmotion(dbcon,emotionNameToEmotionID(dbcon,emotion1))
+    #print vector
+    #print len(vector)
+    newVector=map(prettyFloat,vector)
+    print newVector
+    return (vector)
+
+def computeNewVec(dbcon): # expected format: list ( scalar, vector )
+    print ("for now going to work on fool emotion with scalar of 0.5")
+    foolVec=getVectorOfEmotion(dbcon,emotionNameToEmotionID(dbcon,"fool"))
+    scalar=0.5
+    newFoolVec=map((lambda x: x * scalar), foolVec)
+    print("beofre:")
+    print (foolVec)
+    print ("after:")
+    print (newFoolVec)
+    print ("pretty print:")
+    print (map((lambda x:  "%0.4f" % x ), newFoolVec))
+
+
+
+
 
 
 def main():

@@ -25,7 +25,7 @@ def initRelationTable():
             print relationArray
             for row in range(0, rows):
                 for col in range(0, cols):
-                    cursor.execute("INSERT  INTO Relations VALUES (?,?,?)", (row+1, col+1, relationArray[row][col]))
+                    cursor.execute("INSERT  INTO Relations VALUES (?,?,?)", ((row+1), (col+1), relationArray[row][col]))
                     #print ("added value (%f) to the DB" % relationArray[row][col])
             dbcon.commit()
 
