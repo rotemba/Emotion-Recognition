@@ -152,8 +152,7 @@ def buildNewVector(dbcon):
     for i in range(1,len(listOfNewVEcs)):
         result = map(sum,zip(result,listOfNewVEcs[i]))
     print_nicely_vec(result)
-#    result = map(sum, zip(listOfNewVEcs[0], listOfNewVEcs[1],listOfNewVEcs[2]))
- #   print_nicely_vec(result)
+
 
 def getVector(dbcon):
     print("this function will retrive the vector of emotion and print it.")
