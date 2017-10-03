@@ -32,7 +32,6 @@ def initRelationTable():
 
 
             print ("end of the prog")
-            print ("end of the prog")
             #basic_actions_on_db( cursor)
     print ("DB EXIST")
     return dbcon
