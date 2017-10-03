@@ -132,7 +132,7 @@ def print_nicely_vec(vec):
 
 def askScalarsFromUsers():
     print("this function asks the user for scalars and emotions.")
-    list= [(1,"fool"),(0,"numbness"),(0,"dissatisfaction")]
+    list= [(0.5,"fool"),(0.4,"numbness"),(0.1,"dissatisfaction")]
     sumOfScalars = sum(i for i, j in list)
     if sumOfScalars != 1:
         print("Sum of Scalars should be 1, please enter scalars again")
@@ -148,8 +148,12 @@ def buildNewVector(dbcon):
     #print listWithVecs
     listOfNewVEcs=map(lambda scalar, vec: map(lambda x: scalar * x, vec),listOfScalars,listWithVecs )
     #print(listOfNewVEcs)
-    result = map(sum, zip(listOfNewVEcs[0], listOfNewVEcs[1],listOfNewVEcs[2]))
+    result = listOfNewVEcs[0]
+    for i in range(1,len(listOfNewVEcs)):
+        result = map(sum,zip(result,listOfNewVEcs[i]))
     print_nicely_vec(result)
+#    result = map(sum, zip(listOfNewVEcs[0], listOfNewVEcs[1],listOfNewVEcs[2]))
+ #   print_nicely_vec(result)
 
 def getVector(dbcon):
     print("this function will retrive the vector of emotion and print it.")
