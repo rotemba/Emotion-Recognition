@@ -225,7 +225,7 @@ def main():
     print(3)
     basicQueries(dbcon)
     #workingWithVecs(dbcon)
-    #printClosestVectorNames(dbcon,getVectorOfEmotion(dbcon,62))
+    ##printClosestVectorNames(dbcon,getVectorOfEmotion(dbcon,62))
 
     print(4)
 
