@@ -6,6 +6,10 @@ import sqlite3
 import os
 import csv
 from init import initEmoitionsDB
+import math
+
+
+
 
 
 def angels_between_two_emotions (dbcon,emotion1, emotion2):
@@ -176,10 +180,36 @@ def computeNewVec(dbcon): # expected format: list ( scalar, vector )
     print ("pretty print:")
     print (map((lambda x:  "%0.4f" % x ), newFoolVec))
 
+def sizeOfSingleVec(vec):
+    return math.sqrt(reduce(lambda x, y: x + y, map(lambda x: x * x, vec)))
+
+def printVectorsSize(dbcon):
+    for i in range(1,374):
+        vec=getVectorOfEmotion(dbcon,i)
+        sizeOfVec = sizeOfSingleVec(vec)
+        print (str(i)+":vector-"+ emotionIDToName(dbcon,i)+ " size: "+ str(sizeOfVec))
 
 
 
+def angelBetweenTwoVecs( vec1, vec2):
+    #print ("angel between 2 vecs function.")
 
+    sizeOfVec1=sizeOfSingleVec(vec1)
+    sizeOfVec2=sizeOfSingleVec(vec2)
+    mone=sum((a*b) for a, b in zip(vec1, vec2))
+    sizeOfVecs=(sizeOfVec1*sizeOfVec2)
+    ans=mone/sizeOfVecs
+    print ans
+
+
+def workingWithVecs(dbcon):
+    print("working with vecs function")
+    printVectorsSize(dbcon)
+    vec1 = getVectorOfEmotion(dbcon, 1)
+    vec2 = getVectorOfEmotion(dbcon, 4)
+    for i in range (1,20):
+        print ("angel between %0d, %0d:" % (1,i))
+        angelBetweenTwoVecs(getVectorOfEmotion(dbcon,1),getVectorOfEmotion(dbcon, i))
 
 
 
@@ -188,6 +218,7 @@ def main():
     dbcon=initEmoitionsDB()
     print(3)
     basicQueries(dbcon)
+    workingWithVecs(dbcon)
     print(4)
 
 

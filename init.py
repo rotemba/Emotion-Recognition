@@ -5,36 +5,6 @@ import sqlite3
 import os
 import csv
 
-def initRelationTable():
-    DBName= "emotions.db"
-    pathOfEmotionRealations = "files/twitter_dict.csv"
-    print("going to create the DB function")
-    databaseexisted = os.path.isfile('emotions.db')
-    if not databaseexisted:
-        print("going to create the DB")
-        dbcon = sqlite3.connect("emotions.db")
-        with dbcon:
-            cursor = dbcon.cursor()
-            cursor.execute("""CREATE TABLE Relations(X INTEGER NOT NULL,
-                                                      Y INTEGER NOT NULL,
-                                                     Value REAL NOT NULL)""")
-            print ("creating cartesian emotions table")
-            relationArray = genfromtxt(pathOfEmotionRealations, delimiter=',')
-            rows = len(relationArray)
-            cols = len(relationArray)
-            print relationArray
-            for row in range(0, rows):
-                for col in range(0, cols):
-                    cursor.execute("INSERT  INTO Relations VALUES (?,?,?)", ((row+1), (col+1), relationArray[row][col]))
-                    #print ("added value (%f) to the DB" % relationArray[row][col])
-            dbcon.commit()
-
-
-
-            print ("end of the prog")
-            #basic_actions_on_db( cursor)
-    print ("DB EXIST")
-    return dbcon
 
 
 def initTwitterTable(dbcon):
@@ -89,7 +59,7 @@ def initEmoitionsDB():
             #print relationArray
             for row in range(0, rows):
                 for col in range(0, cols):
-                    cursor.execute("INSERT  INTO Relations VALUES (?,?,?)", (row, col, relationArray[row][col]))
+                    cursor.execute("INSERT  INTO Relations VALUES (?,?,?)", (row+1, col+1, relationArray[row][col]))
                     # print ("added value (%f) to the DB" % relationArray[row][col])
             dbcon.commit()
             print ("end of the table creation.")
