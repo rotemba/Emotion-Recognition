@@ -8,7 +8,7 @@ import csv
 from init import initEmoitionsDB
 import math
 
-def basicQueries(dbcon):
+def basicQueries():
     while True:
         options=["Exit","angles between 2 emotions",'create a new vector','findClosestEmotion','findOppositeEmotion', 'get vector of emotion','buildNewVector']
         optDict={0: exit, 1: angels, 2: createVector, 3: findClosestEmotion,4: findOppositeEmotion, 5:getVector, 6:buildNewVector}
@@ -19,13 +19,16 @@ def basicQueries(dbcon):
         num_of_query = input("choose query :")
         print ("query chosen:: %s" % options[num_of_query])
         if num_of_query > 0:
-            optDict[num_of_query](dbcon)
+            if num_of_query!=2:
+                optDict[num_of_query]()
+            else:
+                optDict[num_of_query]()
         else:
             break
 
 
 
-def angels (dbcon):
+def angels ():
     print ("angels between 2 vectors")
     with dbcon:
         cursor = dbcon.cursor()
@@ -38,24 +41,24 @@ def angels (dbcon):
 
     emotion1 = raw_input("put first emotions please")
     emotion2 = raw_input("put second emotions please")
-    angels_between_two_emotions(dbcon,emotion1,emotion2)
+    angels_between_two_emotions(emotion1,emotion2)
 
-def angels_between_two_emotions (dbcon,emotion1, emotion2):
+def angels_between_two_emotions (emotion1, emotion2):
     print ("angel between two emotions function")
     with dbcon:
         cursor=dbcon.cursor()
-        id1=emotionNameToEmotionID(dbcon,emotion1)
-        id2=emotionNameToEmotionID(dbcon,emotion2)
+        id1=emotionNameToEmotionID(emotion1)
+        id2=emotionNameToEmotionID(emotion2)
         print ("emotion1 :" + str(id1))
         print ("emotion2 :" + str(id2))
         cursor.execute("SELECT VALUE FROM Relations WHERE X = (?) AND  Y = (?)", (id1,id2,) )
         angel=cursor.fetchone()
         print ("angel between " + emotion1 + " and " + emotion2 +" is : " +str(angel[0]))
 
-def createVector(dbcon):
+def createVector():
     print("creating vector")
 
-def findClosestEmotion(dbcon):
+def findClosestEmotion():
     print("this function will find the closest emotion")
     emotion1 = raw_input("put emotion name please")
     with dbcon:
@@ -66,9 +69,9 @@ def findClosestEmotion(dbcon):
         cursor.execute("SELECT * FROM Relations WHERE X = (?) ORDER BY VALUE DESC ", (id1[0],) )
         for i in range(1,4):
             data = cursor.fetchone()
-            print (str(i)+":[" + emotion1 + "," + emotionIDToName(dbcon, data[1]) + "] similarity:" + str(data[2]))
+            print (str(i)+":[" + emotion1 + "," + emotionIDToName( data[1]) + "] similarity:" + str(data[2]))
 
-def findOppositeEmotion(dbcon):
+def findOppositeEmotion():
     print("this function will find the opposite emotion")
     emotion1 = raw_input("put emotion name please")
     with dbcon:
@@ -80,10 +83,10 @@ def findOppositeEmotion(dbcon):
         cursor.execute("SELECT * FROM Relations WHERE X = (?) ORDER BY VALUE ASC ", (id1[0],) )
         for i in range(1,4):
             data = cursor.fetchone()
-            print (str(i)+":[" + emotion1 + "," + emotionIDToName(dbcon, data[1]) + "] similarity:" + str(data[2]))
+            print (str(i)+":[" + emotion1 + "," + emotionIDToName( data[1]) + "] similarity:" + str(data[2]))
 
 
-def emotionIDToName(dbcon, emotionID):
+def emotionIDToName( emotionID):
     with dbcon:
         cursor=dbcon.cursor()
         cursor.execute("SELECT Emotion_name FROM EmotionsID WHERE ID = ?", (emotionID,))
@@ -93,7 +96,7 @@ def emotionIDToName(dbcon, emotionID):
 
 
 
-def emotionNameToEmotionID(dbcon,emotionName):
+def emotionNameToEmotionID(emotionName):
     with dbcon:
         cursor=dbcon.cursor()
         cursor.execute("SELECT ID FROM EmotionsID WHERE Emotion_name = ?", (emotionName,))
@@ -101,7 +104,7 @@ def emotionNameToEmotionID(dbcon,emotionName):
         #print("got emotion name:" + emotionName +" - id: "+ str(emotionID[0]))
         return (emotionID[0])
 
-def getVectorOfEmotion(dbcon, emotionID):
+def getVectorOfEmotion( emotionID):
     with dbcon:
         cursor = dbcon.cursor()
         cursor.execute("SELECT * FROM Twitter WHERE ID = ?", (emotionID,))
@@ -114,6 +117,16 @@ def prettyFloat(num):
 def print_nicely_vec(vec):
     print(map((lambda x: "%0.4f" % x), vec))
 
+def buildListContainsAll():
+    num_of_emotion = 100
+    value = 1/num_of_emotion
+    listOfTuples = list()
+    for i in range(1,num_of_emotion):
+        pair = (value,emotionIDToName(i))
+        listOfTuples.append(pair)
+    return listOfTuples
+
+
 def askScalarsFromUsers():
     counter = 1
     sumOfScalars = 0
@@ -121,6 +134,8 @@ def askScalarsFromUsers():
     listOfTuples = list()
     while sumOfScalars < 1:
         emotion = raw_input("Please enter emotion number %d " % counter)
+        if emotion =='all':
+            return buildListContainsAll()
         scalar = float(input("Please enter coefficient for emotion %s " % emotion))
         while sumOfScalars + scalar > 1:
             print("Sum of Scalars should be 1, please enter scalar again")
@@ -135,31 +150,31 @@ def askScalarsFromUsers():
     return listOfTuples
 
 
-def buildNewVector(dbcon):
+def buildNewVector():
     list = askScalarsFromUsers()
-    listWithVecs=map(lambda x: getVectorOfEmotion(dbcon,emotionNameToEmotionID(dbcon,x[1])),list)
+    listWithVecs=map(lambda x: getVectorOfEmotion(emotionNameToEmotionID(x[1])),list)
     listOfScalars=map(lambda x: x[0], list)
     listOfNewVEcs=map(lambda scalar, vec: map(lambda x: scalar * x, vec),listOfScalars,listWithVecs )
     result = listOfNewVEcs[0]
     for i in range(1,len(listOfNewVEcs)):
         result = map(sum,zip(result,listOfNewVEcs[i]))
     print_nicely_vec(result)
-    printClosestVectorNames(dbcon,result)
+    printClosestVectorNames(result)
 
 
-def getVector(dbcon):
+def getVector():
     print("this function will retrive the vector of emotion and print it.")
     emotion1 = raw_input("put emotion name please")
-    vector= getVectorOfEmotion(dbcon,emotionNameToEmotionID(dbcon,emotion1))
+    vector= getVectorOfEmotion(emotionNameToEmotionID(emotion1))
     #print vector
     #print len(vector)
     newVector=map(prettyFloat,vector)
     print newVector
     return (vector)
 
-def computeNewVec(dbcon): # expected format: list ( scalar, vector )
+def computeNewVec(): # expected format: list ( scalar, vector )
     print ("for now going to work on fool emotion with scalar of 0.5")
-    foolVec=getVectorOfEmotion(dbcon,emotionNameToEmotionID(dbcon,"fool"))
+    foolVec=getVectorOfEmotion(emotionNameToEmotionID("fool"))
     scalar=0.5
     newFoolVec=map((lambda x: x * scalar), foolVec)
     print("beofre:")
@@ -172,11 +187,11 @@ def computeNewVec(dbcon): # expected format: list ( scalar, vector )
 def sizeOfSingleVec(vec):
     return math.sqrt(reduce(lambda x, y: x + y, map(lambda x: x * x, vec)))
 
-def printVectorsSize(dbcon):
+def printVectorsSize():
     for i in range(1,374):
-        vec=getVectorOfEmotion(dbcon,i)
+        vec=getVectorOfEmotion(i)
         sizeOfVec = sizeOfSingleVec(vec)
-        print (str(i)+":vector-"+ emotionIDToName(dbcon,i)+ " size: "+ str(sizeOfVec))
+        print (str(i)+":vector-"+ emotionIDToName(i)+ " size: "+ str(sizeOfVec))
 
 
 
@@ -192,21 +207,21 @@ def angelBetweenTwoVecs( vec1, vec2):
     return ans
 
 
-def workingWithVecs(dbcon,vectotest):
+def workingWithVecs(vectotest):
     print("working with vecs function")
-    #printVectorsSize(dbcon)
+    #printVectorsSize()
     for i in range (1,20):
-        angel = angelBetweenTwoVecs(vectotest,getVectorOfEmotion(dbcon, i))
-        print ("angel between requested vector, %s: %0.4f" % (emotionIDToName(dbcon, i), angel))
+        angel = angelBetweenTwoVecs(vectotest,getVectorOfEmotion( i))
+        print ("angel between requested vector, %s: %0.4f" % (emotionIDToName( i), angel))
 
 
 
 
-def printClosestVectorNames(dbcon, vec):
+def printClosestVectorNames( vec):
     print ("this function will find the closest vector.")
     templist=[]
     for i in range (1,373):
-        newAngel= angelBetweenTwoVecs(vec,getVectorOfEmotion(dbcon,i))
+        newAngel= angelBetweenTwoVecs(vec,getVectorOfEmotion(i))
         #print ("angel between %0d, %0d: %0.4f" % (7, i, newAngel))
         templist.append((newAngel,i))
 
@@ -214,18 +229,19 @@ def printClosestVectorNames(dbcon, vec):
 
     #print(sorted_by_angel)
     for i in range(0,5):
-        print ("#%0d - vec: %s. angel: %0.4f" % (i+1,emotionIDToName(dbcon,sorted_by_angel[i][1]),sorted_by_angel[i][0]))
+        print ("#%0d - vec: %s. angel: %0.4f" % (i+1,emotionIDToName(sorted_by_angel[i][1]),sorted_by_angel[i][0]))
 
 
 
 
 def main():
     print(2)
+    global dbcon
     dbcon=initEmoitionsDB()
     print(3)
-    basicQueries(dbcon)
-    #workingWithVecs(dbcon)
-    ##printClosestVectorNames(dbcon,getVectorOfEmotion(dbcon,62))
+    basicQueries()
+    #workingWithVecs()
+    ##printClosestVectorNames(getVectorOfEmotion(62))
 
     print(4)
 
