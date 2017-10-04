@@ -8,37 +8,6 @@ import csv
 from init import initEmoitionsDB
 import math
 
-
-
-
-
-def angels_between_two_emotions (dbcon,emotion1, emotion2):
-    print ("angel between two emotions function")
-    with dbcon:
-        cursor=dbcon.cursor()
-        #SELECT EmotionsID.ID, Relations."Value" FROM EmotionsID JOIN Relations ON EmotionsID.ID = Relations.X WHERE Emotion_name =""")
-        #cursor.execute("SELECT ID FROM EmotionsID WHERE Emotion_name = ?", (emotion1,))
-        #id1=cursor.fetchone();
-        id1=emotionNameToEmotionID(dbcon,emotion1)
-        #cursor.execute("SELECT ID FROM EmotionsID WHERE Emotion_name = ?", (emotion2,))
-        #id2 = cursor.fetchone();
-        id2=emotionNameToEmotionID(dbcon,emotion2)
-        #print (emotion1 + " : " + str(id1[0]) )
-        #print (emotion2 + " : " + str(id2[0]))
-        print ("emotion1 :" + str(id1))
-        print ("emotion2 :" + str(id2))
-        cursor.execute("SELECT VALUE FROM Relations WHERE X = (?) AND  Y = (?)", (id1,id2,) )
-        angel=cursor.fetchone()
-        print ("angel between " + emotion1 + " and " + emotion2 +" is : " +str(angel[0]))
-
-
-        #cursor.execute("""SELECT TaskTimes.TaskID,DoEvery,NumTimes,Tasks.TaskName,Parameter
-        #                      FROM TaskTimes JOIN Tasks ON TaskTimes.TaskID = Tasks.TaskID
-        #                      WHERE TaskTimes.NumTimes > 0 """)
-    #SELECT * FROM Relations WHERE X = 181  ORDER BY VALUE  DESC
-    #SELECT VALUE FROM Relations WHERE X = 180 AND Y = 40
-
-
 def basicQueries(dbcon):
     while True:
         options=["Exit","angles between 2 emotions",'create a new vector','findClosestEmotion','findOppositeEmotion', 'get vector of emotion','buildNewVector']
@@ -47,13 +16,14 @@ def basicQueries(dbcon):
         print options
         for i in options:
             print (  ""+str(options.index(i))+" - "+ i)
-        #input("Press Enter to continue...")
         num_of_query = input("choose query :")
         print ("query chosen:: %s" % options[num_of_query])
         if num_of_query > 0:
             optDict[num_of_query](dbcon)
         else:
             break
+
+
 
 def angels (dbcon):
     print ("angels between 2 vectors")
@@ -70,6 +40,17 @@ def angels (dbcon):
     emotion2 = raw_input("put second emotions please")
     angels_between_two_emotions(dbcon,emotion1,emotion2)
 
+def angels_between_two_emotions (dbcon,emotion1, emotion2):
+    print ("angel between two emotions function")
+    with dbcon:
+        cursor=dbcon.cursor()
+        id1=emotionNameToEmotionID(dbcon,emotion1)
+        id2=emotionNameToEmotionID(dbcon,emotion2)
+        print ("emotion1 :" + str(id1))
+        print ("emotion2 :" + str(id2))
+        cursor.execute("SELECT VALUE FROM Relations WHERE X = (?) AND  Y = (?)", (id1,id2,) )
+        angel=cursor.fetchone()
+        print ("angel between " + emotion1 + " and " + emotion2 +" is : " +str(angel[0]))
 
 def createVector(dbcon):
     print("creating vector")
@@ -79,7 +60,6 @@ def findClosestEmotion(dbcon):
     emotion1 = raw_input("put emotion name please")
     with dbcon:
         cursor=dbcon.cursor()
-        #CT EmotionsID.ID, Relations."Value" FROM EmotionsID JOIN Relations ON EmotionsID.ID = Relations.X WHERE Emotion_name =""")
         cursor.execute("SELECT ID FROM EmotionsID WHERE Emotion_name = ?", (emotion1,))
         id1=cursor.fetchone()
         print (emotion1 + " : " + str(id1[0]) )
@@ -135,27 +115,36 @@ def print_nicely_vec(vec):
     print(map((lambda x: "%0.4f" % x), vec))
 
 def askScalarsFromUsers():
+    counter = 1
+    sumOfScalars = 0
     print("this function asks the user for scalars and emotions.")
-    list= [(0.5,"fool"),(0.4,"numbness"),(0.1,"dissatisfaction")]
-    sumOfScalars = sum(i for i, j in list)
-    if sumOfScalars != 1:
-        print("Sum of Scalars should be 1, please enter scalars again")
-        list = askScalarsFromUsers()
-    return list
+    listOfTuples = list()
+    while sumOfScalars < 1:
+        emotion = raw_input("Please enter emotion number %d " % counter)
+        scalar = float(input("Please enter coefficient for emotion %s " % emotion))
+        while sumOfScalars + scalar > 1:
+            print("Sum of Scalars should be 1, please enter scalar again")
+            scalar = float(input("Please enter coefficient for emotion %s " % emotion))
+
+        print ("you entered %s as coefficient %0.2f" % (emotion, scalar))
+        counter += 1
+        sumOfScalars += scalar
+        pair = (scalar, emotion)
+        listOfTuples.append(pair)
+
+    return listOfTuples
+
 
 def buildNewVector(dbcon):
     list = askScalarsFromUsers()
     listWithVecs=map(lambda x: getVectorOfEmotion(dbcon,emotionNameToEmotionID(dbcon,x[1])),list)
     listOfScalars=map(lambda x: x[0], list)
-    print listOfScalars
-
-    #print listWithVecs
     listOfNewVEcs=map(lambda scalar, vec: map(lambda x: scalar * x, vec),listOfScalars,listWithVecs )
-    #print(listOfNewVEcs)
     result = listOfNewVEcs[0]
     for i in range(1,len(listOfNewVEcs)):
         result = map(sum,zip(result,listOfNewVEcs[i]))
     print_nicely_vec(result)
+    printClosestVectorNames(dbcon,result)
 
 
 def getVector(dbcon):
@@ -203,14 +192,14 @@ def angelBetweenTwoVecs( vec1, vec2):
     return ans
 
 
-def workingWithVecs(dbcon):
+def workingWithVecs(dbcon,vectotest):
     print("working with vecs function")
-    printVectorsSize(dbcon)
-    vec1 = getVectorOfEmotion(dbcon, 1)
-    vec2 = getVectorOfEmotion(dbcon, 4)
+    #printVectorsSize(dbcon)
     for i in range (1,20):
-        print ("angel between %0d, %0d:" % (1,i))
-        angelBetweenTwoVecs(getVectorOfEmotion(dbcon,1),getVectorOfEmotion(dbcon, i))
+        angel = angelBetweenTwoVecs(vectotest,getVectorOfEmotion(dbcon, i))
+        print ("angel between requested vector, %s: %0.4f" % (emotionIDToName(dbcon, i), angel))
+
+
 
 
 def printClosestVectorNames(dbcon, vec):
@@ -234,9 +223,9 @@ def main():
     print(2)
     dbcon=initEmoitionsDB()
     print(3)
-    #basicQueries(dbcon)
+    basicQueries(dbcon)
     #workingWithVecs(dbcon)
-    printClosestVectorNames(dbcon,getVectorOfEmotion(dbcon,62))
+    #printClosestVectorNames(dbcon,getVectorOfEmotion(dbcon,62))
 
     print(4)
 

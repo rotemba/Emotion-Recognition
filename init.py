@@ -64,7 +64,7 @@ def initEmoitionsDB():
             dbcon.commit()
             print ("end of the table creation.")
     else:
-        print ("db exist")
+        print ("db exists")
     return dbcon
 
 
