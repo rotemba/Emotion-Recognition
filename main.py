@@ -199,7 +199,8 @@ def angelBetweenTwoVecs( vec1, vec2):
     mone=sum((a*b) for a, b in zip(vec1, vec2))
     sizeOfVecs=(sizeOfVec1*sizeOfVec2)
     ans=mone/sizeOfVecs
-    print ans
+    #print ans
+    return ans
 
 
 def workingWithVecs(dbcon):
@@ -212,13 +213,31 @@ def workingWithVecs(dbcon):
         angelBetweenTwoVecs(getVectorOfEmotion(dbcon,1),getVectorOfEmotion(dbcon, i))
 
 
+def printClosestVectorNames(dbcon, vec):
+    print ("this function will find the closest vector.")
+    templist=[]
+    for i in range (1,373):
+        newAngel= angelBetweenTwoVecs(vec,getVectorOfEmotion(dbcon,i))
+        #print ("angel between %0d, %0d: %0.4f" % (7, i, newAngel))
+        templist.append((newAngel,i))
+
+    sorted_by_angel = sorted(templist, key=lambda tup: tup[0], reverse=True)
+
+    #print(sorted_by_angel)
+    for i in range(0,5):
+        print ("#%0d - vec: %s. angel: %0.4f" % (i+1,emotionIDToName(dbcon,sorted_by_angel[i][1]),sorted_by_angel[i][0]))
+
+
+
 
 def main():
     print(2)
     dbcon=initEmoitionsDB()
     print(3)
-    basicQueries(dbcon)
-    workingWithVecs(dbcon)
+    #basicQueries(dbcon)
+    #workingWithVecs(dbcon)
+    printClosestVectorNames(dbcon,getVectorOfEmotion(dbcon,62))
+
     print(4)
 
 
