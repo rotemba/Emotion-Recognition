@@ -1,4 +1,3 @@
-#TODO: SABO: add the next line to your file so it'll know this file.
 #from init import initRelationTable
 from numpy import genfromtxt
 import sqlite3
@@ -68,7 +67,17 @@ def initEmoitionsDB():
     return dbcon
 
 
+def readTableFromCSV(): #TODO add argument as an file path
+    with open('files/Participant_8_csv_format.csv', 'rb') as csvfile:
+        readCSV = csv.reader(csvfile, delimiter=',')
+        arr = [[] for _ in range(8)]
+        print arr
+        for row in readCSV:
+            for index in range(0, 8):
+                data = row[index]
+                arr[index].append(data)
 
+    return arr
 
 
 

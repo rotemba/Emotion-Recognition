@@ -6,6 +6,7 @@ import sqlite3
 import os
 import csv
 from init import initEmoitionsDB
+from init import readTableFromCSV
 import math
 
 def basicQueries():
@@ -19,10 +20,7 @@ def basicQueries():
         num_of_query = input("choose query :")
         print ("query chosen:: %s" % options[num_of_query])
         if num_of_query > 0:
-            if num_of_query!=2:
-                optDict[num_of_query]()
-            else:
-                optDict[num_of_query]()
+            optDict[num_of_query]()
         else:
             break
 
@@ -95,6 +93,19 @@ def emotionIDToName( emotionID):
         return (name[0])
 
 
+def buildVectorFromCSV()
+    emotionlistfromcsvbyID = [246, 183, 295, 17, 329 , 299 , 114]
+    sumOfScalars = 0
+    listOfTuples = list()
+    for i  in range(0,6):
+        scalar = float(input("Please enter coefficient for emotion %s " % emotionIDToName(emotionlistfromcsvbyID[i])))
+        while sumOfScalars + scalar > 1:
+            scalar = float(input("Please enter AGAIN coefficient for emotion %s " % emotionIDToName(emotionlistfromcsvbyID[i])))
+        pair = (scalar,emotionIDToName(emotionlistfromcsvbyID[i]))
+        sumOfScalars+=scalar
+        listOfTuples.append(pair)
+
+    return listOfTuples
 
 def emotionNameToEmotionID(emotionName):
     with dbcon:
@@ -104,26 +115,15 @@ def emotionNameToEmotionID(emotionName):
         #print("got emotion name:" + emotionName +" - id: "+ str(emotionID[0]))
         return (emotionID[0])
 
-def getVectorOfEmotion( emotionID):
-    with dbcon:
-        cursor = dbcon.cursor()
-        cursor.execute("SELECT * FROM Twitter WHERE ID = ?", (emotionID,))
-        vector=cursor.fetchone()
-        return (vector[1:len(vector)])
-
-def prettyFloat(num):
-        return "%0.4f" % num
-
-def print_nicely_vec(vec):
-    print(map((lambda x: "%0.4f" % x), vec))
-
 def buildListContainsAll():
-    num_of_emotion = 100
-    value = 1/num_of_emotion
+    num_of_emotion = 373
+    value = float(1/float(7))
     listOfTuples = list()
     for i in range(1,num_of_emotion):
-        pair = (value,emotionIDToName(i))
-        listOfTuples.append(pair)
+        if (i == 246) or (i == 183) or (i == 295) or (i == 17) or (i == 114) or (i == 299) or (i == 329):
+            pair = (value,emotionIDToName(i))
+            listOfTuples.append(pair)
+    print listOfTuples
     return listOfTuples
 
 
@@ -133,7 +133,7 @@ def askScalarsFromUsers():
     print("this function asks the user for scalars and emotions.")
     listOfTuples = list()
     while sumOfScalars < 1:
-        emotion = raw_input("Please enter emotion number %d " % counter)
+        emotion = raw_input("Please enter the name of emotion number %d " % counter)
         if emotion =='all':
             return buildListContainsAll()
         scalar = float(input("Please enter coefficient for emotion %s " % emotion))
@@ -166,8 +166,6 @@ def getVector():
     print("this function will retrive the vector of emotion and print it.")
     emotion1 = raw_input("put emotion name please")
     vector= getVectorOfEmotion(emotionNameToEmotionID(emotion1))
-    #print vector
-    #print len(vector)
     newVector=map(prettyFloat,vector)
     print newVector
     return (vector)
@@ -183,16 +181,6 @@ def computeNewVec(): # expected format: list ( scalar, vector )
     print (newFoolVec)
     print ("pretty print:")
     print (map((lambda x:  "%0.4f" % x ), newFoolVec))
-
-def sizeOfSingleVec(vec):
-    return math.sqrt(reduce(lambda x, y: x + y, map(lambda x: x * x, vec)))
-
-def printVectorsSize():
-    for i in range(1,374):
-        vec=getVectorOfEmotion(i)
-        sizeOfVec = sizeOfSingleVec(vec)
-        print (str(i)+":vector-"+ emotionIDToName(i)+ " size: "+ str(sizeOfVec))
-
 
 
 def angelBetweenTwoVecs( vec1, vec2):
@@ -231,6 +219,8 @@ def printClosestVectorNames( vec):
     for i in range(0,5):
         print ("#%0d - vec: %s. angel: %0.4f" % (i+1,emotionIDToName(sorted_by_angel[i][1]),sorted_by_angel[i][0]))
 
+    for i in range (368, 372):
+        print ("#%0d - vec: %s. angel: %0.4f" % (i + 1, emotionIDToName(sorted_by_angel[i][1]), sorted_by_angel[i][0]))
 
 
 
@@ -252,4 +242,31 @@ if __name__ == '__main__':
     main()
 
 
+
+
+def getVectorOfEmotion( emotionID):
+    with dbcon:
+        cursor = dbcon.cursor()
+        cursor.execute("SELECT * FROM Twitter WHERE ID = ?", (emotionID,))
+        vector=cursor.fetchone()
+        return (vector[1:len(vector)])
+
+
+def prettyFloat(num):
+        return "%0.4f" % num
+
+
+def print_nicely_vec(vec):
+    print(map((lambda x: "%0.4f" % x), vec))
+
+
+def sizeOfSingleVec(vec):
+    return math.sqrt(reduce(lambda x, y: x + y, map(lambda x: x * x, vec)))
+
+
+def printVectorsSize():
+    for i in range(1,374):
+        vec=getVectorOfEmotion(i)
+        sizeOfVec = sizeOfSingleVec(vec)
+        print (str(i)+":vector-"+ emotionIDToName(i)+ " size: "+ str(sizeOfVec))
 
