@@ -6,6 +6,7 @@ import csv
 
 
 
+
 def initTwitterTable(dbcon):
     print ("init twitter table")
 
@@ -16,6 +17,7 @@ def initEmotionIDTable(dbcon):
 
 def initEmoitionsDB():
     databaseexisted = os.path.isfile('Emotions.db')
+    global dbcon
     dbcon = sqlite3.connect("Emotions.db")
     if not databaseexisted:
         str = ("ID INTEGER NOT NULL REFERENCES  EmotionsID(ID), %s" % ','.join("X%d REAL" % i for i in range(50)))
@@ -64,7 +66,6 @@ def initEmoitionsDB():
             print ("end of the table creation.")
     else:
         print ("db exists")
-    return dbcon
 
 
 def readTableFromCSV(): #TODO add argument as an file path
@@ -74,17 +75,19 @@ def readTableFromCSV(): #TODO add argument as an file path
         print arr
         for row in readCSV:
             for index in range(0, 8):
+                if row[1] == 'FIND_FAILED' or row[1] == 'FIT_FAILED':
+                    break
                 data = row[index]
                 arr[index].append(data)
 
-    arr_du = [[] for _ in range(8)]
+    arr_duplicate = [[] for _ in range(8)]
     for i in range(0, len(arr)):
         for index, item in enumerate(arr[i]):
             if i > 0 and index > 0:
-                arr_du[i].append(float(item))
+                arr_duplicate[i].append(float(item))
             else:
-                arr_du[i].append(item)
+                arr_duplicate[i].append(item)
 
-    return arr_du
+    return arr_duplicate
 
 
