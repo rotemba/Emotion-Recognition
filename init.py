@@ -77,7 +77,14 @@ def readTableFromCSV(): #TODO add argument as an file path
                 data = row[index]
                 arr[index].append(data)
 
-    return arr
+    arr_du = [[] for _ in range(8)]
+    for i in range(0, len(arr)):
+        for index, item in enumerate(arr[i]):
+            if i > 0 and index > 0:
+                arr_du[i].append(float(item))
+            else:
+                arr_du[i].append(item)
 
+    return arr_du
 
 

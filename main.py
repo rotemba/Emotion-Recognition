@@ -16,7 +16,7 @@ def basicQueries():
         print("please choose the query to run:")
         print options
         for i in options:
-            print (  ""+str(options.index(i))+" - "+ i)
+            print (  ""+str(options.ingitdex(i))+" - "+ i)
         num_of_query = input("choose query :")
         print ("query chosen:: %s" % options[num_of_query])
         if num_of_query > 0:
@@ -93,19 +93,19 @@ def emotionIDToName( emotionID):
         return (name[0])
 
 
-def buildVectorFromCSV()
+def buildVectorFromCSV(row):
     emotionlistfromcsvbyID = [246, 183, 295, 17, 329 , 299 , 114]
-    sumOfScalars = 0
-    listOfTuples = list()
-    for i  in range(0,6):
-        scalar = float(input("Please enter coefficient for emotion %s " % emotionIDToName(emotionlistfromcsvbyID[i])))
-        while sumOfScalars + scalar > 1:
-            scalar = float(input("Please enter AGAIN coefficient for emotion %s " % emotionIDToName(emotionlistfromcsvbyID[i])))
+    listOfTuplesPerFrame = list()
+    arr = readTableFromCSV()
+    for i in range(1,8):
+        scalar = arr[i][row]
         pair = (scalar,emotionIDToName(emotionlistfromcsvbyID[i]))
-        sumOfScalars+=scalar
-        listOfTuples.append(pair)
+        row+=1
+        listOfTuplesPerFrame.append(pair)
 
-    return listOfTuples
+    return listOfTuplesPerFrame
+
+
 
 def emotionNameToEmotionID(emotionName):
     with dbcon:
