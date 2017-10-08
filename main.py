@@ -158,8 +158,6 @@ def main():
     #workingWithVecs()
     ##printClosestVectorNames(getVectorOfEmotion(62))
 
-    print(4)
-
 
 if __name__ == '__main__':
     print(1)

@@ -21,6 +21,7 @@ def initEmoitionsDB():
     dbcon = sqlite3.connect("Emotions.db")
     if not databaseexisted:
         str = ("ID INTEGER NOT NULL REFERENCES  EmotionsID(ID), %s" % ','.join("X%d REAL" % i for i in range(50)))
+        strOfVecs=(','.join("X%d REAL" % i for i in range(50)))
         with dbcon:
             cursor = dbcon.cursor()
             cursor.execute("CREATE TABLE EmotionsID(ID INTEGER PRIMARY KEY NOT NULL ,Emotion_name VARCHAR(20) NOT NULL )")
@@ -28,6 +29,12 @@ def initEmoitionsDB():
             cursor.execute("""CREATE TABLE Relations(X INTEGER NOT NULL,
                                                                   Y INTEGER NOT NULL,
                                                                  Value REAL NOT NULL)""")
+            cursor.execute("CREATE TABLE Videos(VideoID INTEGER PRIMARY KEY NOT NULL, Main_motion VARCHAR(20) NOT NULL)")
+            cursor.execute("CREATE TABLE Video_Vecs (VideoID INTEGER NOT NULL REFERENCES Videos(VideoID), Time INTEGER PRIMARY KEY NOT NULL, %s )" % strOfVecs)
+            cursor.execute("""CREATE TABLE Video_analyze (VideoID INTEGER NOT NULL REFERENCES Videos(VideoID), 
+                                                          Time INTEGER NOT NULL REFERENCES Video_Vecs(Time),
+                                                           Angel_To_Prev_Vec REAL NOT NULL,
+                                                           Angel_To_Main_Emotion REAL NOT NULL)""")
             print("DONE creating the tables")
             twiter_path = "files/twitter_dict.csv"
             pathOfTwitter = "files/twitter_dict.csv"
