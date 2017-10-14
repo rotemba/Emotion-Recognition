@@ -30,11 +30,19 @@ def initEmoitionsDB():
                                                                   Y INTEGER NOT NULL,
                                                                  Value REAL NOT NULL)""")
             cursor.execute("CREATE TABLE Videos(VideoID INTEGER PRIMARY KEY NOT NULL, Main_motion VARCHAR(20) NOT NULL)")
-            cursor.execute("CREATE TABLE Video_Vecs (VideoID INTEGER NOT NULL REFERENCES Videos(VideoID), Time INTEGER PRIMARY KEY NOT NULL, %s )" % strOfVecs)
+            cursor.execute("CREATE TABLE Video_Vecs (VideoID INTEGER NOT NULL REFERENCES Videos(VideoID), Frame_number INTEGER PRIMARY KEY NOT NULL, %s )" % strOfVecs)
             cursor.execute("""CREATE TABLE Video_analyze (VideoID INTEGER NOT NULL REFERENCES Videos(VideoID), 
-                                                          Time INTEGER NOT NULL REFERENCES Video_Vecs(Time),
+                                                          Frame_number INTEGER NOT NULL REFERENCES Video_Vecs(Time),
                                                            Angel_To_Prev_Vec REAL NOT NULL,
                                                            Angel_To_Main_Emotion REAL NOT NULL)""")
+            cursor.execute("""CREATE TABLE Video_Data_Raw (VideoID INTEGER NOT NULL REFERENCES Videos(VideoID),
+                                                          Frame_number INTEGER NOT NULL REFERENCES Video_Vecs(Time),
+                                                          Neutral REAL NOT NULL,Happy REAL NOT NULL,
+                                                          Sad REAL NOT NULL,Angry REAL NOT NULL,
+                                                          Surprised REAL NOT NULL,Scared REAL NOT NULL,
+                                                          Disgusted REAL NOT NULL)""")
+
+
             print("DONE creating the tables")
             twiter_path = "files/twitter_dict.csv"
             pathOfTwitter = "files/twitter_dict.csv"

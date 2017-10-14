@@ -144,23 +144,108 @@ def buildNewVector():
     methods.print_nicely_vec(result)
     methods.printClosestVectorNames(result)
 
+def findMainEmotion(videoFrameArray):
+    print("going to find the main emotion in video")
+    #print videoFrameArray[0] #not needed
+    #print videoFrameArray[1]
+    #print videoFrameArray[2]
+    #print videoFrameArray[3]
+    #print videoFrameArray[4]
+    #print videoFrameArray[5]
+    #print videoFrameArray[7]
+
+    onlyEmotions=videoFrameArray[2:]
+    sumOfAllEmotions=map(lambda emotion: sum(map(lambda x: float(x), emotion[1:])), onlyEmotions)
+    main_emotion=onlyEmotions[sumOfAllEmotions.index(max(sumOfAllEmotions))][0]
+    #print sumOfAllEmotions
+
+    #sumOfNetural = sum(map(lambda x: float(x), (videoFrameArray[1])[1:]))
+    #sumOfHappy = sum(map(lambda x: float(x), (videoFrameArray[2])[1:]))
+    #sumOfSad = sum(map(lambda x: float(x), (videoFrameArray[3])[1:]))
+    #sumOfAngry = sum(map(lambda x: float(x), (videoFrameArray[4])[1:]))
+    #sumOfSurprised = sum(map(lambda x: float(x), (videoFrameArray[5])[1:]))
+    #sumOfDisgusted = sum(map(lambda x: float(x), (videoFrameArray[6])[1:]))
+    for i in range (1,7):
+        print ("feeling: %s, sum: %0.2f " %(videoFrameArray[i][0], sum(map(lambda x: float(x), (videoFrameArray[i])[1:]))))
+
+
+    return main_emotion
+
+# Neutral,Happy,Sad,Angry,Surprised,Scared,Disgusted
+def getMixedVec(NeutralScalar,HappyScalar,SadScalar,AngryScalar,SurprisedScalar,ScaredScalar,DisgustedScalar):
+    list = [(float(NeutralScalar),"neutral"), (float(HappyScalar),"happiness"),(float(SadScalar),"sadness"),(float(AngryScalar),"anger"),
+            (float(SurprisedScalar),"surprise"),(float(ScaredScalar),"scare"),(float(DisgustedScalar),"disgust")]
+    #print list
+    listWithVecs = map(lambda x: methods.getVectorOfEmotion(methods.emotionNameToEmotionID(x[1])), list)
+
+    listOfScalars = map(lambda x: x[0], list)
+    listOfNewVEcs = map(lambda scalar, vec: map(lambda x: scalar * x, vec), listOfScalars, listWithVecs)
+    result = listOfNewVEcs[0]
+    for i in range(1, len(listOfNewVEcs)):
+        result = map(sum, zip(result, listOfNewVEcs[i]))
 
 
 
+    return result
+
+
+
+def readVideoToDB(video_path, video_number):
+    print("%0d:inserting %s to db " % (video_number,video_path))
+    videoFrameArray = genfromtxt(video_path, delimiter=',')
+    with open(video_path, 'rb') as csvfile:
+        readCSV = csv.reader(csvfile, delimiter=',')
+        arr = [[] for _ in range(8)]
+        print arr
+        for row in readCSV:
+            for index in range(0, 8):
+                if row[1] == 'FIND_FAILED' or row[1] == 'FIT_FAILED':
+                    break
+                data = row[index]
+                arr[index].append(data)
+    main_emotion_of_frame=findMainEmotion(arr)
+    print ("main emotion:%s" % main_emotion_of_frame)
+    print ("%0.3f" % videoFrameArray[1][1])
+    #print arr[1]
+    with init.dbcon:
+        cursor=init.dbcon.cursor()
+        cursor.execute("INSERT OR REPLACE INTO Videos VALUES (?,?)", (video_number, main_emotion_of_frame))
+        for i in range (1, len(arr[0])):
+            print ("framte number: %0d / %0d" %(i,len(arr[0])))
+            if videoFrameArray[i][1]== 'FIND_FAILED' or videoFrameArray[i][1] == 'FIT_FAILED':
+                    print ("cant put inside DB")
+                    break
+            #print videoFrameArray[i]
+            cursor.execute("""INSERT INTO Video_Data_Raw VALUES (?,?,?,?,?,?,?,?,?)""",(video_number,i,
+                                        arr[1][i],arr[2][i],arr[3][i],arr[4][i],arr[5][i],
+                                        arr[6][i],arr[7][i]))
+            #Neutral,Happy,Sad,Angry,Surprised,Scared,Disgusted
+            mixedVec=getMixedVec(arr[1][i],arr[2][i],arr[3][i],arr[4][i],arr[5][i],arr[6][i],arr[7][i])
+            #methods.print_nicely_vec(mixedVec)
+
+
+
+
+
+
+
+    init.dbcon.commit()
+
+    print ("end of the table creation.")
 
 
 def main():
-    print(2)
 
     init.initEmoitionsDB()
-    print(3)
-    basicQueries()
+
+    #basicQueries()
     #workingWithVecs()
     ##printClosestVectorNames(getVectorOfEmotion(62))
+    readVideoToDB('files/Participant_8_csv_format.csv',1)
+
 
 
 if __name__ == '__main__':
-    print(1)
 
     main()
 
