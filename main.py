@@ -1,12 +1,13 @@
-import sqlite3
-import os
+import csv
 
 from numpy import genfromtxt
-import sqlite3
-import os
-import csv
+
 import init
 import methods
+import pandas as pd
+import sqlite3
+import matplotlib.pyplot as plt
+
 
 def findOppositeEmotion():
     print("this function will find the opposite emotion")
@@ -206,6 +207,8 @@ def readVideoToDB(video_path, video_number):
     main_emotion_of_frame=findMainEmotion(arr)
     print ("main emotion:%s" % main_emotion_of_frame)
     print ("%0.3f" % videoFrameArray[1][1])
+    main_emotion_of_frame_vec=methods.getVectorOfEmotion(methods.emotionNameToEmotionID(main_emotion_of_frame))
+    prev_vec= mixedVec=getMixedVec(arr[1][1],arr[2][1],arr[3][1],arr[4][1],arr[5][1],arr[6][1],arr[7][1])
     #print arr[1]
     with init.dbcon:
         cursor=init.dbcon.cursor()
@@ -228,6 +231,12 @@ def readVideoToDB(video_path, video_number):
             mixedVec[21],mixedVec[22],mixedVec[23],mixedVec[24],mixedVec[25],mixedVec[26],mixedVec[27],mixedVec[28],mixedVec[29],mixedVec[30],
             mixedVec[31],mixedVec[32],mixedVec[33],mixedVec[34],mixedVec[35],mixedVec[36],mixedVec[37],mixedVec[38],mixedVec[39],mixedVec[40],
             mixedVec[41],mixedVec[42],mixedVec[43],mixedVec[44],mixedVec[45],mixedVec[46],mixedVec[47],mixedVec[48],mixedVec[49]))
+            angelToPrevVec=methods.angelBetweenTwoVecs(prev_vec,mixedVec)
+            angelToMainVec = methods.angelBetweenTwoVecs(main_emotion_of_frame_vec, mixedVec)
+            prev_vec = mixedVec
+            if (i%20==0):
+                print ("frame %0d: angel to prev:%0.3f. angel to main emotion:%0.3f" %(i,angelToPrevVec,angelToMainVec))
+            cursor.execute("INSERT INTO Video_analyze VALUES (?,?,?,?)",(video_number,i,angelToPrevVec,angelToMainVec))
 
 
 
@@ -240,6 +249,18 @@ def readVideoToDB(video_path, video_number):
 
     print ("end of the table creation.")
 
+def visualizeData():
+    print ("visualize data function")
+    df = pd.read_sql_query("select * from Video_analyze ;", init.dbcon)
+    print(df)
+    plot_data = df['Angel_To_Main_Emotion']
+
+    plt.xlabel('Frame_number')
+    plt.ylabel('Angel_To_Main_Emotion')
+    plt.title('Angel of vectors To main emotion')
+    plt.plot(plot_data, label='My Data')
+    plt.show()
+
 
 def main():
 
@@ -248,7 +269,9 @@ def main():
     #basicQueries()
     #workingWithVecs()
     ##printClosestVectorNames(getVectorOfEmotion(62))
-    readVideoToDB('files/Participant_8_csv_format.csv',1)
+    #readVideoToDB('files/Participant_8_csv_format.csv',1)
+    visualizeData()
+
 
 
 

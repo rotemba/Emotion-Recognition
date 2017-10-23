@@ -68,6 +68,9 @@ def emotionIDToName( emotionID):
         return (name[0])
 
 def emotionNameToEmotionID(emotionName):
+    if (emotionName=="Happy"):
+        print ("searching for happiness instead of Happy")
+        return emotionNameToEmotionID("happiness")
     with init.dbcon:
         cursor = init.dbcon.cursor()
         cursor.execute("SELECT ID FROM EmotionsID WHERE Emotion_name = ?", (emotionName,))

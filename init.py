@@ -32,7 +32,7 @@ def initEmoitionsDB():
             cursor.execute("CREATE TABLE Videos(VideoID INTEGER PRIMARY KEY NOT NULL, Main_motion VARCHAR(20) NOT NULL)")
             cursor.execute("CREATE TABLE Video_Vecs (VideoID INTEGER NOT NULL REFERENCES Videos(VideoID), Frame_number INTEGER NOT NULL, %s , PRIMARY KEY (VideoID, Frame_number))" % strOfVecs)
             cursor.execute("""CREATE TABLE Video_analyze (VideoID INTEGER NOT NULL REFERENCES Videos(VideoID), 
-                                                          Frame_number INTEGER NOT NULL REFERENCES Video_Vecs(Time),
+                                                          Frame_number INTEGER NOT NULL REFERENCES Video_Vecs(Frame_number),
                                                            Angel_To_Prev_Vec REAL NOT NULL,
                                                            Angel_To_Main_Emotion REAL NOT NULL)""")
             cursor.execute("""CREATE TABLE Video_Data_Raw (VideoID INTEGER NOT NULL REFERENCES Videos(VideoID),
