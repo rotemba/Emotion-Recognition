@@ -211,7 +211,7 @@ def readVideoToDB(video_path, video_number):
         cursor=init.dbcon.cursor()
         cursor.execute("INSERT OR REPLACE INTO Videos VALUES (?,?)", (video_number, main_emotion_of_frame))
         for i in range (1, len(arr[0])):
-            print ("framte number: %0d / %0d" %(i,len(arr[0])))
+            #print ("framte number: %0d / %0d" %(i,len(arr[0])))
             if videoFrameArray[i][1]== 'FIND_FAILED' or videoFrameArray[i][1] == 'FIT_FAILED':
                     print ("cant put inside DB")
                     break
@@ -221,7 +221,14 @@ def readVideoToDB(video_path, video_number):
                                         arr[6][i],arr[7][i]))
             #Neutral,Happy,Sad,Angry,Surprised,Scared,Disgusted
             mixedVec=getMixedVec(arr[1][i],arr[2][i],arr[3][i],arr[4][i],arr[5][i],arr[6][i],arr[7][i])
-            #methods.print_nicely_vec(mixedVec)
+
+            cursor.execute("""INSERT INTO Video_Vecs VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                           (video_number,i,mixedVec[0],mixedVec[1],mixedVec[2],mixedVec[3],mixedVec[4],mixedVec[5],mixedVec[6],mixedVec[7],mixedVec[8],mixedVec[9],mixedVec[10],
+            mixedVec[11],mixedVec[12],mixedVec[13],mixedVec[14],mixedVec[15],mixedVec[16],mixedVec[17],mixedVec[18],mixedVec[19],mixedVec[20],
+            mixedVec[21],mixedVec[22],mixedVec[23],mixedVec[24],mixedVec[25],mixedVec[26],mixedVec[27],mixedVec[28],mixedVec[29],mixedVec[30],
+            mixedVec[31],mixedVec[32],mixedVec[33],mixedVec[34],mixedVec[35],mixedVec[36],mixedVec[37],mixedVec[38],mixedVec[39],mixedVec[40],
+            mixedVec[41],mixedVec[42],mixedVec[43],mixedVec[44],mixedVec[45],mixedVec[46],mixedVec[47],mixedVec[48],mixedVec[49]))
+
 
 
 
