@@ -1,12 +1,14 @@
 import csv
 
 from numpy import genfromtxt
-
 import init
 import methods
 import pandas as pd
 import sqlite3
 import matplotlib.pyplot as plt
+from numpy import linalg
+from scipy.spatial import distance
+
 
 
 def findOppositeEmotion():
@@ -82,22 +84,6 @@ def basicQueries():
 
 
 
-def buildVectorFromCSV(row):
-    emotionlistfromcsvbyID = [246, 183, 295, 17, 329 , 299 , 114]
-    listOfTuplesPerFrame = list()
-    arr = init.readTableFromCSV()
-    for i in range(1,8):
-        scalar = arr[i][row]
-        pair = (scalar,methods.emotionIDToName(emotionlistfromcsvbyID[i]))
-        row+=1
-        listOfTuplesPerFrame.append(pair)
-
-    return listOfTuplesPerFrame
-
-
-
-
-
 def buildListContainsAll():
     num_of_emotion = 373
     value = float(1/float(7))
@@ -147,13 +133,6 @@ def buildNewVector():
 
 def findMainEmotion(videoFrameArray):
     print("going to find the main emotion in video")
-    #print videoFrameArray[0] #not needed
-    #print videoFrameArray[1]
-    #print videoFrameArray[2]
-    #print videoFrameArray[3]
-    #print videoFrameArray[4]
-    #print videoFrameArray[5]
-    #print videoFrameArray[7]
 
     onlyEmotions=videoFrameArray[2:]
     sumOfAllEmotions=map(lambda emotion: sum(map(lambda x: float(x), emotion[1:])), onlyEmotions)
@@ -189,6 +168,13 @@ def getMixedVec(NeutralScalar,HappyScalar,SadScalar,AngryScalar,SurprisedScalar,
 
     return result
 
+def euclidean_distance(first_vec,second_vec):
+    if (len(first_vec) != len(second_vec)):
+        print("!!ERROR!! vector lengths are not equal, vec_1 len %d , vec_2 len %d"%(len(first_vec),len((second_vec))))
+        return -1
+    dst = distance.euclidean(first_vec, second_vec)
+
+    return dst
 
 
 def readVideoToDB(video_path, video_number):
@@ -204,15 +190,13 @@ def readVideoToDB(video_path, video_number):
                     break
                 data = row[index]
                 arr[index].append(data)
-    main_emotion_of_frame=findMainEmotion(arr)
-    print ("main emotion:%s" % main_emotion_of_frame)
-    print ("%0.3f" % videoFrameArray[1][1])
-    main_emotion_of_frame_vec=methods.getVectorOfEmotion(methods.emotionNameToEmotionID(main_emotion_of_frame))
-    prev_vec= mixedVec=getMixedVec(arr[1][1],arr[2][1],arr[3][1],arr[4][1],arr[5][1],arr[6][1],arr[7][1])
-    #print arr[1]
+    name_of_main_emotion=findMainEmotion(arr)
+    print ("main emotion:%s" % name_of_main_emotion)
+    vector_of_main_emotion=methods.getVectorOfEmotion(methods.emotionNameToEmotionID(name_of_main_emotion))
+    prev_vec= getMixedVec(arr[1][1],arr[2][1],arr[3][1],arr[4][1],arr[5][1],arr[6][1],arr[7][1])
     with init.dbcon:
         cursor=init.dbcon.cursor()
-        cursor.execute("INSERT OR REPLACE INTO Videos VALUES (?,?)", (video_number, main_emotion_of_frame))
+        cursor.execute("INSERT OR REPLACE INTO Videos VALUES (?,?)", (video_number, name_of_main_emotion))
         for i in range (1, len(arr[0])):
             #print ("framte number: %0d / %0d" %(i,len(arr[0])))
             if videoFrameArray[i][1]== 'FIND_FAILED' or videoFrameArray[i][1] == 'FIT_FAILED':
@@ -232,18 +216,11 @@ def readVideoToDB(video_path, video_number):
             mixedVec[31],mixedVec[32],mixedVec[33],mixedVec[34],mixedVec[35],mixedVec[36],mixedVec[37],mixedVec[38],mixedVec[39],mixedVec[40],
             mixedVec[41],mixedVec[42],mixedVec[43],mixedVec[44],mixedVec[45],mixedVec[46],mixedVec[47],mixedVec[48],mixedVec[49]))
             angelToPrevVec=methods.angelBetweenTwoVecs(prev_vec,mixedVec)
-            angelToMainVec = methods.angelBetweenTwoVecs(main_emotion_of_frame_vec, mixedVec)
+            angelToMainVec = methods.angelBetweenTwoVecs(vector_of_main_emotion, mixedVec)
             prev_vec = mixedVec
-            if (i%20==0):
-                print ("frame %0d: angel to prev:%0.3f. angel to main emotion:%0.3f" %(i,angelToPrevVec,angelToMainVec))
+            #if (i%20==0):
+                #print ("frame %0d: angel to prev:%0.3f. angel to main emotion:%0.3f" %(i,angelToPrevVec,angelToMainVec))
             cursor.execute("INSERT INTO Video_analyze VALUES (?,?,?,?)",(video_number,i,angelToPrevVec,angelToMainVec))
-
-
-
-
-
-
-
 
     init.dbcon.commit()
 
@@ -254,24 +231,35 @@ def visualizeData():
     df = pd.read_sql_query("select * from Video_analyze ;", init.dbcon)
     print(df)
     plot_data = df['Angel_To_Main_Emotion']
-
+    plot_data2 = df['Angel_To_Prev_Vec']
+    plt.figure(1)
+    plt.subplot(211)
     plt.xlabel('Frame_number')
     plt.ylabel('Angel_To_Main_Emotion')
-    plt.title('Angel of vectors To main emotion')
-    plt.plot(plot_data, label='My Data')
+    plt.title('Angel_To_Main_Emotion')
+    plt.plot(plot_data, 'g' ,label='My Data')
+
+    plt.figure(1)
+    plt.subplot(212)
+    plt.xlabel('Frame_number')
+    plt.ylabel('Cos similarity')
+    plt.title('Angel_To_Prev_Vec')
+    plt.plot(plot_data2, 'b' ,label='My Data')
     plt.show()
 
 
 def main():
-
-    init.initEmoitionsDB()
+    print pd.__file__
+    #init.initEmoitionsDB()
 
     #basicQueries()
     #workingWithVecs()
     ##printClosestVectorNames(getVectorOfEmotion(62))
     #readVideoToDB('files/Participant_8_csv_format.csv',1)
-    visualizeData()
-
+    #visualizeData()
+    vec1 = list((range(1, 31)))
+    vec2 = list((range(30,0,-1)))
+    print (euclidean_distance(vec1,vec2))
 
 
 

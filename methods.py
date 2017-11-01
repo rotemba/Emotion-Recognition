@@ -119,3 +119,16 @@ def getVectorOfEmotion( emotionID):
 
 def prettyFloat(num):
     return "%0.4f" % num
+
+
+def buildVectorFromCSV(row):
+    emotionlistfromcsvbyID = [246, 183, 295, 17, 329 , 299 , 114]
+    listOfTuplesPerFrame = list()
+    arr = init.readTableFromCSV()
+    for i in range(1,8):
+        scalar = arr[i][row]
+        pair = (scalar,methods.emotionIDToName(emotionlistfromcsvbyID[i]))
+        row+=1
+        listOfTuplesPerFrame.append(pair)
+
+    return listOfTuplesPerFrame
