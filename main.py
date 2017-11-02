@@ -137,14 +137,6 @@ def findMainEmotion(videoFrameArray):
     onlyEmotions=videoFrameArray[2:]
     sumOfAllEmotions=map(lambda emotion: sum(map(lambda x: float(x), emotion[1:])), onlyEmotions)
     main_emotion=onlyEmotions[sumOfAllEmotions.index(max(sumOfAllEmotions))][0]
-    #print sumOfAllEmotions
-
-    #sumOfNetural = sum(map(lambda x: float(x), (videoFrameArray[1])[1:]))
-    #sumOfHappy = sum(map(lambda x: float(x), (videoFrameArray[2])[1:]))
-    #sumOfSad = sum(map(lambda x: float(x), (videoFrameArray[3])[1:]))
-    #sumOfAngry = sum(map(lambda x: float(x), (videoFrameArray[4])[1:]))
-    #sumOfSurprised = sum(map(lambda x: float(x), (videoFrameArray[5])[1:]))
-    #sumOfDisgusted = sum(map(lambda x: float(x), (videoFrameArray[6])[1:]))
     for i in range (1,7):
         print ("feeling: %s, sum: %0.2f " %(videoFrameArray[i][0], sum(map(lambda x: float(x), (videoFrameArray[i])[1:]))))
 
@@ -209,7 +201,7 @@ def readVideoToDB(video_path, video_number):
             #Neutral,Happy,Sad,Angry,Surprised,Scared,Disgusted
             mixedVec=getMixedVec(arr[1][i],arr[2][i],arr[3][i],arr[4][i],arr[5][i],arr[6][i],arr[7][i])
 
-            cursor.execute("""INSERT INTO Video_Vecs VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+            cursor.execute("""INSERT OR REPLACE INTO Video_Vecs VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
                            (video_number,i,mixedVec[0],mixedVec[1],mixedVec[2],mixedVec[3],mixedVec[4],mixedVec[5],mixedVec[6],mixedVec[7],mixedVec[8],mixedVec[9],mixedVec[10],
             mixedVec[11],mixedVec[12],mixedVec[13],mixedVec[14],mixedVec[15],mixedVec[16],mixedVec[17],mixedVec[18],mixedVec[19],mixedVec[20],
             mixedVec[21],mixedVec[22],mixedVec[23],mixedVec[24],mixedVec[25],mixedVec[26],mixedVec[27],mixedVec[28],mixedVec[29],mixedVec[30],
@@ -218,13 +210,36 @@ def readVideoToDB(video_path, video_number):
             angelToPrevVec=methods.angelBetweenTwoVecs(prev_vec,mixedVec)
             angelToMainVec = methods.angelBetweenTwoVecs(vector_of_main_emotion, mixedVec)
             prev_vec = mixedVec
+            nearest_emotion = find_shortes_dist(mixedVec)
+            emotion_name = methods.emotionIDToName(nearest_emotion[1])
+            dist_value = nearest_emotion[0]
+            #order = [x[1] for x in nearest_emotion]
             #if (i%20==0):
                 #print ("frame %0d: angel to prev:%0.3f. angel to main emotion:%0.3f" %(i,angelToPrevVec,angelToMainVec))
-            cursor.execute("INSERT INTO Video_analyze VALUES (?,?,?,?)",(video_number,i,angelToPrevVec,angelToMainVec))
+            cursor.execute("INSERT INTO Video_analyze VALUES (?,?,?,?,?,?)",(video_number,i
+                                                 ,angelToPrevVec, angelToMainVec ,emotion_name,dist_value))
 
     init.dbcon.commit()
 
     print ("end of the table creation.")
+
+def find_shortes_dist(vec):
+    distance_list = list()
+    with init.dbcon:
+        cursor = init.dbcon.cursor()
+        for ii in range(1,374):
+            cursor.execute("SELECT * FROM Twitter WHERE ID = ?",  (ii,))
+
+            emotion = cursor.fetchone()
+            emotion= emotion[1:]
+            dist = euclidean_distance(vec,list(emotion))
+            distance_list.append((dist,ii))
+
+        from operator import itemgetter
+
+        return min(distance_list, key=itemgetter(0))  # faster solution
+        #distance_list.sort(key=lambda x: x[0])
+
 
 def visualizeData():
     print ("visualize data function")
@@ -250,17 +265,13 @@ def visualizeData():
 
 def main():
     print pd.__file__
-    #init.initEmoitionsDB()
+    init.initEmoitionsDB()
 
     #basicQueries()
     #workingWithVecs()
     ##printClosestVectorNames(getVectorOfEmotion(62))
-    #readVideoToDB('files/Participant_8_csv_format.csv',1)
+    readVideoToDB('files/Participant_8_csv_format.csv',1)
     #visualizeData()
-    vec1 = list((range(1, 31)))
-    vec2 = list((range(30,0,-1)))
-    print (euclidean_distance(vec1,vec2))
-
 
 
 if __name__ == '__main__':
