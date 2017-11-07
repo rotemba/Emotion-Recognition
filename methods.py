@@ -41,21 +41,18 @@ def angelBetweenTwoVecs( vec1, vec2):
 
 
 def printClosestVectorNames( vec):
-    print ("this function will find the closest vector.")
     templist=[]
     for i in range (1,373):
         newAngel= angelBetweenTwoVecs(vec,getVectorOfEmotion(i))
         #print ("angel between %0d, %0d: %0.4f" % (7, i, newAngel))
         templist.append((newAngel,i))
 
-    sorted_by_angel = sorted(templist, key=lambda tup: tup[0], reverse=True)
+    from operator import itemgetter
 
-    #print(sorted_by_angel)
-    for i in range(0,5):
-        print ("#%0d - vec: %s. angel: %0.4f" % (i+1,emotionIDToName(sorted_by_angel[i][1]),sorted_by_angel[i][0]))
+    result = max(templist, key=itemgetter(0))  # faster solution
+    result1 = (result[0], str(emotionIDToName(result[1])))
+    return result1
 
-    for i in range (368, 372):
-        print ("#%0d - vec: %s. angel: %0.4f" % (i + 1, emotionIDToName(sorted_by_angel[i][1]), sorted_by_angel[i][0]))
 
 
 

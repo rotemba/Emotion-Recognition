@@ -210,14 +210,15 @@ def readVideoToDB(video_path, video_number):
             angelToPrevVec=methods.angelBetweenTwoVecs(prev_vec,mixedVec)
             angelToMainVec = methods.angelBetweenTwoVecs(vector_of_main_emotion, mixedVec)
             prev_vec = mixedVec
+            cossimilary = methods.printClosestVectorNames(mixedVec)
             nearest_emotion = find_shortes_dist(mixedVec)
             emotion_name = methods.emotionIDToName(nearest_emotion[1])
             dist_value = nearest_emotion[0]
             #order = [x[1] for x in nearest_emotion]
             #if (i%20==0):
                 #print ("frame %0d: angel to prev:%0.3f. angel to main emotion:%0.3f" %(i,angelToPrevVec,angelToMainVec))
-            cursor.execute("INSERT INTO Video_analyze VALUES (?,?,?,?,?,?)",(video_number,i
-                                                 ,angelToPrevVec, angelToMainVec ,emotion_name,dist_value))
+            cursor.execute("INSERT INTO Video_analyze VALUES (?,?,?,?,?,?,?,?)",(video_number,i
+                                                 ,angelToPrevVec, angelToMainVec ,emotion_name,dist_value,cossimilary[1],cossimilary[0]))
 
     init.dbcon.commit()
 

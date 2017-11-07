@@ -36,7 +36,9 @@ def initEmoitionsDB():
                                                            Angel_To_Prev_Vec REAL NOT NULL,
                                                            Angel_To_Main_Emotion REAL NOT NULL,
                                                            nearest_neighbour VARCHAR(20) NOT NULL,
-                                                           distance REAL NOT NULL)""")
+                                                           distance REAL NOT NULL,
+                                                           cos_similarity_emotion VARCHAR(20) NOT NULL,
+                                                           angel REAL NOT NULL)""")
             cursor.execute("""CREATE TABLE Video_Data_Raw (VideoID INTEGER NOT NULL REFERENCES Videos(VideoID),
                                                           Frame_number INTEGER NOT NULL REFERENCES Video_Vecs(Time),
                                                           Neutral REAL NOT NULL,Happy REAL NOT NULL,
