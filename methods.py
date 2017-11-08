@@ -6,8 +6,8 @@ import math
 
 
 
-def angels_between_two_emotions (emotion1, emotion2):
-    print ("angel between two emotions function")
+def angles_between_two_emotions (emotion1, emotion2):
+    print ("angle between two emotions function")
     with init.dbcon:
         cursor=init.dbcon.cursor()
         id1=emotionNameToEmotionID(emotion1)
@@ -15,8 +15,8 @@ def angels_between_two_emotions (emotion1, emotion2):
         print ("emotion1 :" + str(id1))
         print ("emotion2 :" + str(id2))
         cursor.execute("SELECT VALUE FROM Relations WHERE X = (?) AND  Y = (?)", (id1,id2,) )
-        angel=cursor.fetchone()
-        print ("angel between " + emotion1 + " and " + emotion2 +" is : " +str(angel[0]))
+        angle=cursor.fetchone()
+        print ("angle between " + emotion1 + " and " + emotion2 +" is : " +str(angle[0]))
 
 
 
@@ -24,12 +24,12 @@ def workingWithVecs(vectotest):
     print("working with vecs function")
     #printVectorsSize()
     for i in range (1,20):
-        angel = angelBetweenTwoVecs(vectotest,getVectorOfEmotion( i))
-        print ("angel between requested vector, %s: %0.4f" % (emotionIDToName( i), angel))
+        angle = angleBetweenTwoVecs(vectotest,getVectorOfEmotion( i))
+        print ("angle between requested vector, %s: %0.4f" % (emotionIDToName( i), angle))
 
 
-def angelBetweenTwoVecs( vec1, vec2):
-    #print ("angel between 2 vecs function.")
+def angleBetweenTwoVecs( vec1, vec2):
+    #print ("angle between 2 vecs function.")
 
     sizeOfVec1=sizeOfSingleVec(vec1)
     sizeOfVec2=sizeOfSingleVec(vec2)
@@ -43,9 +43,9 @@ def angelBetweenTwoVecs( vec1, vec2):
 def printClosestVectorNames( vec):
     templist=[]
     for i in range (1,373):
-        newAngel= angelBetweenTwoVecs(vec,getVectorOfEmotion(i))
-        #print ("angel between %0d, %0d: %0.4f" % (7, i, newAngel))
-        templist.append((newAngel,i))
+        newangle= angleBetweenTwoVecs(vec,getVectorOfEmotion(i))
+        #print ("angle between %0d, %0d: %0.4f" % (7, i, newangle))
+        templist.append((newangle,i))
 
     from operator import itemgetter
 
@@ -68,6 +68,8 @@ def emotionNameToEmotionID(emotionName):
     if (emotionName=="Happy"):
         #print ("searching for happiness instead of Happy")
         return emotionNameToEmotionID("happiness")
+    if (emotionName =='Sad'):
+        return emotionNameToEmotionID('sadness')
     with init.dbcon:
         cursor = init.dbcon.cursor()
         cursor.execute("SELECT ID FROM EmotionsID WHERE Emotion_name = ?", (emotionName,))

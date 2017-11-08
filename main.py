@@ -42,8 +42,8 @@ def findClosestEmotion():
 
 
 
-def angels():
-    print ("angels between 2 vectors")
+def angles():
+    print ("angles between 2 vectors")
     with init.dbcon:
         cursor = init.dbcon.cursor()
         cursor.execute("SELECT Emotion_name FROM EmotionsID")
@@ -53,7 +53,7 @@ def angels():
 
     emotion1 = raw_input("put first emotions please")
     emotion2 = raw_input("put second emotions please")
-    methods.angels_between_two_emotions(emotion1, emotion2)
+    methods.angles_between_two_emotions(emotion1, emotion2)
 
 
 def getVector():
@@ -70,7 +70,7 @@ def createVector():
 def basicQueries():
     while True:
         options=["Exit","angles between 2 emotions",'create a new vector','findClosestEmotion','findOppositeEmotion', 'get vector of emotion','buildNewVector']
-        optDict={0: exit, 1: angels, 2: createVector, 3: findClosestEmotion,4: findOppositeEmotion, 5:getVector, 6:buildNewVector}
+        optDict={0: exit, 1: angles, 2: createVector, 3: findClosestEmotion,4: findOppositeEmotion, 5:getVector, 6:buildNewVector}
         print("please choose the query to run:")
         print options
         for i in options:
@@ -184,6 +184,8 @@ def readVideoToDB(video_path, video_number):
                 arr[index].append(data)
     name_of_main_emotion=findMainEmotion(arr)
     print ("main emotion:%s" % name_of_main_emotion)
+    id = methods.emotionNameToEmotionID(name_of_main_emotion)
+    print id
     vector_of_main_emotion=methods.getVectorOfEmotion(methods.emotionNameToEmotionID(name_of_main_emotion))
     prev_vec= getMixedVec(arr[1][1],arr[2][1],arr[3][1],arr[4][1],arr[5][1],arr[6][1],arr[7][1])
     with init.dbcon:
@@ -207,8 +209,8 @@ def readVideoToDB(video_path, video_number):
             mixedVec[21],mixedVec[22],mixedVec[23],mixedVec[24],mixedVec[25],mixedVec[26],mixedVec[27],mixedVec[28],mixedVec[29],mixedVec[30],
             mixedVec[31],mixedVec[32],mixedVec[33],mixedVec[34],mixedVec[35],mixedVec[36],mixedVec[37],mixedVec[38],mixedVec[39],mixedVec[40],
             mixedVec[41],mixedVec[42],mixedVec[43],mixedVec[44],mixedVec[45],mixedVec[46],mixedVec[47],mixedVec[48],mixedVec[49]))
-            angelToPrevVec=methods.angelBetweenTwoVecs(prev_vec,mixedVec)
-            angelToMainVec = methods.angelBetweenTwoVecs(vector_of_main_emotion, mixedVec)
+            angleToPrevVec=methods.angleBetweenTwoVecs(prev_vec,mixedVec)
+            angleToMainVec = methods.angleBetweenTwoVecs(vector_of_main_emotion, mixedVec)
             prev_vec = mixedVec
             cossimilary = methods.printClosestVectorNames(mixedVec)
             nearest_emotion = find_shortes_dist(mixedVec)
@@ -216,9 +218,9 @@ def readVideoToDB(video_path, video_number):
             dist_value = nearest_emotion[0]
             #order = [x[1] for x in nearest_emotion]
             #if (i%20==0):
-                #print ("frame %0d: angel to prev:%0.3f. angel to main emotion:%0.3f" %(i,angelToPrevVec,angelToMainVec))
+                #print ("frame %0d: angle to prev:%0.3f. angle to main emotion:%0.3f" %(i,angleToPrevVec,angleToMainVec))
             cursor.execute("INSERT INTO Video_analyze VALUES (?,?,?,?,?,?,?,?)",(video_number,i
-                                                 ,angelToPrevVec, angelToMainVec ,emotion_name,dist_value,cossimilary[1],cossimilary[0]))
+                                                 ,angleToPrevVec, angleToMainVec ,emotion_name,dist_value,cossimilary[1],cossimilary[0]))
 
     init.dbcon.commit()
 
@@ -246,20 +248,20 @@ def visualizeData():
     print ("visualize data function")
     df = pd.read_sql_query("select * from Video_analyze ;", init.dbcon)
     print(df)
-    plot_data = df['Angel_To_Main_Emotion']
-    plot_data2 = df['Angel_To_Prev_Vec']
+    plot_data = df['Angle_To_Main_Emotion']
+    plot_data2 = df['Angle_To_Prev_Vec']
     plt.figure(1)
     plt.subplot(211)
-    plt.xlabel('Frame_number')
-    plt.ylabel('Angel_To_Main_Emotion')
-    plt.title('Angel_To_Main_Emotion')
+    #plt.xlabel('Frame_number')
+    plt.ylabel('angle_To_Main_Emotion')
+    plt.title('angle_To_Main_Emotion')
     plt.plot(plot_data, 'g' ,label='My Data')
 
     plt.figure(1)
     plt.subplot(212)
     plt.xlabel('Frame_number')
     plt.ylabel('Cos similarity')
-    plt.title('Angel_To_Prev_Vec')
+    plt.title('angle_To_Prev_Vec')
     plt.plot(plot_data2, 'b' ,label='My Data')
     plt.show()
 
@@ -271,8 +273,8 @@ def main():
     #basicQueries()
     #workingWithVecs()
     ##printClosestVectorNames(getVectorOfEmotion(62))
-    readVideoToDB('files/Participant_8_csv_format.csv',1)
-    #visualizeData()
+    readVideoToDB('files/shortEmotion1.csv',1)
+    visualizeData()
 
 
 if __name__ == '__main__':
