@@ -2,6 +2,7 @@ import init
 import math
 from numpy import linalg
 from scipy.spatial import distance
+import numpy as np
 
 
 
@@ -155,10 +156,10 @@ def findMainEmotion(videoFrameArray):
     return ListOfEmotions[emotionsWithoutNeutral.index(max(emotionsWithoutNeutral))+1]
 
 
-def getMixedVec(NeutralScalar,HappyScalar,SadScalar,AngryScalar,SurprisedScalar,ScaredScalar,DisgustedScalar):
+def getMixedVec(NeutralScalar,HappyScalar,SadScalar,AngryScalar,SurprisedScalar,ScaredScalar,DisgustedScalar, listOfTheVecs):
     list = [(NeutralScalar,"neutral"), (HappyScalar,"happiness"),(SadScalar,"sadness"),(AngryScalar,"anger"),
             (SurprisedScalar,"surprise"),(ScaredScalar,"scare"),(DisgustedScalar,"disgust")]
-    listWithVecs = map(lambda x: getVectorOfEmotion(emotionNameToEmotionID(x[1])), list)
+    listWithVecs = listOfTheVecs
     listOfScalars = map(lambda x: x[0], list)
     listOfNewVEcs = map(lambda scalar, vec: map(lambda x: scalar * x, vec), listOfScalars, listWithVecs)
     #print (listOfNewVEcs)
@@ -190,3 +191,9 @@ def find_shortes_dist(vec):
 
         return min(distance_list, key=itemgetter(0))  # faster solution
         #distance_list.sort(key=lambda x: x[0])
+
+
+#def dkl (vec1, vec2):
+#    vec1 = np.asarray(vec1, dtype=np.float)
+#    vec2 = np.asarray(vec2, dtype=np.float)
+#    return np.sum(np.where(vec1 != 0, vec1 * np.log(vec1 / vec2), 0))
