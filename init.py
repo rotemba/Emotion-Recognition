@@ -3,6 +3,10 @@ from numpy import genfromtxt
 import sqlite3
 import os
 import csv
+import methods
+import glob
+
+
 
 
 
@@ -108,5 +112,93 @@ def readTableFromCSV(): #TODO add argument as an file path
                 arr_duplicate[i].append(item)
 
     return arr_duplicate
+
+
+def InsertVideoAndAnalyze (ListOfFrames, videoNumber,filename):
+    name_of_main_emotion = methods.findMainEmotion(ListOfFrames)
+    print ("proccesing video [%0d]:%s\nmain emotion:%s." % (videoNumber, filename,name_of_main_emotion))
+    id = methods.emotionNameToEmotionID(name_of_main_emotion)
+    vector_of_main_emotion = methods.getVectorOfEmotion(methods.emotionNameToEmotionID(name_of_main_emotion))
+    prev_vec = methods.getMixedVec(ListOfFrames[0][0], ListOfFrames[0][1], ListOfFrames[0][2], ListOfFrames[0][3],
+                           ListOfFrames[0][4], ListOfFrames[0][5], ListOfFrames[0][6])
+    arr=ListOfFrames
+    with dbcon:
+        cursor=dbcon.cursor()
+        cursor.execute("INSERT OR REPLACE INTO Videos VALUES (?,?)", (videoNumber, name_of_main_emotion))
+        for i in range (1, len(ListOfFrames)):
+            #print ("framte number: %0d / %0d" %(i,len(arr[0])))
+            #if videoFrameArray[i][1]== 'FIND_FAILED' or videoFrameArray[i][1] == 'FIT_FAILED':
+            #        print ("cant put inside DB")
+            #        break
+            #print videoFrameArray[i]
+            cursor.execute("""INSERT INTO Video_Data_Raw VALUES (?,?,?,?,?,?,?,?,?)""",(videoNumber,i,
+                                        arr[i][0],arr[i][1],arr[i][2],arr[i][3],arr[i][4],
+                                        arr[i][5],arr[i][6]))
+            #Neutral,Happy,Sad,Angry,Surprised,Scared,Disgusted
+            mixedVec=methods.getMixedVec(arr[i][0],arr[i][1],arr[i][2],arr[i][3],arr[i][4],arr[i][5],arr[i][6])
+
+            cursor.execute("""INSERT OR REPLACE INTO Video_Vecs VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                           (videoNumber,i,mixedVec[0],mixedVec[1],mixedVec[2],mixedVec[3],mixedVec[4],mixedVec[5],mixedVec[6],mixedVec[7],mixedVec[8],mixedVec[9],mixedVec[10],
+            mixedVec[11],mixedVec[12],mixedVec[13],mixedVec[14],mixedVec[15],mixedVec[16],mixedVec[17],mixedVec[18],mixedVec[19],mixedVec[20],
+            mixedVec[21],mixedVec[22],mixedVec[23],mixedVec[24],mixedVec[25],mixedVec[26],mixedVec[27],mixedVec[28],mixedVec[29],mixedVec[30],
+            mixedVec[31],mixedVec[32],mixedVec[33],mixedVec[34],mixedVec[35],mixedVec[36],mixedVec[37],mixedVec[38],mixedVec[39],mixedVec[40],
+            mixedVec[41],mixedVec[42],mixedVec[43],mixedVec[44],mixedVec[45],mixedVec[46],mixedVec[47],mixedVec[48],mixedVec[49]))
+            angleToPrevVec=methods.angleBetweenTwoVecs(prev_vec,mixedVec)
+            angleToMainVec = methods.angleBetweenTwoVecs(vector_of_main_emotion, mixedVec)
+            prev_vec = mixedVec
+            cossimilary = methods.printClosestVectorNames(mixedVec)
+            nearest_emotion = methods.find_shortes_dist(mixedVec)
+            emotion_name = methods.emotionIDToName(nearest_emotion[1])
+            dist_value = nearest_emotion[0]
+            closestVectorByCosSimilarity = methods.printClosestVectorNames(mixedVec)
+            closestVectorCosSimName= closestVectorByCosSimilarity[1]
+            closestVectorCosSimAngel= closestVectorByCosSimilarity[0]
+            #print ("closest by cos-similarity:%s.\t angel:%0.4f" %(closestVectorCosSimName,closestVectorCosSimAngel))
+            #order = [x[1] for x in nearest_emotion]
+            #if (i%20==0):
+                #print ("frame %0d: angle to prev:%0.3f. angle to main emotion:%0.3f" %(i,angleToPrevVec,angleToMainVec))
+            cursor.execute("INSERT INTO Video_analyze VALUES (?,?,?,?,?,?,?,?)",(videoNumber,i
+                                                 ,angleToPrevVec, angleToMainVec ,emotion_name,dist_value,closestVectorCosSimName,closestVectorCosSimAngel))
+
+
+    dbcon.commit()
+    print ("finished proccesing video [%0d] " % videoNumber)
+
+
+
+def insertAllVideosToDB():
+    print ("test func")
+    cwd = os.getcwd()
+    print (cwd)
+    path = cwd+'/files/ShortVideos'
+    print (path)
+    videoIndex = 0
+    for filename in glob.glob(os.path.join(path, '*detailed.txt')):
+        videoIndex += 1
+        #print ("**proccecing:  %s**" % filename)
+        #print ("going to print file context:")
+        with open(filename, 'rb') as csvfile:
+            #data = enumerate(csv.DictReader(csvfile), delimiter='\t')
+            #print (data)
+            readCSV = csv.reader(csvfile, delimiter='\t')
+            row_count = 0
+            vecsDistribution = []
+            for row in readCSV:
+                row_count += 1
+                if row_count > 9 :
+                    #print (row[1:8])
+                    if row[1] == 'FIND_FAILED' or row[1] == 'FIT_FAILED':
+                        print ("**[Video %0d][%s] has no values, inserting neutral instead!**" % (videoIndex,row[0]))
+                        vecsDistribution.append([1,0,0,0,0,0,0,0])
+                    else:
+                        rowCastedToFloat=map((lambda x: float(x)) ,row[1:8])
+                        #print (rowCastedToFloat)
+                        vecsDistribution.append(rowCastedToFloat)
+                    #print ("sum of row: %0.4f" % (sum (map((lambda x : float(x)),  row[1:8]))))
+
+
+                    #print(map((lambda x: "%0.4f" % x), vec))
+        InsertVideoAndAnalyze(vecsDistribution, videoIndex, filename)
+
 
 

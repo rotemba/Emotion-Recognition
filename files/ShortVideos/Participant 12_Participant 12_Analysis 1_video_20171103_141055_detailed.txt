@@ -1,0 +1,27 @@
+Video analysis detailed log
+
+Face Model:	General
+Calibration:	-
+Start time:	11/3/2017 14:09:47.859
+Filename:	H:\Best DB's\Test Movies - CK\1\S051#003.mp4
+Frame rate:	20.00
+
+Video Time	Neutral	Happy	Sad	Angry	Surprised	Scared	Disgusted	Gender	Age	Beard	Moustache	Glasses	Ethnicity	Mouth	Left Eye	Right Eye	Left Eyebrow	Right Eyebrow	Identity	Stimulus	Event Marker	Participant Name	Analysis Index
+00:00:00.000	0.680814700	0.010122600	0.151111000	0.019767690	0.030394610	0.058604260	0.005512290	Female	20 - 30	None	None	No	African	Open	Open	Open	Neutral	Neutral	NO IDENTIFICATION	No Stimulus	No Event Marker	Participant 12	Analysis 1
+00:00:00.050	0.679573600	0.010392240	0.150548800	0.020391550	0.030211980	0.058344540	0.005577961	Female	20 - 30	None	None	No	African	Open	Open	Open	Neutral	Neutral	NO IDENTIFICATION	No Stimulus	No Event Marker	Participant 12	Analysis 1
+00:00:00.100	0.678935100	0.010937400	0.149112600	0.021611050	0.029861210	0.057803850	0.005690695	Female	20 - 30	None	None	No	African	Open	Open	Open	Neutral	Neutral	NO IDENTIFICATION	No Stimulus	No Event Marker	Participant 12	Analysis 1
+00:00:00.150	0.676518200	0.012683150	0.147390400	0.023295760	0.029286100	0.057061550	0.005831644	Female	20 - 30	None	None	No	African	Open	Open	Open	Neutral	Neutral	NO IDENTIFICATION	No Stimulus	No Event Marker	Participant 12	Analysis 1
+00:00:00.200	0.673848600	0.015511110	0.144950500	0.024649530	0.028630670	0.055880280	0.005952382	Female	20 - 30	None	None	No	African	Open	Open	Open	Neutral	Neutral	unknown person	No Stimulus	No Event Marker	Participant 12	Analysis 1
+00:00:00.250	0.670917200	0.018761880	0.143071100	0.025905440	0.027875630	0.054787130	0.006047593	Female	20 - 30	None	None	No	African	Open	Open	Open	Neutral	Neutral	unknown person	No Stimulus	No Event Marker	Participant 12	Analysis 1
+00:00:00.300	0.667127500	0.022695310	0.141879600	0.027370560	0.027051250	0.053774650	0.006157618	Female	20 - 30	None	None	No	African	Open	Open	Open	Neutral	Neutral	unknown person	No Stimulus	No Event Marker	Participant 12	Analysis 1
+00:00:00.350	0.661302700	0.027161710	0.142329000	0.029991070	0.026138290	0.052598140	0.006347225	Female	20 - 30	None	None	No	African	Open	Open	Open	Neutral	Neutral	unknown person	No Stimulus	No Event Marker	Participant 12	Analysis 1
+00:00:00.400	0.653793400	0.031848280	0.144440300	0.034408190	0.025111990	0.051239320	0.006655440	Female	20 - 30	None	None	No	African	Open	Open	Open	Neutral	Neutral	unknown person	No Stimulus	No Event Marker	Participant 12	Analysis 1
+00:00:00.450	0.645691800	0.037846380	0.145956500	0.040568400	0.024092670	0.050039650	0.007197972	Female	20 - 30	None	None	No	African	Open	Open	Open	Neutral	Neutral	unknown person	No Stimulus	No Event Marker	Participant 12	Analysis 1
+00:00:00.500	0.635877000	0.045038330	0.147818900	0.049329210	0.023018630	0.048823590	0.008566897	Female	20 - 30	None	None	No	African	Open	Open	Open	Neutral	Neutral	unknown person	No Stimulus	No Event Marker	Participant 12	Analysis 1
+00:00:00.550	0.625306800	0.053905930	0.148425400	0.058359000	0.021960680	0.048169770	0.011225110	Female	20 - 30	None	None	No	African	Open	Open	Open	Neutral	Neutral	unknown person	No Stimulus	No Event Marker	Participant 12	Analysis 1
+00:00:00.600	0.613502000	0.062806530	0.148014700	0.068316910	0.020873150	0.048416490	0.017165380	Female	20 - 30	None	None	No	African	Closed	Open	Open	Neutral	Neutral	unknown person	No Stimulus	No Event Marker	Participant 12	Analysis 1
+00:00:00.650	0.600731100	0.068835330	0.148539400	0.078413870	0.019815760	0.050164320	0.028812790	Female	20 - 30	None	None	No	African	Closed	Open	Open	Neutral	Neutral	unknown person	No Stimulus	No Event Marker	Participant 12	Analysis 1
+00:00:00.700	0.586611400	0.072987030	0.149385500	0.085944220	0.018816110	0.052576940	0.047239090	Female	20 - 30	None	None	No	African	Closed	Open	Open	Neutral	Neutral	unknown person	No Stimulus	No Event Marker	Participant 12	Analysis 1
+00:00:00.750	0.567332100	0.075386500	0.151930600	0.090426180	0.017751540	0.054067290	0.073274520	Female	20 - 30	None	None	No	African	Closed	Open	Open	Neutral	Neutral	unknown person	No Stimulus	No Event Marker	Participant 12	Analysis 1
+00:00:00.800	0.544358800	0.076647710	0.156300300	0.092309530	0.016659320	0.054874770	0.105369800	Female	20 - 30	None	None	No	African	Closed	Open	Open	Neutral	Neutral	unknown person	No Stimulus	No Event Marker	Participant 12	Analysis 1
+00:00:00.850	0.520275200	0.077995460	0.160687700	0.092134330	0.015667600	0.055457530	0.139380700	Female	20 - 30	None	None	No	African	Closed	Open	Open	Neutral	Neutral	unknown person	No Stimulus	No Event Marker	Participant 12	Analysis 1

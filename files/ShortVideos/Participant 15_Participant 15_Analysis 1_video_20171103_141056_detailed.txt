@@ -1,0 +1,25 @@
+Video analysis detailed log
+
+Face Model:	General
+Calibration:	-
+Start time:	11/3/2017 14:09:53.069
+Filename:	H:\Best DB's\Test Movies - CK\1\S502#001.mp4
+Frame rate:	20.00
+
+Video Time	Neutral	Happy	Sad	Angry	Surprised	Scared	Disgusted	Gender	Age	Beard	Moustache	Glasses	Ethnicity	Mouth	Left Eye	Right Eye	Left Eyebrow	Right Eyebrow	Identity	Stimulus	Event Marker	Participant Name	Analysis Index
+00:00:00.000	0.737758900	0.000978121	0.515178500	0.053203740	0.011020430	0.018066160	0.039552790	Female	20 - 30	None	None	No	EasternAsian	Unknown (Open / Closed)	Open	Open	Lowered	Lowered	NO IDENTIFICATION	No Stimulus	No Event Marker	Participant 15	Analysis 1
+00:00:00.050	0.738264600	0.000973424	0.513583500	0.053278920	0.011030510	0.018029450	0.039415790	Female	20 - 30	None	None	No	EasternAsian	Unknown (Open / Closed)	Open	Open	Lowered	Lowered	NO IDENTIFICATION	No Stimulus	No Event Marker	Participant 15	Analysis 1
+00:00:00.100	0.738837800	0.000965894	0.512268000	0.053247680	0.010979920	0.018033650	0.039180180	Female	20 - 30	None	None	No	EasternAsian	Unknown (Open / Closed)	Open	Open	Lowered	Lowered	NO IDENTIFICATION	No Stimulus	No Event Marker	Participant 15	Analysis 1
+00:00:00.150	0.739871100	0.000958760	0.510329900	0.053074100	0.011160120	0.018102160	0.038782600	Female	20 - 30	None	None	No	EasternAsian	Unknown (Open / Closed)	Open	Open	Lowered	Lowered	NO IDENTIFICATION	No Stimulus	No Event Marker	Participant 15	Analysis 1
+00:00:00.200	0.742146500	0.000953216	0.504537200	0.052964650	0.011728730	0.018138000	0.038301420	Female	20 - 30	None	None	No	EasternAsian	Unknown (Open / Closed)	Open	Open	Lowered	Lowered	unknown person	No Stimulus	No Event Marker	Participant 15	Analysis 1
+00:00:00.250	0.741653100	0.000938478	0.502662300	0.053140790	0.012542450	0.018354830	0.037781050	Female	20 - 30	None	None	No	EasternAsian	Unknown (Open / Closed)	Open	Open	Lowered	Lowered	unknown person	No Stimulus	No Event Marker	Participant 15	Analysis 1
+00:00:00.300	0.739362000	0.000921985	0.504225500	0.053383440	0.013747600	0.018743270	0.037150760	Female	20 - 30	None	None	No	EasternAsian	Unknown (Open / Closed)	Open	Open	Lowered	Lowered	unknown person	No Stimulus	No Event Marker	Participant 15	Analysis 1
+00:00:00.350	0.732961800	0.000944858	0.509032900	0.054635090	0.015351770	0.019282910	0.036589050	Female	20 - 30	None	None	No	EasternAsian	Unknown (Open / Closed)	Open	Open	Lowered	Lowered	unknown person	No Stimulus	No Event Marker	Participant 15	Analysis 1
+00:00:00.400	0.717666700	0.001103091	0.514503500	0.061740530	0.016571460	0.019697520	0.036107130	Female	20 - 30	None	None	No	EasternAsian	Unknown (Open / Closed)	Open	Open	Lowered	Lowered	unknown person	No Stimulus	No Event Marker	Participant 15	Analysis 1
+00:00:00.450	0.694861400	0.001313962	0.521563100	0.076289830	0.017234300	0.019989590	0.035294960	Female	20 - 30	None	None	No	EasternAsian	Unknown (Open / Closed)	Open	Open	Lowered	Lowered	unknown person	No Stimulus	No Event Marker	Participant 15	Analysis 1
+00:00:00.500	0.667951000	0.001542819	0.521270200	0.101375400	0.017468130	0.020115050	0.033992680	Female	20 - 30	None	None	No	EasternAsian	Unknown (Open / Closed)	Open	Open	Lowered	Lowered	unknown person	No Stimulus	No Event Marker	Participant 15	Analysis 1
+00:00:00.550	0.634008800	0.001801874	0.524452600	0.135127800	0.017500760	0.020386540	0.032451720	Female	20 - 30	None	None	No	EasternAsian	Unknown (Open / Closed)	Open	Open	Lowered	Lowered	unknown person	No Stimulus	No Event Marker	Participant 15	Analysis 1
+00:00:00.600	0.599903400	0.002078024	0.524589800	0.177445700	0.017355980	0.020613210	0.030703240	Female	20 - 30	None	None	No	EasternAsian	Unknown (Open / Closed)	Open	Open	Lowered	Lowered	unknown person	No Stimulus	No Event Marker	Participant 15	Analysis 1
+00:00:00.650	0.563426200	0.002357982	0.529810100	0.224772200	0.017126900	0.021066290	0.028823810	Female	20 - 30	None	None	No	EasternAsian	Unknown (Open / Closed)	Open	Open	Lowered	Lowered	unknown person	No Stimulus	No Event Marker	Participant 15	Analysis 1
+00:00:00.700	0.528455700	0.002636002	0.534583900	0.272575200	0.016887340	0.021700840	0.026963470	Female	20 - 30	None	None	No	EasternAsian	Unknown (Open / Closed)	Open	Open	Lowered	Lowered	unknown person	No Stimulus	No Event Marker	Participant 15	Analysis 1
+00:00:00.750	0.493498900	0.002921212	0.540932400	0.319032700	0.016679270	0.022473230	0.025271650	Female	20 - 30	None	None	No	EasternAsian	Unknown (Open / Closed)	Open	Open	Lowered	Lowered	unknown person	No Stimulus	No Event Marker	Participant 15	Analysis 1

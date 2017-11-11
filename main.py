@@ -8,6 +8,7 @@ import sqlite3
 import matplotlib.pyplot as plt
 from numpy import linalg
 from scipy.spatial import distance
+import os
 
 
 
@@ -131,14 +132,6 @@ def buildNewVector():
     methods.print_nicely_vec(result)
     methods.printClosestVectorNames(result)
 
-def findMainEmotion(videoFrameArray):
-    print("going to find the main emotion in video")
-
-    onlyEmotions=videoFrameArray[2:]
-    sumOfAllEmotions=map(lambda emotion: sum(map(lambda x: float(x), emotion[1:])), onlyEmotions)
-    main_emotion=onlyEmotions[sumOfAllEmotions.index(max(sumOfAllEmotions))][0]
-    for i in range (1,7):
-        print ("feeling: %s, sum: %0.2f " %(videoFrameArray[i][0], sum(map(lambda x: float(x), (videoFrameArray[i])[1:]))))
 
 
     return main_emotion
@@ -160,13 +153,6 @@ def getMixedVec(NeutralScalar,HappyScalar,SadScalar,AngryScalar,SurprisedScalar,
 
     return result
 
-def euclidean_distance(first_vec,second_vec):
-    if (len(first_vec) != len(second_vec)):
-        print("!!ERROR!! vector lengths are not equal, vec_1 len %d , vec_2 len %d"%(len(first_vec),len((second_vec))))
-        return -1
-    dst = distance.euclidean(first_vec, second_vec)
-
-    return dst
 
 
 def readVideoToDB(video_path, video_number):
@@ -216,6 +202,10 @@ def readVideoToDB(video_path, video_number):
             nearest_emotion = find_shortes_dist(mixedVec)
             emotion_name = methods.emotionIDToName(nearest_emotion[1])
             dist_value = nearest_emotion[0]
+            closestVectorByCosSimilarity = methods.printClosestVectorNames(mixedVec)
+            closestVectorCosSimName= methods.emotionIDToName(closestVectorByCosSimilarity[1])
+            closestVectorCosSimAngel= closestVectorByCosSimilarity[0]
+            print ("closest by cos-similarity:%s.\t angel:%0.4f" %(closestVectorCosSimName,closestVectorCosSimAngel))
             #order = [x[1] for x in nearest_emotion]
             #if (i%20==0):
                 #print ("frame %0d: angle to prev:%0.3f. angle to main emotion:%0.3f" %(i,angleToPrevVec,angleToMainVec))
@@ -226,22 +216,6 @@ def readVideoToDB(video_path, video_number):
 
     print ("end of the table creation.")
 
-def find_shortes_dist(vec):
-    distance_list = list()
-    with init.dbcon:
-        cursor = init.dbcon.cursor()
-        for ii in range(1,374):
-            cursor.execute("SELECT * FROM Twitter WHERE ID = ?",  (ii,))
-
-            emotion = cursor.fetchone()
-            emotion= emotion[1:]
-            dist = euclidean_distance(vec,list(emotion))
-            distance_list.append((dist,ii))
-
-        from operator import itemgetter
-
-        return min(distance_list, key=itemgetter(0))  # faster solution
-        #distance_list.sort(key=lambda x: x[0])
 
 
 def visualizeData():
@@ -269,12 +243,12 @@ def visualizeData():
 def main():
     print pd.__file__
     init.initEmoitionsDB()
-
     #basicQueries()
     #workingWithVecs()
     ##printClosestVectorNames(getVectorOfEmotion(62))
-    readVideoToDB('files/shortEmotion1.csv',1)
-    visualizeData()
+    #readVideoToDB('files/shortEmotion1.csv',1)
+    init.insertAllVideosToDB()
+    #visualizeData()
 
 
 if __name__ == '__main__':

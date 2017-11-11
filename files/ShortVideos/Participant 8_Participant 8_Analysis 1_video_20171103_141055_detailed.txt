@@ -1,0 +1,27 @@
+Video analysis detailed log
+
+Face Model:	General
+Calibration:	-
+Start time:	11/3/2017 14:09:38.343
+Filename:	H:\Best DB's\Test Movies - CK\1\S044#002.mp4
+Frame rate:	20.00
+
+Video Time	Neutral	Happy	Sad	Angry	Surprised	Scared	Disgusted	Gender	Age	Beard	Moustache	Glasses	Ethnicity	Mouth	Left Eye	Right Eye	Left Eyebrow	Right Eyebrow	Identity	Stimulus	Event Marker	Participant Name	Analysis Index
+00:00:00.000	0.826460700	0.004111417	0.244511400	0.023684850	0.010033800	0.005019113	0.003846460	Male	25 - 35	None	None	No	Caucasian	Unknown (Open / Closed)	Open	Open	Neutral	Neutral	NO IDENTIFICATION	No Stimulus	No Event Marker	Participant 8	Analysis 1
+00:00:00.050	0.826711400	0.004116164	0.244209700	0.023505490	0.010024370	0.005103373	0.003889786	Male	25 - 35	None	None	No	Caucasian	Unknown (Open / Closed)	Open	Open	Neutral	Neutral	NO IDENTIFICATION	No Stimulus	No Event Marker	Participant 8	Analysis 1
+00:00:00.100	0.828856100	0.004132149	0.240624100	0.023327270	0.009962341	0.005266012	0.003915458	Male	25 - 35	None	None	No	Caucasian	Unknown (Open / Closed)	Open	Open	Neutral	Neutral	NO IDENTIFICATION	No Stimulus	No Event Marker	Participant 8	Analysis 1
+00:00:00.150	0.830876800	0.004181390	0.237295400	0.023007830	0.009882842	0.005475792	0.003928945	Male	25 - 35	None	None	No	Caucasian	Unknown (Open / Closed)	Open	Open	Neutral	Neutral	NO IDENTIFICATION	No Stimulus	No Event Marker	Participant 8	Analysis 1
+00:00:00.200	0.832825700	0.004246891	0.234088000	0.022552990	0.009808847	0.005738691	0.003942350	Male	25 - 35	None	None	No	Caucasian	Unknown (Open / Closed)	Open	Open	Neutral	Neutral	unknown person	No Stimulus	No Event Marker	Participant 8	Analysis 1
+00:00:00.250	0.835992500	0.004330792	0.228774500	0.021959780	0.009786746	0.006049789	0.003949963	Male	25 - 35	None	None	No	Caucasian	Unknown (Open / Closed)	Open	Open	Neutral	Neutral	unknown person	No Stimulus	No Event Marker	Participant 8	Analysis 1
+00:00:00.300	0.841407700	0.004506858	0.219421400	0.021272240	0.010019180	0.006462135	0.003927703	Male	25 - 35	None	None	No	Caucasian	Unknown (Open / Closed)	Open	Open	Neutral	Neutral	unknown person	No Stimulus	No Event Marker	Participant 8	Analysis 1
+00:00:00.350	0.845999100	0.005241683	0.206855100	0.020405990	0.010745060	0.008126743	0.003917701	Male	25 - 35	None	None	No	Caucasian	Closed	Open	Open	Neutral	Neutral	unknown person	No Stimulus	No Event Marker	Participant 8	Analysis 1
+00:00:00.400	0.846081000	0.009847204	0.191788500	0.019393010	0.011283790	0.015747500	0.004018288	Male	25 - 35	None	None	No	Caucasian	Closed	Open	Open	Neutral	Neutral	unknown person	No Stimulus	No Event Marker	Participant 8	Analysis 1
+00:00:00.450	0.835439600	0.025474520	0.175543600	0.018192410	0.011453790	0.030174590	0.004165956	Male	25 - 35	None	None	No	Caucasian	Closed	Open	Open	Neutral	Neutral	unknown person	No Stimulus	No Event Marker	Participant 8	Analysis 1
+00:00:00.500	0.809934500	0.055973850	0.159799300	0.016905860	0.011318710	0.045669430	0.004480859	Male	25 - 35	None	None	No	Caucasian	Closed	Open	Open	Neutral	Neutral	unknown person	No Stimulus	No Event Marker	Participant 8	Analysis 1
+00:00:00.550	0.773898600	0.096982940	0.145717100	0.015631340	0.010955430	0.062227580	0.005334128	Male	25 - 35	None	None	No	Caucasian	Closed	Open	Open	Neutral	Neutral	unknown person	No Stimulus	No Event Marker	Participant 8	Analysis 1
+00:00:00.600	0.730738300	0.145379000	0.133828400	0.014428350	0.010448190	0.077250740	0.006364053	Male	25 - 35	None	None	No	Caucasian	Closed	Open	Open	Neutral	Neutral	unknown person	No Stimulus	No Event Marker	Participant 8	Analysis 1
+00:00:00.650	0.683443800	0.198123200	0.124456600	0.013255010	0.009857040	0.090730410	0.007531756	Male	25 - 35	None	None	No	Caucasian	Closed	Open	Open	Neutral	Neutral	unknown person	No Stimulus	No Event Marker	Participant 8	Analysis 1
+00:00:00.700	0.634408700	0.252606900	0.116929500	0.012266000	0.009211964	0.100816700	0.008843940	Male	25 - 35	None	None	No	Caucasian	Closed	Open	Open	Neutral	Neutral	unknown person	No Stimulus	No Event Marker	Participant 8	Analysis 1
+00:00:00.750	0.585402300	0.306876800	0.109854600	0.011421730	0.008541754	0.109153900	0.010191280	Male	25 - 35	None	None	No	Caucasian	Closed	Open	Open	Neutral	Neutral	unknown person	No Stimulus	No Event Marker	Participant 8	Analysis 1
+00:00:00.800	0.537613400	0.359682000	0.102634500	0.010743560	0.007868581	0.115542900	0.011438040	Male	25 - 35	None	None	No	Caucasian	Open	Open	Open	Neutral	Neutral	unknown person	No Stimulus	No Event Marker	Participant 8	Analysis 1
+00:00:00.850	0.491926800	0.410026500	0.095573240	0.010157270	0.007206922	0.121030300	0.012926490	Male	25 - 35	None	None	No	Caucasian	Open	Open	Open	Neutral	Neutral	unknown person	No Stimulus	No Event Marker	Participant 8	Analysis 1

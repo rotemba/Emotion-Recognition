@@ -1,5 +1,7 @@
 import init
 import math
+from numpy import linalg
+from scipy.spatial import distance
 
 
 
@@ -50,13 +52,24 @@ def printClosestVectorNames( vec):
     from operator import itemgetter
 
     result = max(templist, key=itemgetter(0))  # faster solution
-    result1 = (result[0], str(emotionIDToName(result[1])))
+    result1 = (result[0], emotionIDToName(result[1]))
+    return result1
+
+def printClosestVectorByCosSimilarity(vec):
+    templist=[]
+    for i in range (1,373):
+        newangle= angleBetweenTwoVecs(vec,getVectorOfEmotion(i))
+        #print ("angle between %0d, %0d: %0.4f" % (7, i, newangle))
+        templist.append((newangle,i))
+    from operator import itemgetter
+
+
+    result = max(templist, key=itemgetter(0))  # faster solution
+    result1 = (result[0], emotionIDToName(result[1]))  #angel,emotion_name
     return result1
 
 
-
-
-def emotionIDToName( emotionID):
+def emotionIDToName(emotionID):
     with init.dbcon:
         cursor=init.dbcon.cursor()
         cursor.execute("SELECT Emotion_name FROM EmotionsID WHERE ID = ?", (emotionID,))
@@ -126,8 +139,54 @@ def buildVectorFromCSV(row):
     arr = init.readTableFromCSV()
     for i in range(1,8):
         scalar = arr[i][row]
-        pair = (scalar,methods.emotionIDToName(emotionlistfromcsvbyID[i]))
+        pair = (scalar,emotionIDToName(emotionlistfromcsvbyID[i]))
         row+=1
         listOfTuplesPerFrame.append(pair)
 
     return listOfTuplesPerFrame
+
+
+def findMainEmotion(videoFrameArray):
+    #print("going to find the main emotion in video")
+    ListOfEmotions= ["neutral", "happiness","sadness","anger","surprise","scare","disgust"]
+    SumOfEachEmotion= map(sum, zip(*videoFrameArray))
+    emotionsWithoutNeutral=SumOfEachEmotion[1:]
+    #print ListOfEmotions
+    return ListOfEmotions[emotionsWithoutNeutral.index(max(emotionsWithoutNeutral))+1]
+
+
+def getMixedVec(NeutralScalar,HappyScalar,SadScalar,AngryScalar,SurprisedScalar,ScaredScalar,DisgustedScalar):
+    list = [(NeutralScalar,"neutral"), (HappyScalar,"happiness"),(SadScalar,"sadness"),(AngryScalar,"anger"),
+            (SurprisedScalar,"surprise"),(ScaredScalar,"scare"),(DisgustedScalar,"disgust")]
+    listWithVecs = map(lambda x: getVectorOfEmotion(emotionNameToEmotionID(x[1])), list)
+    listOfScalars = map(lambda x: x[0], list)
+    listOfNewVEcs = map(lambda scalar, vec: map(lambda x: scalar * x, vec), listOfScalars, listWithVecs)
+    #print (listOfNewVEcs)
+    mixedVEc = map(sum, zip(*listOfNewVEcs))
+    return mixedVEc
+
+def euclidean_distance(first_vec,second_vec):
+    if (len(first_vec) != len(second_vec)):
+        print("!!ERROR!! vector lengths are not equal, vec_1 len %d , vec_2 len %d"%(len(first_vec),len((second_vec))))
+        return -1
+    dst = distance.euclidean(first_vec, second_vec)
+
+    return dst
+
+
+def find_shortes_dist(vec):
+    distance_list = list()
+    with init.dbcon:
+        cursor = init.dbcon.cursor()
+        for ii in range(1,374):
+            cursor.execute("SELECT * FROM Twitter WHERE ID = ?",  (ii,))
+
+            emotion = cursor.fetchone()
+            emotion= emotion[1:]
+            dist = euclidean_distance(vec,list(emotion))
+            distance_list.append((dist,ii))
+
+        from operator import itemgetter
+
+        return min(distance_list, key=itemgetter(0))  # faster solution
+        #distance_list.sort(key=lambda x: x[0])

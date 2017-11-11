@@ -1,0 +1,13 @@
+Video analysis state log
+
+Face Model:	General
+Calibration:	-
+Start time:	11/3/2017 14:10:07.936
+Filename:	H:\Best DB's\Test Movies - CK\2\S999#003.mp4
+Frame rate:	20.00
+
+Video Time	Emotion
+00:00:00.000	Unknown
+00:00:01.100	Neutral
+00:00:02.000	Scared
+00:00:02.750	END

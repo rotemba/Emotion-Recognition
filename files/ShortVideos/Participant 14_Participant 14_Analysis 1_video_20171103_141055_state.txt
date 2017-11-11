@@ -1,0 +1,11 @@
+Video analysis state log
+
+Face Model:	General
+Calibration:	-
+Start time:	11/3/2017 14:09:51.104
+Filename:	H:\Best DB's\Test Movies - CK\1\S073#005.mp4
+Frame rate:	20.00
+
+Video Time	Emotion
+00:00:00.000	Unknown
+00:00:01.050	END
