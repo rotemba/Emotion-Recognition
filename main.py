@@ -1,3 +1,4 @@
+from __future__ import division
 import csv
 
 from numpy import genfromtxt
@@ -6,6 +7,7 @@ import methods
 import pandas as pd
 import sqlite3
 import matplotlib.pyplot as plt
+
 from numpy import linalg
 from scipy.spatial import distance
 import os
@@ -199,7 +201,7 @@ def readVideoToDB(video_path, video_number):
             angleToMainVec = methods.angleBetweenTwoVecs(vector_of_main_emotion, mixedVec)
             prev_vec = mixedVec
             cossimilary = methods.printClosestVectorNames(mixedVec)
-            nearest_emotion = find_shortes_dist(mixedVec)
+            nearest_emotion = methods.find_shortes_dist(mixedVec)
             emotion_name = methods.emotionIDToName(nearest_emotion[1])
             dist_value = nearest_emotion[0]
             closestVectorByCosSimilarity = methods.printClosestVectorNames(mixedVec)
@@ -220,7 +222,8 @@ def readVideoToDB(video_path, video_number):
 
 def visualizeData():
     print ("visualize data function")
-    df = pd.read_sql_query("select * from Video_analyze ;", init.dbcon)
+    x=3
+    df = pd.read_sql_query("select * from Video_analyze WHERE VideoID = 10;", init.dbcon)
     print(df)
     plot_data = df['Angle_To_Main_Emotion']
     plot_data2 = df['Angle_To_Prev_Vec']
@@ -239,6 +242,20 @@ def visualizeData():
     plt.plot(plot_data2, 'b' ,label='My Data')
     plt.show()
 
+def DKL_method():
+
+    with init.dbcon:
+        cursor = init.dbcon.cursor()
+        for Video in range(1, methods.number_of_videos_in_raw_data()):
+            for frame_number in range(1, methods.number_of_frames_in_a_video(Video)):
+                cursor.execute("SELECT Neutral,Happy,Sad,Angry,Surprised,Scared,Disgusted FROM Video_Data_Raw WHERE VideoID = ? AND Frame_number = ?", (Video,frame_number))
+                p = cursor.fetchone()
+                #print id
+                p = map( lambda x: (x/sum(id)), id)
+                
+
+
+
 
 def main():
     print pd.__file__
@@ -247,12 +264,11 @@ def main():
     #workingWithVecs()
     ##printClosestVectorNames(getVectorOfEmotion(62))
     #readVideoToDB('files/shortEmotion1.csv',1)
-    init.insertAllVideosToDB()
+    #init.insertAllVideosToDB()
     #visualizeData()
-
+    DKL_method()
 
 if __name__ == '__main__':
 
     main()
-
 

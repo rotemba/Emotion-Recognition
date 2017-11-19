@@ -45,10 +45,10 @@ def initEmoitionsDB():
                                                            angle REAL NOT NULL)""")
             cursor.execute("""CREATE TABLE Video_Data_Raw (VideoID INTEGER NOT NULL REFERENCES Videos(VideoID),
                                                           Frame_number INTEGER NOT NULL REFERENCES Video_Vecs(Time),
-                                                          Neutral REAL NOT NULL,Happy REAL NOT NULL,
+                                                          Happy REAL NOT NULL,
                                                           Sad REAL NOT NULL,Angry REAL NOT NULL,
                                                           Surprised REAL NOT NULL,Scared REAL NOT NULL,
-                                                          Disgusted REAL NOT NULL)""")
+                                                          DisgustedNeutral REAL NOT NULL, REAL NOT NULL)""")
 
 
             print("DONE creating the tables")

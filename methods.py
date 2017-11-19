@@ -197,3 +197,21 @@ def find_shortes_dist(vec):
 #    vec1 = np.asarray(vec1, dtype=np.float)
 #    vec2 = np.asarray(vec2, dtype=np.float)
 #    return np.sum(np.where(vec1 != 0, vec1 * np.log(vec1 / vec2), 0))
+
+def number_of_videos_in_raw_data():
+    with init.dbcon:
+        cursor = init.dbcon.cursor()
+        cursor.execute("SELECT * FROM Video_Data_Raw WHERE Frame_number = 1 ")
+        id =cursor.fetchall()
+        from operator import itemgetter
+        id = max(id, key=itemgetter(0))  # faster solution
+        return id[0]
+
+def number_of_frames_in_a_video(video_number):
+    with init.dbcon:
+        cursor = init.dbcon.cursor()
+        cursor.execute("SELECT * FROM Video_Data_Raw WHERE VideoID = (?) ", (video_number, ))
+        id =cursor.fetchall()
+        from operator import itemgetter
+        id = max(id, key=itemgetter(1))  # faster solution
+        return id[1]
