@@ -223,36 +223,44 @@ def readVideoToDB(video_path, video_number):
 def visualizeData():
     print ("visualize data function")
     x=3
-    df = pd.read_sql_query("select * from Video_analyze WHERE VideoID = 10;", init.dbcon)
-    print(df)
-    plot_data = df['Angle_To_Main_Emotion']
+    # with init.dbcon:
+        # cursor = init.dbcon.cursor()
+        # cursor.execute("SELECT * FROM Video_analyze WHERE VideoID = ?",(x,))
+        # wtring_to_serach = "SELECT * FROM Video_analyze WHERE VideoID = ?,(x,)"
+        # data = cursor.fetchall()
+        # from pandas import DataFrame
+        #df = DataFrame(data)
+        #df.columns = data.keys()
+        # pd.read_sql()
+        # statement = "SELECT * FROM Video_analyze WHERE V LIKE 'urban%'"
+    df = pd.read_sql_query("select * from Video_analyze WHERE VideoID = 3", init.dbcon)
+    print df
+    # print(data)
+    plot_data1 = df['Angle_To_Main_Emotion']
     plot_data2 = df['Angle_To_Prev_Vec']
-    plt.figure(1)
-    plt.subplot(211)
+    plot_data3 = df['DKL_VALUE']
+
+    plt.figure(figsize=(12, 12))
+    plt.subplot(3, 1, 1)
     #plt.xlabel('Frame_number')
     plt.ylabel('angle_To_Main_Emotion')
     plt.title('angle_To_Main_Emotion')
-    plt.plot(plot_data, 'g' ,label='My Data')
+    plt.plot(plot_data1, 'g' ,label='My Data')
 
-    plt.figure(1)
-    plt.subplot(212)
-    plt.xlabel('Frame_number')
+
+    plt.subplot(3,1,2)
+    #plt.xlabel('Frame_number')
     plt.ylabel('Cos similarity')
     plt.title('angle_To_Prev_Vec')
     plt.plot(plot_data2, 'b' ,label='My Data')
+
+
+    plt.subplot(3,1,3)
+    plt.xlabel('Frame_number')
+    plt.ylabel('DKL')
+    plt.title('DKL_VALUE')
+    plt.plot(plot_data3, 'R' ,label='My Data')
     plt.show()
-
-def DKL_method():
-
-    with init.dbcon:
-        cursor = init.dbcon.cursor()
-        for Video in range(1, methods.number_of_videos_in_raw_data()):
-            for frame_number in range(1, methods.number_of_frames_in_a_video(Video)):
-                cursor.execute("SELECT Neutral,Happy,Sad,Angry,Surprised,Scared,Disgusted FROM Video_Data_Raw WHERE VideoID = ? AND Frame_number = ?", (Video,frame_number))
-                p = cursor.fetchone()
-                #print id
-                p = map( lambda x: (x/sum(id)), id)
-                
 
 
 
@@ -265,8 +273,8 @@ def main():
     ##printClosestVectorNames(getVectorOfEmotion(62))
     #readVideoToDB('files/shortEmotion1.csv',1)
     #init.insertAllVideosToDB()
-    #visualizeData()
-    DKL_method()
+    visualizeData()
+    #DKL_method()
 
 if __name__ == '__main__':
 
