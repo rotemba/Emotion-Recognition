@@ -148,6 +148,7 @@ def InsertVideoAndAnalyze (ListOfFrames, videoNumber,filename):
             angleToPrevVec=methods.angleBetweenTwoVecs(prev_vec,mixedVec)
             angleToMainVec = methods.angleBetweenTwoVecs(vector_of_main_emotion, mixedVec)
             #print ("dkl distance between the vecs is: %0.6f" % (methods.dkl(prev_vec, mixedVec)))
+
             prev_vec = mixedVec
             cossimilary = methods.printClosestVectorNames(mixedVec)
             nearest_emotion = methods.find_shortes_dist(mixedVec)
