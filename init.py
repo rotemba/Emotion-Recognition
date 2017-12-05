@@ -5,6 +5,7 @@ import os
 import csv
 import methods
 import glob
+import methods
 
 
 
@@ -42,7 +43,8 @@ def initEmoitionsDB():
                                                            nearest_neighbour VARCHAR(20) NOT NULL,
                                                            distance REAL NOT NULL,
                                                            cos_similarity_emotion VARCHAR(20) NOT NULL,
-                                                           angle REAL NOT NULL)""")
+                                                           angle REAL NOT NULL,
+                                                           DKL_VALUE REAL NOT NULL)""")
             cursor.execute("""CREATE TABLE Video_Data_Raw (VideoID INTEGER NOT NULL REFERENCES Videos(VideoID),
                                                           Frame_number INTEGER NOT NULL REFERENCES Video_Vecs(Time),
                                                           Happy REAL NOT NULL,
@@ -150,6 +152,7 @@ def InsertVideoAndAnalyze (ListOfFrames, videoNumber,filename):
             angleToPrevVec=methods.angleBetweenTwoVecs(prev_vec,mixedVec)
             angleToMainVec = methods.angleBetweenTwoVecs(vector_of_main_emotion, mixedVec)
             #print ("dkl distance between the vecs is: %0.6f" % (methods.dkl(prev_vec, mixedVec)))
+            calculate_dkl = methods.calculate_dkl(arr[max(i-1,0)],arr[i])#TODO be SURE about order
 
             prev_vec = mixedVec
             cossimilary = methods.printClosestVectorNames(mixedVec)
@@ -164,8 +167,8 @@ def InsertVideoAndAnalyze (ListOfFrames, videoNumber,filename):
             #order = [x[1] for x in nearest_emotion]
             #if (i%20==0):
                 #print ("frame %0d: angle to prev:%0.3f. angle to main emotion:%0.3f" %(i,angleToPrevVec,angleToMainVec))
-            cursor.execute("INSERT INTO Video_analyze VALUES (?,?,?,?,?,?,?,?)",(videoNumber,i
-                                                 ,angleToPrevVec, angleToMainVec ,emotion_name,dist_value,closestVectorCosSimName,closestVectorCosSimAngel))
+            cursor.execute("INSERT INTO Video_analyze VALUES (?,?,?,?,?,?,?,?,?)",(videoNumber,i
+                                                 ,angleToPrevVec, angleToMainVec ,emotion_name,dist_value,closestVectorCosSimName,closestVectorCosSimAngel,calculate_dkl))
 
 
     dbcon.commit()
@@ -182,8 +185,6 @@ def insertAllVideosToDB():
     videoIndex = 0
     for filename in glob.glob(os.path.join(path, '*detailed.txt')):
         videoIndex += 1
-        #print ("**proccecing:  %s**" % filename)
-        #print ("going to print file context:")
         print ("printing csv data of video[%0d]" % videoIndex)
         with open(filename, 'rb') as csvfile:
             #data = enumerate(csv.DictReader(csvfile), delimiter='\t')
@@ -197,8 +198,8 @@ def insertAllVideosToDB():
                 if row_count > 9 :
                     print (row[0:8])
                     if row[1] == 'FIND_FAILED' or row[1] == 'FIT_FAILED':
-                        print ("**[Video %0d][%s] has no values, inserting neutral instead!**" % (videoIndex,row[0]))
-                        vecsDistribution.append([1,0,0,0,0,0,0,0])
+                        print ("**[Video %0d][%s] has no values, skipping this frame!**" % (videoIndex,row[0]))
+                        continue
                     else:
                         rowCastedToFloat=map((lambda x: float(x)) ,row[1:8])
                         #print (rowCastedToFloat)

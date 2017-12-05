@@ -215,3 +215,19 @@ def number_of_frames_in_a_video(video_number):
         from operator import itemgetter
         id = max(id, key=itemgetter(1))  # faster solution
         return id[1]
+
+def calculate_dkl(vec1,vec2):
+    if (sum(vec1) != 1.0):
+        vec1 = normalize_vec(vec1)
+    if (sum(vec2) != 1.0):
+        vec2 = normalize_vec(vec2)
+    sum_dkl=0
+    for i in range(0,len(vec2)):
+        sum_dkl+=vec2[i]*math.log(float(vec2[i])/float(vec1[i]))
+
+    return sum_dkl
+
+
+
+def normalize_vec(vec):
+    return map(lambda x: (x/sum(vec)), vec)

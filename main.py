@@ -196,12 +196,15 @@ def show_video_analysis():
         cursor = init.dbcon.cursor()
         cursor.execute("SELECT * FROM Videos")
         data = cursor.fetchall()
-        print ("Video number\t\t Main emotion \t\t Video Path")
-        for row in data:
-            print ("%0d\t\t\t\t\t %s \t\t\t\t %s" % (row[0],row[1],row[2]))
-        chosen_video = int(input("Please enter video number"))
-        video_path= data[chosen_video-1][2]
-        show_result_for_video(chosen_video, video_path)
+        print data
+        while True:
+            print ("Video number\t\t Main emotion \t\t Video Path")
+            for row in data:
+                print ("%0d\t\t\t\t\t %s \t\t\t\t %s" % (row[0],row[1],row[2]))
+            chosen_video = int(input("Please enter video number"))
+            video_path= data[chosen_video-1][2]
+            print video_path
+            show_result_for_video(chosen_video, video_path)
 
 
 
@@ -209,7 +212,7 @@ def show_result_for_video(video_num,video_path):
     print ("showing result for video %0d:%s" % (video_num,video_path))
     df = get_sql_query(video_num)
     command = 'open ' + video_path
-    #TODO: Ofer you keep from here.
+    visualizeData(video_num)
     os.system(command)
 
 
@@ -306,20 +309,10 @@ def readVideoToDB(video_path, video_number):
 
 
 
-def visualizeData():
+def visualizeData(videoid):
     print ("visualize data function")
-    x=3
-    # with init.dbcon:
-        # cursor = init.dbcon.cursor()
-        # cursor.execute("SELECT * FROM Video_analyze WHERE VideoID = ?",(x,))
-        # wtring_to_serach = "SELECT * FROM Video_analyze WHERE VideoID = ?,(x,)"
-        # data = cursor.fetchall()
-        # from pandas import DataFrame
-        #df = DataFrame(data)
-        #df.columns = data.keys()
-        # pd.read_sql()
-        # statement = "SELECT * FROM Video_analyze WHERE V LIKE 'urban%'"
-    df = pd.read_sql_query("select * from Video_analyze WHERE VideoID = 3", init.dbcon)
+
+    df = get_sql_query(videoid)
     print df
     # print(data)
     plot_data1 = df['Angle_To_Main_Emotion']
