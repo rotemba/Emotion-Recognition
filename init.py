@@ -33,7 +33,7 @@ def initEmoitionsDB():
             cursor.execute("""CREATE TABLE Relations(X INTEGER NOT NULL,
                                                                   Y INTEGER NOT NULL,
                                                                  Value REAL NOT NULL)""")
-            cursor.execute("CREATE TABLE Videos(VideoID INTEGER PRIMARY KEY NOT NULL, Main_motion VARCHAR(20) NOT NULL)")
+            cursor.execute("CREATE TABLE Videos(VideoID INTEGER PRIMARY KEY NOT NULL, Main_motion VARCHAR(20) NOT NULL, Video_path VARCHAR (70) NOT NULL)")
             cursor.execute("CREATE TABLE Video_Vecs (VideoID INTEGER NOT NULL REFERENCES Videos(VideoID), Frame_number INTEGER NOT NULL, %s , PRIMARY KEY (VideoID, Frame_number))" % strOfVecs)
             cursor.execute("""CREATE TABLE Video_analyze (VideoID INTEGER NOT NULL REFERENCES Videos(VideoID), 
                                                           Frame_number INTEGER NOT NULL REFERENCES Video_Vecs(Frame_number),
@@ -86,6 +86,7 @@ def initEmoitionsDB():
                     cursor.execute("INSERT  INTO Relations VALUES (?,?,?)", (row+1, col+1, relationArray[row][col]))
                     # print ("added value (%f) to the DB" % relationArray[row][col])
             dbcon.commit()
+            insertAllVideosToDB()
             print ("end of the table creation.")
     else:
         print ("db exists")
@@ -124,9 +125,10 @@ def InsertVideoAndAnalyze (ListOfFrames, videoNumber,filename):
     prev_vec = methods.getMixedVec(ListOfFrames[0][0], ListOfFrames[0][1], ListOfFrames[0][2], ListOfFrames[0][3],
                            ListOfFrames[0][4], ListOfFrames[0][5], ListOfFrames[0][6],listOfGeneralVecs)
     arr=ListOfFrames
+    video_path = 'files/Videos/'+filename[(filename.index("ShortVideos")+12):filename.index("_")] + ".mp4"
     with dbcon:
         cursor=dbcon.cursor()
-        cursor.execute("INSERT OR REPLACE INTO Videos VALUES (?,?)", (videoNumber, name_of_main_emotion))
+        cursor.execute("INSERT OR REPLACE INTO Videos VALUES (?,?,?)", (videoNumber, name_of_main_emotion,video_path))
         for i in range (0, len(ListOfFrames)):
             #print ("framte number: %0d / %0d" %(i,len(arr[0])))
             #if videoFrameArray[i][1]== 'FIND_FAILED' or videoFrameArray[i][1] == 'FIT_FAILED':
@@ -172,7 +174,7 @@ def InsertVideoAndAnalyze (ListOfFrames, videoNumber,filename):
 
 
 def insertAllVideosToDB():
-    print ("test func")
+    print ("loading all video data to DB.")
     cwd = os.getcwd()
     print (cwd)
     path = cwd+'/files/ShortVideos'

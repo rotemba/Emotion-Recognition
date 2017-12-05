@@ -29,6 +29,44 @@ def findOppositeEmotion():
             print (str(i) + ":[" + emotion1 + "," + methods.emotionIDToName(data[1]) + "] similarity:" + str(data[2]))
 
 
+
+def get_sql_query(video_num):
+    if (video_num==1):
+        df = pd.read_sql_query("select * from Video_analyze WHERE VideoID = 1", init.dbcon)
+    if (video_num==2):
+        df = pd.read_sql_query("select * from Video_analyze WHERE VideoID = 2", init.dbcon)
+    if (video_num==3):
+        df = pd.read_sql_query("select * from Video_analyze WHERE VideoID = 3", init.dbcon)
+    if (video_num==4):
+        df = pd.read_sql_query("select * from Video_analyze WHERE VideoID = 4", init.dbcon)
+    if (video_num==5):
+        df = pd.read_sql_query("select * from Video_analyze WHERE VideoID = 5", init.dbcon)
+    if (video_num==6):
+        df = pd.read_sql_query("select * from Video_analyze WHERE VideoID = 6", init.dbcon)
+    if (video_num==7):
+        df = pd.read_sql_query("select * from Video_analyze WHERE VideoID = 7", init.dbcon)
+    if (video_num==8):
+        df = pd.read_sql_query("select * from Video_analyze WHERE VideoID = 8", init.dbcon)
+    if (video_num==9):
+        df = pd.read_sql_query("select * from Video_analyze WHERE VideoID = 9", init.dbcon)
+    if (video_num==10):
+        df = pd.read_sql_query("select * from Video_analyze WHERE VideoID = 10", init.dbcon)
+    if (video_num==11):
+        df = pd.read_sql_query("select * from Video_analyze WHERE VideoID = 11", init.dbcon)
+    if (video_num==12):
+        df = pd.read_sql_query("select * from Video_analyze WHERE VideoID = 12", init.dbcon)
+    if (video_num==13):
+        df = pd.read_sql_query("select * from Video_analyze WHERE VideoID = 13", init.dbcon)
+    if (video_num==14):
+        df = pd.read_sql_query("select * from Video_analyze WHERE VideoID = 14", init.dbcon)
+    if (video_num==15):
+        df = pd.read_sql_query("select * from Video_analyze WHERE VideoID = 15", init.dbcon)
+    if (video_num==16):
+        df = pd.read_sql_query("select * from Video_analyze WHERE VideoID = 16", init.dbcon)
+    if (video_num==17):
+        df = pd.read_sql_query("select * from Video_analyze WHERE VideoID = 17", init.dbcon)
+    return df
+
 def findClosestEmotion():
     print("this function will find the closest emotion")
     emotion1 = raw_input("put emotion name please")
@@ -72,8 +110,22 @@ def createVector():
 
 def basicQueries():
     while True:
-        options=["Exit","angles between 2 emotions",'create a new vector','findClosestEmotion','findOppositeEmotion', 'get vector of emotion','buildNewVector']
-        optDict={0: exit, 1: angles, 2: createVector, 3: findClosestEmotion,4: findOppositeEmotion, 5:getVector, 6:buildNewVector}
+        options=["Exit",
+                 "angles between 2 emotions",
+                 'create a new vector',
+                 'findClosestEmotion',
+                 'findOppositeEmotion',
+                 'get vector of emotion',
+                 'buildNewVector',
+                 'show video analysys']
+        optDict={0: exit,
+                 1: angles,
+                 2: createVector,
+                 3: findClosestEmotion,
+                 4: findOppositeEmotion,
+                 5: getVector,
+                 6: buildNewVector,
+                 7: show_video_analysis }
         print("please choose the query to run:")
         print options
         for i in options:
@@ -136,7 +188,41 @@ def buildNewVector():
 
 
 
-    return main_emotion
+    return result # ROTEM : something wrong here, we need to take a look at it.
+
+def show_video_analysis():
+    print ("Video analysis function.")
+    with init.dbcon:
+        cursor = init.dbcon.cursor()
+        cursor.execute("SELECT * FROM Videos")
+        data = cursor.fetchall()
+        print ("Video number\t\t Main emotion \t\t Video Path")
+        for row in data:
+            print ("%0d\t\t\t\t\t %s \t\t\t\t %s" % (row[0],row[1],row[2]))
+        chosen_video = int(input("Please enter video number"))
+        video_path= data[chosen_video-1][2]
+        show_result_for_video(chosen_video, video_path)
+
+
+
+def show_result_for_video(video_num,video_path):
+    print ("showing result for video %0d:%s" % (video_num,video_path))
+    df = get_sql_query(video_num)
+    command = 'open ' + video_path
+    #TODO: Ofer you keep from here.
+    os.system(command)
+
+
+
+
+    print ("finished showing visualize")
+
+
+
+
+
+
+
 
 # Neutral,Happy,Sad,Angry,Surprised,Scared,Disgusted
 def getMixedVec(NeutralScalar,HappyScalar,SadScalar,AngryScalar,SurprisedScalar,ScaredScalar,DisgustedScalar):
@@ -268,12 +354,12 @@ def visualizeData():
 def main():
     print pd.__file__
     init.initEmoitionsDB()
-    #basicQueries()
+    basicQueries()
     #workingWithVecs()
     ##printClosestVectorNames(getVectorOfEmotion(62))
     #readVideoToDB('files/shortEmotion1.csv',1)
     #init.insertAllVideosToDB()
-    visualizeData()
+    #visualizeData()
     #DKL_method()
 
 if __name__ == '__main__':
