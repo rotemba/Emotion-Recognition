@@ -47,10 +47,11 @@ def initEmoitionsDB():
                                                            DKL_VALUE REAL NOT NULL)""")
             cursor.execute("""CREATE TABLE Video_Data_Raw (VideoID INTEGER NOT NULL REFERENCES Videos(VideoID),
                                                           Frame_number INTEGER NOT NULL REFERENCES Video_Vecs(Time),
+                                                          Neutral REAL NOT NULL,
                                                           Happy REAL NOT NULL,
                                                           Sad REAL NOT NULL,Angry REAL NOT NULL,
                                                           Surprised REAL NOT NULL,Scared REAL NOT NULL,
-                                                          DisgustedNeutral REAL NOT NULL, REAL NOT NULL)""")
+                                                          DisgustedNeutral REAL NOT NULL)""")
 
 
             print("DONE creating the tables")
@@ -119,6 +120,8 @@ def readTableFromCSV(): #TODO add argument as an file path
 
 def InsertVideoAndAnalyze (ListOfFrames, videoNumber,filename):
     name_of_main_emotion = methods.findMainEmotion(ListOfFrames)
+
+
     print ("proccesing video [%0d]:%s\nmain emotion:%s." % (videoNumber, filename,name_of_main_emotion))
     id = methods.emotionNameToEmotionID(name_of_main_emotion)
     vector_of_main_emotion = methods.getVectorOfEmotion(methods.emotionNameToEmotionID(name_of_main_emotion))
@@ -127,7 +130,7 @@ def InsertVideoAndAnalyze (ListOfFrames, videoNumber,filename):
     prev_vec = methods.getMixedVec(ListOfFrames[0][0], ListOfFrames[0][1], ListOfFrames[0][2], ListOfFrames[0][3],
                            ListOfFrames[0][4], ListOfFrames[0][5], ListOfFrames[0][6],listOfGeneralVecs)
     arr=ListOfFrames
-    video_path = 'files/Videos/'+filename[(filename.index("ShortVideos")+12):filename.index("_")] + ".mp4"
+    video_path = 'files/Videos/'+filename[(filename.index("ShortVideos" )+12):filename.index("_")] + ".mp4"
     with dbcon:
         cursor=dbcon.cursor()
         cursor.execute("INSERT OR REPLACE INTO Videos VALUES (?,?,?)", (videoNumber, name_of_main_emotion,video_path))

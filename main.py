@@ -196,8 +196,8 @@ def show_video_analysis():
         cursor = init.dbcon.cursor()
         cursor.execute("SELECT * FROM Videos")
         data = cursor.fetchall()
-        print data
         while True:
+
             print ("Video number\t\t Main emotion \t\t Video Path")
             for row in data:
                 print ("%0d\t\t\t\t\t %s \t\t\t\t %s" % (row[0],row[1],row[2]))
@@ -218,11 +218,8 @@ def show_result_for_video(video_num,video_path):
 
 
 
+
     print ("finished showing visualize")
-
-
-
-
 
 
 
