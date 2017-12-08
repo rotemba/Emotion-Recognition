@@ -231,3 +231,8 @@ def calculate_dkl(vec1,vec2):
 
 def normalize_vec(vec):
     return map(lambda x: (x/sum(vec)), vec)
+
+def analyze_emotion_to_emotion():
+    print ("this function will stimulate the flow from emotion to other")
+
+

@@ -89,7 +89,9 @@ def initEmoitionsDB():
                     cursor.execute("INSERT  INTO Relations VALUES (?,?,?)", (row+1, col+1, relationArray[row][col]))
                     # print ("added value (%f) to the DB" % relationArray[row][col])
             dbcon.commit()
-            insertAllVideosToDB()
+            #TODO: UNCOMMENT!!
+            #insertAllVideosToDB('/files/ShortVideos', '\t')
+            #insertAllVideosToDB('/files/newShortVideos', '\t')
             print ("end of the table creation.")
     else:
         print ("db exists")
@@ -179,11 +181,11 @@ def InsertVideoAndAnalyze (ListOfFrames, videoNumber,filename):
 
 
 
-def insertAllVideosToDB():
+def insertAllVideosToDB(path_of_files, delimeter):
     print ("loading all video data to DB.")
     cwd = os.getcwd()
     print (cwd)
-    path = cwd+'/files/ShortVideos'
+    path = cwd+path_of_files
     print (path)
     videoIndex = 0
     for filename in glob.glob(os.path.join(path, '*detailed.txt')):
@@ -192,7 +194,7 @@ def insertAllVideosToDB():
         with open(filename, 'rb') as csvfile:
             #data = enumerate(csv.DictReader(csvfile), delimiter='\t')
             #print (data)
-            readCSV = csv.reader(csvfile, delimiter='\t')
+            readCSV = csv.reader(csvfile, delimiter=delimeter)
             row_count = 0
             vecsDistribution = []
             for row in readCSV:

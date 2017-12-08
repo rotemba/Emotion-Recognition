@@ -340,17 +340,44 @@ def visualizeData(videoid):
 
 
 
+def creatAndInsertFakeVideos(fromIndex,toIndex,video_index):
+    path = 'ShortVideos/fake'+str(video_index)+'_not_exist'
+    print ("ID [%0d] :creating fake:%s , from:%0d -> %0d" %(video_index,path,fromIndex,toIndex))
+    frames = []
+    x = 0.05
+    frame=[0.001,0.001,0.001,0.001,0.001,0.001,0.001]
+    frame[fromIndex]=1
+    newframe = map(lambda x: float("%0.5f" % x), frame)
+    frames.append(newframe)
+    for i in range(0, 21):
+        newframe = map(lambda x: float("%0.5f" % x), frame)
+        #newframe = map(lambda x: float(x), newframe)
+        if (i == 20):
+            newframe[fromIndex] = 0.0001
+        frames.append(newframe)
+        frame[fromIndex]-=x
+        frame[toIndex]+=x
+    init.InsertVideoAndAnalyze(frames, video_index, path)
+
+def fakeVideos():
+    index=50
+    for i in range(0, 7):
+        for j in range(i + 1, 7):
+            index+=1
+            creatAndInsertFakeVideos(i,j,index)
+
 
 def main():
     print pd.__file__
     init.initEmoitionsDB()
-    basicQueries()
+    #basicQueries()
     #workingWithVecs()
     ##printClosestVectorNames(getVectorOfEmotion(62))
     #readVideoToDB('files/shortEmotion1.csv',1)
     #init.insertAllVideosToDB()
     #visualizeData()
     #DKL_method()
+    fakeVideos()
 
 if __name__ == '__main__':
 
