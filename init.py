@@ -56,7 +56,7 @@ def initEmoitionsDB():
 
             print("DONE creating the tables")
             twiter_path = "files/twitter_dict.csv"
-            pathOfTwitter = "files/twitter_dict.csv"
+            pathOfTwitter = "files/Twitter_normalize.csv"
             pathOfEmotionRealations="files/emotionsAngelsToDB.csv"
             fileObject = csv.reader(pathOfTwitter)
 
@@ -90,8 +90,8 @@ def initEmoitionsDB():
                     # print ("added value (%f) to the DB" % relationArray[row][col])
             dbcon.commit()
             #TODO: UNCOMMENT!!
-            #insertAllVideosToDB('/files/ShortVideos', '\t')
-            #insertAllVideosToDB('/files/newShortVideos', '\t')
+            insertAllVideosToDB('/files/ShortVideos', '\t')
+            insertAllVideosToDB('/files/newShortVideos', '\t')
             print ("end of the table creation.")
     else:
         print ("db exists")

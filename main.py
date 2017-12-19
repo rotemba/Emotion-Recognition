@@ -2,8 +2,11 @@ from __future__ import division
 import csv
 
 from numpy import genfromtxt
+from numpy import  random
 import init
 import methods
+import algebra
+import random
 import pandas as pd
 import sqlite3
 import matplotlib.pyplot as plt
@@ -207,40 +210,36 @@ def show_video_analysis():
             show_result_for_video(chosen_video, video_path)
 
 
-
-def show_result_for_video(video_num,video_path):
+def show_result_for_video(video_num, video_path):
     print ("showing result for video %0d:%s" % (video_num,video_path))
     df = get_sql_query(video_num)
     command = 'open ' + video_path
     visualizeData(video_num)
-    os.system(command)
-
-
-
-
+    #os.system(command)
 
     print ("finished showing visualize")
 
-
-
+def convertScalarsToListtuples(list):
+    list = list = [(float(list[0]),"neutral"), (float(list[1]),"happiness"),(float(list[2]),"sadness"),(float(list[3]),"anger"),
+            (float(list[4]),"surprise"),(float(list[5]),"scare"),(float(list[6]),"disgust")]
+    return list
 
 # Neutral,Happy,Sad,Angry,Surprised,Scared,Disgusted
-def getMixedVec(NeutralScalar,HappyScalar,SadScalar,AngryScalar,SurprisedScalar,ScaredScalar,DisgustedScalar):
-    list = [(float(NeutralScalar),"neutral"), (float(HappyScalar),"happiness"),(float(SadScalar),"sadness"),(float(AngryScalar),"anger"),
-            (float(SurprisedScalar),"surprise"),(float(ScaredScalar),"scare"),(float(DisgustedScalar),"disgust")]
-    #print list
-    listWithVecs = map(lambda x: methods.getVectorOfEmotion(methods.emotionNameToEmotionID(x[1])), list)
+def getMixedVec(NeutralScalar = 0,HappyScalar = 0,SadScalar = 0,AngryScalar = 0 ,SurprisedScalar = 0 ,ScaredScalar = 0 ,DisgustedScalar = 0 ,given_list = 0 ):
+    if given_list == 0:
+        list_analyzed = [NeutralScalar,HappyScalar,SadScalar,AngryScalar,SurprisedScalar,ScaredScalar,DisgustedScalar]
+    else:
+        list_analyzed = given_list
+    list_analyzed = convertScalarsToListtuples(list_analyzed)
+    listWithVecs = map(lambda x: methods.getVectorOfEmotion(methods.emotionNameToEmotionID(x[1])), list_analyzed)
 
-    listOfScalars = map(lambda x: x[0], list)
+    listOfScalars = map(lambda x: x[0], list_analyzed)
     listOfNewVEcs = map(lambda scalar, vec: map(lambda x: scalar * x, vec), listOfScalars, listWithVecs)
     result = listOfNewVEcs[0]
     for i in range(1, len(listOfNewVEcs)):
         result = map(sum, zip(result, listOfNewVEcs[i]))
 
-
-
     return result
-
 
 
 def readVideoToDB(video_path, video_number):
@@ -304,8 +303,6 @@ def readVideoToDB(video_path, video_number):
 
     print ("end of the table creation.")
 
-
-
 def visualizeData(videoid):
     print ("visualize data function")
 
@@ -323,7 +320,6 @@ def visualizeData(videoid):
     plt.title('angle_To_Main_Emotion')
     plt.plot(plot_data1, 'g' ,label='My Data')
 
-
     plt.subplot(3,1,2)
     #plt.xlabel('Frame_number')
     plt.ylabel('Cos similarity')
@@ -339,8 +335,7 @@ def visualizeData(videoid):
     plt.show()
 
 
-
-def creatAndInsertFakeVideos(fromIndex,toIndex,video_index):
+def creatAndInsertFakeVideos(fromIndex , toIndex, video_index):
     path = 'ShortVideos/fake'+str(video_index)+'_not_exist'
     print ("ID [%0d] :creating fake:%s , from:%0d -> %0d" %(video_index,path,fromIndex,toIndex))
     frames = []
@@ -359,6 +354,7 @@ def creatAndInsertFakeVideos(fromIndex,toIndex,video_index):
         frame[toIndex]+=x
     init.InsertVideoAndAnalyze(frames, video_index, path)
 
+
 def fakeVideos():
     index=50
     for i in range(0, 7):
@@ -366,19 +362,40 @@ def fakeVideos():
             index+=1
             creatAndInsertFakeVideos(i,j,index)
 
+def createRandomFrame():
+    result_list = list()
+    c = [0,0,0,0,0,0,0]
+    for j in range(1,10):
+        for i in range(0,len(c)):
+            c[i] = random.random()
+        c = methods.normalize_vec(c)
+        frame_vector = getMixedVec(given_list= c)
+        print c
+        result = methods.printClosestVectorByCosSimilarity(frame_vector)
+        result_list.append( result[1] )
+        print result[1]
+
+    from collections import Counter
+    emotion_counts = Counter(result_list)
+    print emotion_counts
+    df = pd.DataFrame.from_dict(emotion_counts, orient='index')
+    df.plot()
+
+
 
 def main():
     print pd.__file__
     init.initEmoitionsDB()
+    algebra.main()
     #basicQueries()
     #workingWithVecs()
     ##printClosestVectorNames(getVectorOfEmotion(62))
     #readVideoToDB('files/shortEmotion1.csv',1)
     #init.insertAllVideosToDB()
-    #visualizeData()
+    #visualizeData(1)
     #DKL_method()
-    fakeVideos()
-
+    #fakeVideos()
+    #createRandomFrame()
 if __name__ == '__main__':
 
     main()

@@ -36,11 +36,13 @@ def angleBetweenTwoVecs( vec1, vec2):
 
     sizeOfVec1=sizeOfSingleVec(vec1)
     sizeOfVec2=sizeOfSingleVec(vec2)
-    mone=sum((a*b) for a, b in zip(vec1, vec2))
-    sizeOfVecs=(sizeOfVec1*sizeOfVec2)
-    ans=mone/sizeOfVecs
+    from scipy import spatial
+    result = 1 - spatial.distance.cosine(vec1, vec2)
+    #mone=sum((a*b) for a, b in zip(vec1, vec2))
+    #sizeOfVecs=(sizeOfVec1*sizeOfVec2)
+    #ans=mone/sizeOfVecs
     #print ans
-    return ans
+    return result
 
 
 def printClosestVectorNames( vec):
@@ -76,7 +78,7 @@ def emotionIDToName(emotionID):
         cursor.execute("SELECT Emotion_name FROM EmotionsID WHERE ID = ?", (emotionID,))
         name=cursor.fetchone()
         #print("got id number:" + str(emotionID) +" - name: "+ name[0])
-        return (name[0])
+        return (str(name[0]))
 
 def emotionNameToEmotionID(emotionName):
     if (emotionName=="Happy"):
