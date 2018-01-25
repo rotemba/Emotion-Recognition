@@ -34,9 +34,9 @@ def workingWithVecs(vectotest):
 def angleBetweenTwoVecs( vec1, vec2):
     #print ("angle between 2 vecs function.")
 
-    sizeOfVec1=sizeOfSingleVec(vec1)
-    sizeOfVec2=sizeOfSingleVec(vec2)
     from scipy import spatial
+    #print(len(vec1))
+    #print(len(vec2))
     result = 1 - spatial.distance.cosine(vec1, vec2)
     #mone=sum((a*b) for a, b in zip(vec1, vec2))
     #sizeOfVecs=(sizeOfVec1*sizeOfVec2)
@@ -231,9 +231,9 @@ def calculate_dkl(vec1,vec2):
 
 
 
-def normalize_vec(vec):
+def normalize_vec(vec, wantedNormSize = 1):
     norma = np.linalg.norm(vec)
-    return map(lambda x: (x/(norma)), vec)
+    return map(lambda x: (x/(norma)*wantedNormSize), vec)
 
 def analyze_emotion_to_emotion():
     print ("this function will stimulate the flow from emotion to other")
