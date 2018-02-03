@@ -1,0 +1,27 @@
+Video analysis detailed log
+
+Face Model:	General
+Calibration:	-
+Start time:	11/21/2017 11:37:10.121
+Filename:	D:\Testings\Movie Samples & FR Analysis Logs - CK\1\S044#002.mp4
+Frame rate:	20.00
+
+Video Time	Neutral	Happy	Sad	Angry	Surprised	Scared	Disgusted	Gender	Age	Beard	Moustache	Glasses	Ethnicity	Quality	Mouth	Left Eye	Right Eye	Left Eyebrow	Right Eyebrow	Identity	Stimulus	Event Marker
+00:00:00.000	0.943850800	0.003023318	0.044233240	0.018597010	0.010083960	0.006135786	0.002842795	Male	25 - 35	None	None	No	Caucasian	0.968439300	Unknown (Open / Closed)	Open	Open	Neutral	Neutral	NO IDENTIFICATION	No Stimulus	No Event Marker
+00:00:00.050	0.943770800	0.003036106	0.044495650	0.018609290	0.010159760	0.006238842	0.002841617	Male	25 - 35	None	None	No	Caucasian	0.969027200	Unknown (Open / Closed)	Open	Open	Neutral	Neutral	NO IDENTIFICATION	No Stimulus	No Event Marker
+00:00:00.100	0.943124700	0.003106006	0.045790670	0.018517780	0.010436900	0.006540590	0.002846932	Male	25 - 35	None	None	No	Caucasian	0.969963500	Unknown (Open / Closed)	Open	Open	Neutral	Neutral	NO IDENTIFICATION	No Stimulus	No Event Marker
+00:00:00.150	0.941910300	0.003191737	0.048014560	0.018330790	0.010642710	0.006959041	0.002861720	Male	25 - 35	None	None	No	Caucasian	0.969570800	Unknown (Open / Closed)	Open	Open	Neutral	Neutral	NO IDENTIFICATION	No Stimulus	No Event Marker
+00:00:00.200	0.940533000	0.003281470	0.050594530	0.018126610	0.010787940	0.007521582	0.002880592	Male	25 - 35	None	None	No	Caucasian	0.969655500	Unknown (Open / Closed)	Open	Open	Neutral	Neutral	unknown person	No Stimulus	No Event Marker
+00:00:00.250	0.939632400	0.003437815	0.052563710	0.018023880	0.010864440	0.008438648	0.002912294	Male	25 - 35	None	None	No	Caucasian	0.969365100	Unknown (Open / Closed)	Open	Open	Neutral	Neutral	unknown person	No Stimulus	No Event Marker
+00:00:00.300	0.939184100	0.003645560	0.053520620	0.017868660	0.011129720	0.009452614	0.002934006	Male	25 - 35	None	None	No	Caucasian	0.967110300	Unknown (Open / Closed)	Open	Open	Neutral	Neutral	unknown person	No Stimulus	No Event Marker
+00:00:00.350	0.937153300	0.004335004	0.053505830	0.017535530	0.011736090	0.012175000	0.002967882	Male	25 - 35	None	None	No	Caucasian	0.965886400	Closed	Open	Open	Neutral	Neutral	unknown person	No Stimulus	No Event Marker
+00:00:00.400	0.927681600	0.009787893	0.052657150	0.016980450	0.012203840	0.019897050	0.003119865	Male	25 - 35	None	None	No	Caucasian	0.964075600	Closed	Open	Open	Neutral	Neutral	unknown person	No Stimulus	No Event Marker
+00:00:00.450	0.904608900	0.026235800	0.050738920	0.016167500	0.012310780	0.036923830	0.003275897	Male	25 - 35	None	None	No	Caucasian	0.961453600	Closed	Open	Open	Neutral	Neutral	unknown person	No Stimulus	No Event Marker
+00:00:00.500	0.869115900	0.057214700	0.049623270	0.015207460	0.012108190	0.054736610	0.003599603	Male	25 - 35	None	None	No	Caucasian	0.958220500	Closed	Open	Open	Neutral	Neutral	unknown person	No Stimulus	No Event Marker
+00:00:00.550	0.824125600	0.099217940	0.049895640	0.014200710	0.011689120	0.072245560	0.004334302	Male	25 - 35	None	None	No	Caucasian	0.952439500	Closed	Open	Open	Neutral	Neutral	unknown person	No Stimulus	No Event Marker
+00:00:00.600	0.773288200	0.148452000	0.050664120	0.013179390	0.011123860	0.087867920	0.006037205	Male	25 - 35	None	None	No	Caucasian	0.947759900	Closed	Open	Open	Neutral	Neutral	unknown person	No Stimulus	No Event Marker
+00:00:00.650	0.719674800	0.201369200	0.050195160	0.012274100	0.010459620	0.101433000	0.007555858	Male	25 - 35	None	None	No	Caucasian	0.935915100	Closed	Open	Open	Neutral	Neutral	unknown person	No Stimulus	No Event Marker
+00:00:00.700	0.665300000	0.255831300	0.048967580	0.011557730	0.009742749	0.112729600	0.008988040	Male	25 - 35	None	None	No	Caucasian	0.928577800	Closed	Open	Open	Neutral	Neutral	unknown person	No Stimulus	No Event Marker
+00:00:00.750	0.611567400	0.310366800	0.047336080	0.010947010	0.009008454	0.121423000	0.010490400	Male	25 - 35	None	None	No	Caucasian	0.921562100	Closed	Open	Open	Neutral	Neutral	unknown person	No Stimulus	No Event Marker
+00:00:00.800	0.559659100	0.363524700	0.045423660	0.010409900	0.008279408	0.127735200	0.011977040	Male	25 - 35	None	None	No	Caucasian	0.932118800	Open	Open	Open	Neutral	Neutral	unknown person	No Stimulus	No Event Marker
+00:00:00.850	0.510312300	0.414420000	0.043537960	0.009887559	0.007574061	0.132035000	0.013630500	Male	25 - 35	None	None	No	Caucasian	0.936521500	Open	Open	Open	Neutral	Neutral	unknown person	No Stimulus	No Event Marker

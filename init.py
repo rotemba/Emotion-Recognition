@@ -160,7 +160,6 @@ def InsertVideoAndAnalyze (ListOfFrames, videoNumber,filename):
             calculate_dkl = methods.calculate_dkl(arr[max(i-1,0)],arr[i])#TODO be SURE about order
 
             prev_vec = mixedVec
-            cossimilary = methods.printClosestVectorNames(mixedVec)
             nearest_emotion = methods.find_shortes_dist(mixedVec)
             emotion_name = methods.emotionIDToName(nearest_emotion[1])
             dist_value = nearest_emotion[0]
