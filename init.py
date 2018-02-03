@@ -189,19 +189,19 @@ def insertAllVideosToDB(path_of_files, delimeter):
     print (path)
     videoIndex = 0
     for filename in glob.glob(os.path.join(path, '*detailed.txt')):
+        print(filename)
         videoIndex += 1
         print ("printing csv data of video[%0d]" % videoIndex)
-        with open(filename, 'rb') as csvfile:
-            #data = enumerate(csv.DictReader(csvfile), delimiter='\t')
-            #print (data)
-            readCSV = csv.reader(csvfile, delimiter=delimeter)
+        with open(filename, 'rU') as csvfile:
+            readCSV = csv.reader(csvfile, dialect=csv.excel_tab)
             row_count = 0
             vecsDistribution = []
             for row in readCSV:
                 row_count += 1
-
                 if row_count > 9 :
                     print (row[0:8])
+                    if (row[0] == 'Video Time'):
+                        continue
                     if row[1] == 'FIND_FAILED' or row[1] == 'FIT_FAILED':
                         print ("**[Video %0d][%s] has no values, skipping this frame!**" % (videoIndex,row[0]))
                         continue
