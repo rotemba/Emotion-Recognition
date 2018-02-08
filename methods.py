@@ -148,6 +148,7 @@ def buildVectorFromCSV(row):
 
     return listOfTuplesPerFrame
 
+#will check with frustration, anger, understand, confusion
 
 def findMainEmotion(videoFrameArray):
     #print("going to find the main emotion in video")
@@ -177,7 +178,7 @@ def euclidean_distance(first_vec,second_vec):
     return dst
 
 
-def find_shortes_dist(vec):
+def find_shortest_dist(vec, first_or_second):
     distance_list = list()
     with init.dbcon:
         cursor = init.dbcon.cursor()
@@ -190,15 +191,26 @@ def find_shortes_dist(vec):
             distance_list.append((dist,ii))
 
         from operator import itemgetter
-
-        return min(distance_list, key=itemgetter(0))  # faster solution
+        sorted_distance_list= sorted(distance_list, key=itemgetter(0))
+        return (sorted_distance_list[first_or_second-1])
+        #return min(distance_list, key=itemgetter(0))  # faster solution
         #distance_list.sort(key=lambda x: x[0])
 
+def get_three_closest_knn (vec):
+    distance_list = list()
+    with init.dbcon:
+        cursor = init.dbcon.cursor()
+        for ii in range(1, 374):
+            cursor.execute("SELECT * FROM Twitter WHERE ID = ?", (ii,))
 
-#def dkl (vec1, vec2):
-#    vec1 = np.asarray(vec1, dtype=np.float)
-#    vec2 = np.asarray(vec2, dtype=np.float)
-#    return np.sum(np.where(vec1 != 0, vec1 * np.log(vec1 / vec2), 0))
+            emotion = cursor.fetchone()
+            emotion = emotion[1:]
+            dist = euclidean_distance(vec, list(emotion))
+            distance_list.append((dist, ii))
+        import heapq
+        return (heapq.nsmallest(3,distance_list))
+
+
 
 def number_of_videos_in_raw_data():
     with init.dbcon:

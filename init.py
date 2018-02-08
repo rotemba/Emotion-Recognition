@@ -31,9 +31,9 @@ def initEmoitionsDB():
             cursor = dbcon.cursor()
             cursor.execute("CREATE TABLE EmotionsID(ID INTEGER PRIMARY KEY NOT NULL ,Emotion_name VARCHAR(20) NOT NULL )")
             cursor.execute("CREATE TABLE Twitter (%s)" % str )
-            cursor.execute("""CREATE TABLE Relations(X INTEGER NOT NULL,
+            cursor.execute("""CREATE TABLE Cos_Similarity(X INTEGER NOT NULL,
                                                                   Y INTEGER NOT NULL,
-                                                                 Value REAL NOT NULL)""")
+                                                                 Angle REAL NOT NULL)""")
             cursor.execute("CREATE TABLE Videos(VideoID INTEGER PRIMARY KEY NOT NULL, Main_motion VARCHAR(20) NOT NULL, Video_path VARCHAR (70) NOT NULL)")
             cursor.execute("CREATE TABLE Video_Vecs (VideoID INTEGER NOT NULL REFERENCES Videos(VideoID), Frame_number INTEGER NOT NULL, %s , PRIMARY KEY (VideoID, Frame_number))" % strOfVecs)
             cursor.execute("""CREATE TABLE Video_analyze (VideoID INTEGER NOT NULL REFERENCES Videos(VideoID), 
@@ -42,6 +42,10 @@ def initEmoitionsDB():
                                                            Angle_To_Main_Emotion REAL NOT NULL,
                                                            nearest_neighbour VARCHAR(20) NOT NULL,
                                                            distance REAL NOT NULL,
+                                                           second_nearest_neighbour VARCHAR(20) NOT NULL,
+                                                           second_distance REAL NOT NULL,
+                                                           third_nearest_neighbour VARCHAR(20) NOT NULL,
+                                                           third_distance REAL NOT NULL,
                                                            cos_similarity_emotion VARCHAR(20) NOT NULL,
                                                            angle REAL NOT NULL,
                                                            DKL_VALUE REAL NOT NULL)""")
@@ -86,12 +90,12 @@ def initEmoitionsDB():
             #print relationArray
             for row in range(0, rows):
                 for col in range(0, cols):
-                    cursor.execute("INSERT  INTO Relations VALUES (?,?,?)", (row+1, col+1, relationArray[row][col]))
+                    cursor.execute("INSERT  INTO Cos_Similarity VALUES (?,?,?)", (row+1, col+1, relationArray[row][col]))
                     # print ("added value (%f) to the DB" % relationArray[row][col])
             dbcon.commit()
             #TODO: UNCOMMENT!!
             insertAllVideosToDB('/files/ShortVideos', '\t')
-            insertAllVideosToDB('/files/newShortVideos', '\t')
+            #insertAllVideosToDB('/files/newShortVideos', '\t')
             print ("end of the table creation.")
     else:
         print ("db exists")
@@ -160,9 +164,20 @@ def InsertVideoAndAnalyze (ListOfFrames, videoNumber,filename):
             calculate_dkl = methods.calculate_dkl(arr[max(i-1,0)],arr[i])#TODO be SURE about order
 
             prev_vec = mixedVec
-            nearest_emotion = methods.find_shortes_dist(mixedVec)
-            emotion_name = methods.emotionIDToName(nearest_emotion[1])
-            dist_value = nearest_emotion[0]
+            cossimilary = methods.printClosestVectorNames(mixedVec)
+            three_knn_emotions=methods.get_three_closest_knn(mixedVec)
+            #nearest_emotion = methods.find_shortest_dist(mixedVec,1)
+            #second_nearest_emotion= methods.find_shortest_dist(mixedVec,2)
+            nearest_emotion = three_knn_emotions[0]
+            second_nearest_emotion = three_knn_emotions[1]
+            third_nearest_emotion = three_knn_emotions[2]
+            first_knn = methods.emotionIDToName(nearest_emotion[1])
+            first_knn_dist_value = nearest_emotion[0]
+            second_closets =methods.emotionIDToName(second_nearest_emotion[1])
+            second_distance_value = second_nearest_emotion[0]
+            third_closets = methods.emotionIDToName(third_nearest_emotion[1])
+            third_distance_value = third_nearest_emotion[0]
+
             closestVectorByCosSimilarity = methods.printClosestVectorNames(mixedVec)
             closestVectorCosSimName= closestVectorByCosSimilarity[1]
             closestVectorCosSimAngel= closestVectorByCosSimilarity[0]
@@ -171,8 +186,8 @@ def InsertVideoAndAnalyze (ListOfFrames, videoNumber,filename):
             #order = [x[1] for x in nearest_emotion]
             #if (i%20==0):
                 #print ("frame %0d: angle to prev:%0.3f. angle to main emotion:%0.3f" %(i,angleToPrevVec,angleToMainVec))
-            cursor.execute("INSERT INTO Video_analyze VALUES (?,?,?,?,?,?,?,?,?)",(videoNumber,i
-                                                 ,angleToPrevVec, angleToMainVec ,emotion_name,dist_value,closestVectorCosSimName,closestVectorCosSimAngel,calculate_dkl))
+            cursor.execute("INSERT INTO Video_analyze VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",(videoNumber,i
+                                                 ,angleToPrevVec, angleToMainVec ,first_knn,first_knn_dist_value,second_closets,second_distance_value,third_closets,third_distance_value,closestVectorCosSimName,closestVectorCosSimAngel,calculate_dkl))
 
 
     dbcon.commit()
@@ -197,6 +212,7 @@ def insertAllVideosToDB(path_of_files, delimeter):
             vecsDistribution = []
             for row in readCSV:
                 row_count += 1
+
                 if row_count > 9 :
                     print (row[0:8])
                     if (row[0] == 'Video Time'):

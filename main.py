@@ -395,6 +395,7 @@ def main():
     #visualizeData(1)
     #DKL_method()
     #fakeVideos()
+    #algebra.map_euclid_distances()
     #createRandomFrame()
 if __name__ == '__main__':
 
