@@ -208,7 +208,7 @@ def get_three_closest_knn (vec):
             dist = euclidean_distance(vec, list(emotion))
             distance_list.append((dist, ii))
         import heapq
-        return (heapq.nsmallest(3,distance_list))
+        return (heapq.nsmallest(10,distance_list))
 
 
 
