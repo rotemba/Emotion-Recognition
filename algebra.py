@@ -9,7 +9,7 @@ def main():
     pathOfTwitter = "files/Twitter_only_vecs.csv"
     #twitDict = np.genfromtxt(pathOfTwitter, delimiter=',', dtype=None)
     twitDict = np.genfromtxt(pathOfTwitter, dtype=float, delimiter=',')
-    #svd_routine(twitDict)
+    svd_routine(twitDict)
     ListOfEmotions = [emotion, "happiness", "sadness", "anger", "surprise", "scare", "disgust"]
     listOfGeneralVecs= map(lambda x: methods.getVectorOfEmotion(methods.emotionNameToEmotionID(x)), ListOfEmotions)
     vectors = np.array(listOfGeneralVecs)
