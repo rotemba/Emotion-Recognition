@@ -386,7 +386,7 @@ def createRandomFrame():
 def main():
     print pd.__file__
     init.initEmoitionsDB()
-    #algebra.main()
+    algebra.main()
     #basicQueries()
     #workingWithVecs()
     ##printClosestVectorNames(getVectorOfEmotion(62))
