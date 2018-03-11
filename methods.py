@@ -47,7 +47,7 @@ def angleBetweenTwoVecs( vec1, vec2):
 
 def printClosestVectorNames( vec):
     templist=[]
-    for i in range (1,373):
+    for i in range (1,init.num_of_vectors):
         newangle= angleBetweenTwoVecs(vec,getVectorOfEmotion(i))
         #print ("angle between %0d, %0d: %0.4f" % (7, i, newangle))
         templist.append((newangle,i))
@@ -60,7 +60,7 @@ def printClosestVectorNames( vec):
 
 def printClosestVectorByCosSimilarity(vec):
     templist=[]
-    for i in range (1,373):
+    for i in range (1,init.num_of_vectors):
         newangle= angleBetweenTwoVecs(vec,getVectorOfEmotion(i))
         #print ("angle between %0d, %0d: %0.4f" % (7, i, newangle))
         templist.append((newangle,i))
@@ -103,26 +103,12 @@ def sizeOfSingleVec(vec):
 
 
 def printVectorsSize():
-    for i in range(1,374):
+    for i in range(1,init.num_of_vectors):
         vec=getVectorOfEmotion(i)
         sizeOfVec = sizeOfSingleVec(vec)
         print (str(i)+":vector-"+ emotionIDToName(i)+ " size: "+ str(sizeOfVec))
 
 
-
-
-
-def computeNewVec(): # expected format: list ( scalar, vector )
-    print ("for now going to work on fool emotion with scalar of 0.5")
-    foolVec = getVectorOfEmotion(emotionNameToEmotionID("fool"))
-    scalar=0.5
-    newFoolVec=map((lambda x: x * scalar), foolVec)
-    print("beofre:")
-    print (foolVec)
-    print ("after:")
-    print (newFoolVec)
-    print ("pretty print:")
-    print (map((lambda x:  "%0.4f" % x ), newFoolVec))
 
 
 def getVectorOfEmotion( emotionID):
@@ -182,7 +168,7 @@ def find_shortest_dist(vec, first_or_second):
     distance_list = list()
     with init.dbcon:
         cursor = init.dbcon.cursor()
-        for ii in range(1,374):
+        for ii in range(1,init.num_of_vectors):
             cursor.execute("SELECT * FROM Twitter WHERE ID = ?",  (ii,))
 
             emotion = cursor.fetchone()
@@ -200,7 +186,7 @@ def get_three_closest_knn (vec):
     distance_list = list()
     with init.dbcon:
         cursor = init.dbcon.cursor()
-        for ii in range(1, 374):
+        for ii in range(1, init.num_of_vectors):
             cursor.execute("SELECT * FROM Twitter WHERE ID = ?", (ii,))
 
             emotion = cursor.fetchone()

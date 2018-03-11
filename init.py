@@ -7,6 +7,19 @@ import methods
 import glob
 import methods
 
+global dimensions_of_vector
+global num_of_vectors
+
+# Working with human space vectors.
+dimensions_of_vector= 25
+num_of_vectors = 415
+
+
+# Working with the twiter vectors:
+# dimensions_of_vector= 50
+# num_of_vectors = 415
+
+
 
 
 
@@ -25,8 +38,8 @@ def initEmoitionsDB():
     global dbcon
     dbcon = sqlite3.connect("Emotions.db")
     if not databaseexisted:
-        str = ("ID INTEGER NOT NULL REFERENCES  EmotionsID(ID), %s" % ','.join("X%d REAL" % i for i in range(50)))
-        strOfVecs=(','.join("X%d REAL" % i for i in range(50)))
+        str = ("ID INTEGER NOT NULL REFERENCES  EmotionsID(ID), %s" % ','.join("X%d REAL" % i for i in range(dimensions_of_vector)))
+        strOfVecs=(','.join("X%d REAL" % i for i in range(dimensions_of_vector)))
         with dbcon:
             cursor = dbcon.cursor()
             cursor.execute("CREATE TABLE EmotionsID(ID INTEGER PRIMARY KEY NOT NULL ,Emotion_name VARCHAR(20) NOT NULL )")
@@ -73,25 +86,36 @@ def initEmoitionsDB():
 
 
             print("DONE creating the tables")
-            twiter_path = "files/twitter_dict.csv"
-            pathOfTwitter = "files/Twitter_normalize.csv"
+            #twiter_path = "files/twitter_dict.csv"
+
+            #pathOfTwitter = "files/Twitter_normalize.csv"
+            pathOfTwitter = "files/humanSpace-414-25d.csv"
             pathOfEmotionRealations="files/emotionsAngelsToDB.csv"
             fileObject = csv.reader(pathOfTwitter)
 
             twitDict = genfromtxt(pathOfTwitter, delimiter=',', dtype=None)
-            row_count = 374
+            row_count = num_of_vectors
             print ("Inserting data to table")
 
             str = '?'
-            for x in range(0, 50):
+            for x in range(0, dimensions_of_vector):
                 str = str + ',?'
 
             for row in range(1, row_count):
-                cursor.execute('''INSERT INTO Twitter VALUES (%s)''' % str,(row, twitDict[row][1],twitDict[row][2],twitDict[row][3],twitDict[row][4],twitDict[row][5],twitDict[row][6],twitDict[row][7],twitDict[row][8],twitDict[row][9],twitDict[row][10],
+                if (dimensions_of_vector==50):
+                    cursor.execute('''INSERT INTO Twitter VALUES (%s)''' % str,(row, twitDict[row][1],twitDict[row][2],twitDict[row][3],twitDict[row][4],twitDict[row][5],twitDict[row][6],twitDict[row][7],twitDict[row][8],twitDict[row][9],twitDict[row][10],
                                       twitDict[row][11],twitDict[row][12],twitDict[row][13],twitDict[row][14],twitDict[row][15],twitDict[row][16],twitDict[row][17],twitDict[row][18],twitDict[row][19],twitDict[row][20],
                                       twitDict[row][21],twitDict[row][22],twitDict[row][23],twitDict[row][24],twitDict[row][25],twitDict[row][26],twitDict[row][27],twitDict[row][28],twitDict[row][29],twitDict[row][30],
                                       twitDict[row][31],twitDict[row][32],twitDict[row][33],twitDict[row][34],twitDict[row][35],twitDict[row][36],twitDict[row][37],twitDict[row][38],twitDict[row][39],twitDict[row][40],
                                       twitDict[row][41],twitDict[row][42],twitDict[row][43],twitDict[row][44],twitDict[row][45],twitDict[row][46],twitDict[row][47],twitDict[row][48],twitDict[row][49],twitDict[row][50]))
+                else:
+                    cursor.execute('''INSERT INTO Twitter VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)''' , (
+                    row, twitDict[row][1], twitDict[row][2], twitDict[row][3], twitDict[row][4], twitDict[row][5],
+                    twitDict[row][6], twitDict[row][7], twitDict[row][8], twitDict[row][9], twitDict[row][10],
+                    twitDict[row][11], twitDict[row][12], twitDict[row][13], twitDict[row][14], twitDict[row][15],
+                    twitDict[row][16], twitDict[row][17], twitDict[row][18], twitDict[row][19], twitDict[row][20],
+                    twitDict[row][21], twitDict[row][22], twitDict[row][23], twitDict[row][24], twitDict[row][25]))
+
             print ("Twitter vectors are inside the DB")
             for row in range(1, row_count):
                 cursor.execute('''INSERT INTO EmotionsID(ID, Emotion_name) VALUES (?,?)''' ,(row,twitDict[row][0]))
@@ -167,12 +191,19 @@ def InsertVideoAndAnalyze (ListOfFrames, videoNumber,filename):
             #Neutral,Happy,Sad,Angry,Surprised,Scared,Disgusted
             mixedVec=methods.getMixedVec(arr[i][0],arr[i][1],arr[i][2],arr[i][3],arr[i][4],arr[i][5],arr[i][6],listOfGeneralVecs)
 
-            cursor.execute("""INSERT OR REPLACE INTO Video_Vecs VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
-                           (videoNumber,i,mixedVec[0],mixedVec[1],mixedVec[2],mixedVec[3],mixedVec[4],mixedVec[5],mixedVec[6],mixedVec[7],mixedVec[8],mixedVec[9],mixedVec[10],
-            mixedVec[11],mixedVec[12],mixedVec[13],mixedVec[14],mixedVec[15],mixedVec[16],mixedVec[17],mixedVec[18],mixedVec[19],mixedVec[20],
-            mixedVec[21],mixedVec[22],mixedVec[23],mixedVec[24],mixedVec[25],mixedVec[26],mixedVec[27],mixedVec[28],mixedVec[29],mixedVec[30],
-            mixedVec[31],mixedVec[32],mixedVec[33],mixedVec[34],mixedVec[35],mixedVec[36],mixedVec[37],mixedVec[38],mixedVec[39],mixedVec[40],
-            mixedVec[41],mixedVec[42],mixedVec[43],mixedVec[44],mixedVec[45],mixedVec[46],mixedVec[47],mixedVec[48],mixedVec[49]))
+            if (dimensions_of_vector==50):
+                cursor.execute(
+                    """INSERT OR REPLACE INTO Video_Vecs VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                    (videoNumber, i, mixedVec[0], mixedVec[1], mixedVec[2], mixedVec[3], mixedVec[4], mixedVec[5], mixedVec[6], mixedVec[7], mixedVec[8], mixedVec[9], mixedVec[10],
+                     mixedVec[11], mixedVec[12], mixedVec[13], mixedVec[14], mixedVec[15], mixedVec[16], mixedVec[17],mixedVec[18], mixedVec[19], mixedVec[20],
+                     mixedVec[21], mixedVec[22], mixedVec[23], mixedVec[24], mixedVec[25], mixedVec[26], mixedVec[27],mixedVec[28], mixedVec[29], mixedVec[30],
+                     mixedVec[31], mixedVec[32], mixedVec[33], mixedVec[34], mixedVec[35], mixedVec[36], mixedVec[37],mixedVec[38], mixedVec[39], mixedVec[40],
+                     mixedVec[41], mixedVec[42], mixedVec[43], mixedVec[44], mixedVec[45], mixedVec[46], mixedVec[47],mixedVec[48], mixedVec[49]))
+            else:
+                cursor.execute("""INSERT OR REPLACE INTO Video_Vecs VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                (videoNumber,i,mixedVec[0],mixedVec[1],mixedVec[2],mixedVec[3],mixedVec[4],mixedVec[5],mixedVec[6],mixedVec[7],mixedVec[8],mixedVec[9],mixedVec[10],
+                mixedVec[11],mixedVec[12],mixedVec[13],mixedVec[14],mixedVec[15],mixedVec[16],mixedVec[17],mixedVec[18],mixedVec[19],mixedVec[20],
+                mixedVec[21],mixedVec[22],mixedVec[23],mixedVec[24]))
             angleToPrevVec=methods.angleBetweenTwoVecs(prev_vec,mixedVec)
             angleToMainVec = methods.angleBetweenTwoVecs(vector_of_main_emotion, mixedVec)
             #print ("dkl distance between the vecs is: %0.6f" % (methods.dkl(prev_vec, mixedVec)))
@@ -181,18 +212,6 @@ def InsertVideoAndAnalyze (ListOfFrames, videoNumber,filename):
             prev_vec = mixedVec
             cossimilary = methods.printClosestVectorNames(mixedVec)
             ten_knn_emotions=methods.get_three_closest_knn(mixedVec)
-            #nearest_emotion = methods.find_shortest_dist(mixedVec,1)
-            #second_nearest_emotion= methods.find_shortest_dist(mixedVec,2)
-            #nearest_emotion = three_knn_emotions[0]
-            #second_nearest_emotion = three_knn_emotions[1]
-            #third_nearest_emotion = three_knn_emotions[2]
-            #first_knn = methods.emotionIDToName(nearest_emotion[1])
-            #first_knn_dist_value = nearest_emotion[0]
-            #second_closets =methods.emotionIDToName(second_nearest_emotion[1])
-            #second_distance_value = second_nearest_emotion[0]
-            #third_closets = methods.emotionIDToName(third_nearest_emotion[1])
-            #third_distance_value = third_nearest_emotion[0]
-
             closestVectorByCosSimilarity = methods.printClosestVectorNames(mixedVec)
             closestVectorCosSimName= closestVectorByCosSimilarity[1]
             closestVectorCosSimAngel= closestVectorByCosSimilarity[0]
