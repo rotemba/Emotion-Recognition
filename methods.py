@@ -218,9 +218,9 @@ def number_of_frames_in_a_video(video_number):
 
 def calculate_dkl(vec1,vec2):
     if (sum(vec1) != 1.0):
-        vec1 = normalize_vec(vec1)
+        vec1 = normalize_vec_l1(vec1)
     if (sum(vec2) != 1.0):
-        vec2 = normalize_vec(vec2)
+        vec2 = normalize_vec_l1(vec2)
     sum_dkl=0
     for i in range(0,len(vec2)):
         sum_dkl+=vec2[i]*math.log(float(vec2[i])/float(vec1[i]))
@@ -229,9 +229,14 @@ def calculate_dkl(vec1,vec2):
 
 
 
-def normalize_vec(vec, wantedNormSize = 1):
-    norma = np.linalg.norm(vec)
-    return map(lambda x: (x/(norma)*wantedNormSize), vec)
+def normalize_vec_l2(vec, wantedNormSize = 1):
+    l2_norma = np.linalg.norm(vec)
+    return map(lambda x: (x/(l2_norma)*wantedNormSize), vec)
+
+def normalize_vec_l1(vec , wantedNormSize = 1):
+    l1_norma = sum(vec)
+    return map(lambda x: (x / l1_norma * wantedNormSize), vec)
+
 
 def analyze_emotion_to_emotion():
     print ("this function will stimulate the flow from emotion to other")

@@ -11,13 +11,13 @@ global dimensions_of_vector
 global num_of_vectors
 
 # Working with human space vectors.
-dimensions_of_vector= 25
-num_of_vectors = 415
+#dimensions_of_vector= 25
+#num_of_vectors = 415
 
 
 # Working with the twiter vectors:
-# dimensions_of_vector= 50
-# num_of_vectors = 415
+dimensions_of_vector= 50
+num_of_vectors = 374
 
 
 
@@ -88,8 +88,9 @@ def initEmoitionsDB():
             print("DONE creating the tables")
             #twiter_path = "files/twitter_dict.csv"
 
-            #pathOfTwitter = "files/Twitter_normalize.csv"
-            pathOfTwitter = "files/humanSpace-414-25d.csv"
+            pathOfTwitter = "files/Twitter_normalize.csv"
+            #pathOfTwitter = "files/humanSpace-414-25d.csv"
+
             pathOfEmotionRealations="files/emotionsAngelsToDB.csv"
             fileObject = csv.reader(pathOfTwitter)
 
@@ -179,7 +180,7 @@ def InsertVideoAndAnalyze (ListOfFrames, videoNumber,filename):
         cursor=dbcon.cursor()
         cursor.execute("INSERT OR REPLACE INTO Videos VALUES (?,?,?)", (videoNumber, name_of_main_emotion,video_path))
         for i in range (0, len(ListOfFrames)):
-            arr[i]=methods.normalize_vec( arr[i], 1)
+            arr[i]=methods.normalize_vec_l1( arr[i], 1)
             #print ("framte number: %0d / %0d" %(i,len(arr[0])))
             #if videoFrameArray[i][1]== 'FIND_FAILED' or videoFrameArray[i][1] == 'FIT_FAILED':
             #        print ("cant put inside DB")

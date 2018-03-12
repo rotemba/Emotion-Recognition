@@ -368,7 +368,7 @@ def createRandomFrame():
     for j in range(1,10):
         for i in range(0,len(c)):
             c[i] = random.random()
-        c = methods.normalize_vec(c)
+        c = methods.normalize_vec_l1(c)
         frame_vector = getMixedVec(given_list= c)
         print c
         result = methods.printClosestVectorByCosSimilarity(frame_vector)

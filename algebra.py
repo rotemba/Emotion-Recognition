@@ -8,21 +8,22 @@ def main():
     #emotion = raw_input("put emotion name please to replace with neutral")
     emotion = "neutral"
     pathOfTwitter = "files/Twitter_only_vecs.csv"
+    human_space =  "files/human_space_algebra.csv"
     #twitDict = np.genfromtxt(pathOfTwitter, delimiter=',', dtype=None)
-    twitDict = np.genfromtxt(pathOfTwitter, dtype=float, delimiter=',')
+    emotion_vectors = np.genfromtxt(pathOfTwitter, dtype=float, delimiter=',')
     ListOfEmotions = [emotion, "happiness", "sadness", "anger", "surprise", "scare", "disgust"]
     listOfGeneralVecs= map(lambda x: methods.getVectorOfEmotion(methods.emotionNameToEmotionID(x)), ListOfEmotions)
     #vectors = np.array(listOfGeneralVecs)
-    print twitDict.shape
-    U, singularValues, V = svd_routine(twitDict)
+    print emotion_vectors.shape
+    U, singularValues, V = svd_routine(emotion_vectors)
     print U.shape
     print V.shape
-    print_statistics(U, singularValues, V,twitDict)
+    print_statistics(U, singularValues, V,emotion_vectors)
     finding_nearest_emotion(V)
     basis = gram_schmidt(V[0:7])
     #basis = gram_schmidt(vectors)
     #dict_after_pertubation = pertubation(twitDict,ListOfEmotions)
-    #which_emotions_are_close(twitDict,basis)
+    which_emotions_are_close(emotion_vectors,basis)
 
 
 
@@ -66,9 +67,9 @@ def pertubation(twitterdict,ListOfEmotions):
     for v in ListOfEmotions:
         print v
         pre = twitterdict[methods.emotionNameToEmotionID(v)-1]
-        x = methods.normalize_vec(np.random.normal(0,1,50),0.9)
-        twitterdict[methods.emotionNameToEmotionID(v)-1] = methods.normalize_vec(pre + x)
-        print methods.printClosestVectorByCosSimilarity(methods.normalize_vec(pre + x))
+        x = methods.normalize_vec_l2(np.random.normal(0,1,50),0.9)
+        twitterdict[methods.emotionNameToEmotionID(v)-1] = methods.normalize_vec_l2(pre + x)
+        print methods.printClosestVectorByCosSimilarity(methods.normalize_vec_l2(pre + x))
     return twitterdict
 
 def finding_nearest_emotion(V):
@@ -126,7 +127,7 @@ def which_emotions_are_close(space,basis):
     count = 0
     for i in range(1, len(space)):
         v = space[i]
-        print methods.emotionIDToName(i)
+        #print methods.emotionIDToName(i)
         z = v - np.sum(np.dot(v, b) * b for b in basis)
         if (np.linalg.norm(z) > 1e-10):
             list_of_distance_from_space.append((np.linalg.norm(z), methods.emotionIDToName(i)))
