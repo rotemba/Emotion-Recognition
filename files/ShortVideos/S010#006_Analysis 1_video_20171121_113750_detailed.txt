@@ -1,0 +1,24 @@
+Video analysis detailed log
+
+Face Model:	General
+Calibration:	-
+Start time:	11/21/2017 11:37:08.008
+Filename:	D:\Testings\Movie Samples & FR Analysis Logs - CK\1\S010#006.mp4
+Frame rate:	20.00
+
+Video Time	Neutral	Happy	Sad	Angry	Surprised	Scared	Disgusted	Gender	Age	Beard	Moustache	Glasses	Ethnicity	Quality	Mouth	Left Eye	Right Eye	Left Eyebrow	Right Eyebrow	Identity	Stimulus	Event Marker
+00:00:00.000	0.737922900	0.217171800	0.044625540	0.118469700	0.028623850	0.046333440	0.047843340	Female	20 - 30	None	None	No	Caucasian	0.500000000	FIT_FAILED	FIT_FAILED	FIT_FAILED	FIT_FAILED	FIT_FAILED	FIT_FAILED	No Stimulus	No Event Marker
+00:00:00.050	0.737922900	0.217171800	0.044625540	0.118469700	0.028623850	0.046333440	0.047843340	Female	20 - 30	None	None	No	Caucasian	0.500000000	FIT_FAILED	FIT_FAILED	FIT_FAILED	FIT_FAILED	FIT_FAILED	FIT_FAILED	No Stimulus	No Event Marker
+00:00:00.100	0.737922900	0.217171800	0.044625540	0.118469700	0.028623850	0.046333440	0.047843340	Female	20 - 30	None	None	No	Caucasian	0.500000000	FIT_FAILED	FIT_FAILED	FIT_FAILED	FIT_FAILED	FIT_FAILED	FIT_FAILED	No Stimulus	No Event Marker
+00:00:00.150	0.764430600	0.188222300	0.046582740	0.108374900	0.026279240	0.040773880	0.041633860	Female	20 - 30	None	None	No	Caucasian	0.952456500	Closed	Open	Open	Neutral	Neutral	NO IDENTIFICATION	No Stimulus	No Event Marker
+00:00:00.200	0.787550400	0.163260700	0.047585100	0.099162090	0.024309870	0.035921230	0.036210170	Female	20 - 30	None	None	No	Caucasian	0.953918500	Closed	Open	Open	Neutral	Neutral	NO IDENTIFICATION	No Stimulus	No Event Marker
+00:00:00.250	0.807293400	0.141875000	0.048127310	0.090587470	0.022507080	0.031748070	0.031498350	Female	20 - 30	None	None	No	Caucasian	0.957104000	Closed	Open	Open	Neutral	Neutral	NO IDENTIFICATION	No Stimulus	No Event Marker
+00:00:00.300	0.823070900	0.124770700	0.047953450	0.082512120	0.020942330	0.028623910	0.027480740	Female	20 - 30	None	None	No	Caucasian	0.949868400	Closed	Open	Open	Neutral	Neutral	NO IDENTIFICATION	No Stimulus	No Event Marker
+00:00:00.350	0.828280400	0.115815700	0.047217790	0.074885260	0.019402330	0.028672500	0.024154030	Female	20 - 30	None	None	No	Caucasian	0.933037800	Closed	Open	Open	Neutral	Neutral	unknown person	No Stimulus	No Event Marker
+00:00:00.400	0.817253500	0.120988200	0.045455520	0.067711350	0.017910770	0.032082810	0.021505460	Female	20 - 30	None	None	No	Caucasian	0.917661000	Closed	Open	Open	Neutral	Neutral	unknown person	No Stimulus	No Event Marker
+00:00:00.450	0.793171100	0.139042500	0.042955880	0.060980490	0.016470790	0.038635770	0.019490770	Female	20 - 30	None	None	No	Caucasian	0.896407700	Closed	Open	Open	Neutral	Neutral	unknown person	No Stimulus	No Event Marker
+00:00:00.500	0.758531500	0.169211800	0.039967790	0.054735630	0.015125010	0.045335310	0.017921350	Female	20 - 30	None	None	No	Caucasian	0.883846500	Closed	Open	Open	Neutral	Neutral	unknown person	No Stimulus	No Event Marker
+00:00:00.550	0.716478800	0.208737400	0.036741240	0.048999180	0.013894310	0.050304460	0.016625010	Female	20 - 30	None	None	No	Caucasian	0.876224600	Closed	Open	Open	Neutral	Neutral	unknown person	No Stimulus	No Event Marker
+00:00:00.600	0.669914800	0.254484500	0.033457120	0.043761820	0.012761310	0.053312020	0.015515160	Female	20 - 30	None	None	No	Caucasian	0.866066500	Closed	Open	Open	Neutral	Neutral	unknown person	No Stimulus	No Event Marker
+00:00:00.650	0.621222500	0.303653700	0.030238910	0.039009330	0.011717730	0.054465950	0.014614420	Female	20 - 30	None	None	No	Caucasian	0.855247300	Open	Open	Open	Neutral	Neutral	unknown person	No Stimulus	No Event Marker
+00:00:00.700	0.572102700	0.354296800	0.027165640	0.034719780	0.010770270	0.054399210	0.013816720	Female	20 - 30	None	None	No	Caucasian	0.850060900	Open	Open	Open	Neutral	Neutral	unknown person	No Stimulus	No Event Marker

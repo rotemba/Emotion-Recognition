@@ -1,16 +1,12 @@
 
 import os
 import glob
+import heapq
+import matplotlib
+import scipy
+import numpy as np
 
-print ("test func")
-cwd = os.getcwd()
-print (cwd)
-path = cwd+'/files/newShortVideos'
-print (path)
-
-
-
-
-
-
-
+if (3>4):
+    print ("hey")
+else:
+    print ("no")
