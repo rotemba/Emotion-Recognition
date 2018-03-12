@@ -10,18 +10,24 @@ import methods
 global dimensions_of_vector
 global num_of_vectors
 
+global working_with_twiter_space
+global chosen_vector_space_path
+
+
+
+
+working_with_twiter_space=0
+
+
+if (working_with_twiter_space==1):
+    dimensions_of_vector = 50
+    num_of_vectors = 374
+    chosen_vector_space_path="files/Twitter_normalize.csv"
+else:
 # Working with human space vectors.
-#dimensions_of_vector= 25
-#num_of_vectors = 415
-
-
-# Working with the twiter vectors:
-dimensions_of_vector= 50
-num_of_vectors = 374
-
-
-
-
+    dimensions_of_vector= 25
+    num_of_vectors = 415
+    chosen_vector_space_path= "files/humanSpace-414-25d.csv"
 
 
 
@@ -88,8 +94,8 @@ def initEmoitionsDB():
             print("DONE creating the tables")
             #twiter_path = "files/twitter_dict.csv"
 
-            pathOfTwitter = "files/Twitter_normalize.csv"
-            #pathOfTwitter = "files/humanSpace-414-25d.csv"
+            #pathOfTwitter = "files/Twitter_normalize.csv"
+            pathOfTwitter = chosen_vector_space_path
 
             pathOfEmotionRealations="files/emotionsAngelsToDB.csv"
             fileObject = csv.reader(pathOfTwitter)
