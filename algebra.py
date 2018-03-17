@@ -25,12 +25,12 @@ def main():
     U, singularValues, V = svd_routine(emotion_vectors)
     print U.shape
     print V.shape
-    print_statistics(U, singularValues, V,emotion_vectors)
+    #print_statistics(U, singularValues, V,emotion_vectors)
     finding_nearest_emotion(V)
     basis = gram_schmidt(V[0:7])
     #basis = gram_schmidt(vectors)
     #dict_after_pertubation = pertubation(twitDict,ListOfEmotions)
-    which_emotions_are_close(emotion_vectors,basis)
+    #which_emotions_are_close(emotion_vectors,basis)
 
 
 
@@ -76,14 +76,18 @@ def pertubation(twitterdict,ListOfEmotions):
         pre = twitterdict[methods.emotionNameToEmotionID(v)-1]
         x = methods.normalize_vec_l2(np.random.normal(0,1,50),0.9)
         twitterdict[methods.emotionNameToEmotionID(v)-1] = methods.normalize_vec_l2(pre + x)
-        print methods.printClosestVectorByCosSimilarity(methods.normalize_vec_l2(pre + x))
+        print methods.getClosestVectorNamesCosine(methods.normalize_vec_l2(pre + x))
     return twitterdict
 
 def finding_nearest_emotion(V):
     i=0
     for v in V:
-        emo = (methods.find_shortest_dist(v,1))
-        print "emotion : %s is closest to V[%0d] distance %0.6f"%(methods.emotionIDToName(emo[1]),i, emo[0])
+        dist = methods.getSortedListDistanceEmotionName(v)
+        desc = '\n'
+        for j in range(1,8):
+            emo = dist[j]
+            desc = desc + str(j)+ ".\t" + methods.emotionIDToName(emo[1]) + " " + "{:.4f}".format(emo[0]) +"\n"
+        print "meta emotion V[%0d]: these are the closest emotions to it: %0s"%(i,desc)
         i = i + 1
 
 
@@ -116,7 +120,7 @@ def print_histogram(space, basis):
         else:
             list_of_distance_from_space.append( 0 )
             count += 1
-            print methods.printClosestVectorByCosSimilarity(v)
+            print methods.getClosestVectorNamesCosine(v)
 
     print count
     print max(list_of_distance_from_space)
@@ -141,7 +145,7 @@ def which_emotions_are_close(space,basis):
         else:
             list_of_distance_from_space.append((0, methods.emotionIDToName(i)))
             count += 1
-            print methods.printClosestVectorByCosSimilarity(v)
+            print methods.getClosestVectorNamesCosine(v)
 
     from operator import itemgetter
     sorted_distance_list = sorted(list_of_distance_from_space, key=itemgetter(0))

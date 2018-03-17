@@ -187,7 +187,7 @@ def buildNewVector():
         result = map(sum,zip(result,listOfNewVEcs[i]))
 
     methods.print_nicely_vec(result)
-    methods.printClosestVectorNames(result)
+    methods.getClosestVectorNamesCosine(result)
 
 
 
@@ -285,11 +285,11 @@ def readVideoToDB(video_path, video_number):
             angleToPrevVec=methods.angleBetweenTwoVecs(prev_vec,mixedVec)
             angleToMainVec = methods.angleBetweenTwoVecs(vector_of_main_emotion, mixedVec)
             prev_vec = mixedVec
-            cossimilary = methods.printClosestVectorNames(mixedVec)
+            cossimilary = methods.getClosestVectorNamesCosine(mixedVec)
             nearest_emotion = methods.find_shortes_dist(mixedVec)
             emotion_name = methods.emotionIDToName(nearest_emotion[1])
             dist_value = nearest_emotion[0]
-            closestVectorByCosSimilarity = methods.printClosestVectorNames(mixedVec)
+            closestVectorByCosSimilarity = methods.getClosestVectorNamesCosine(mixedVec)
             closestVectorCosSimName= methods.emotionIDToName(closestVectorByCosSimilarity[1])
             closestVectorCosSimAngel= closestVectorByCosSimilarity[0]
             print ("closest by cos-similarity:%s.\t angel:%0.4f" %(closestVectorCosSimName,closestVectorCosSimAngel))
@@ -371,7 +371,7 @@ def createRandomFrame():
         c = methods.normalize_vec_l1(c)
         frame_vector = getMixedVec(given_list= c)
         print c
-        result = methods.printClosestVectorByCosSimilarity(frame_vector)
+        result = methods.getClosestVectorNamesCosine(frame_vector)
         result_list.append( result[1] )
         print result[1]
 
@@ -389,7 +389,7 @@ def main():
     algebra.main()
     #basicQueries()
     #workingWithVecs()
-    ##printClosestVectorNames(getVectorOfEmotion(62))
+    ##getClosestVectorNamesCosine(getVectorOfEmotion(62))
     #readVideoToDB('files/shortEmotion1.csv',1)
     #init.insertAllVideosToDB()
     #visualizeData(1)

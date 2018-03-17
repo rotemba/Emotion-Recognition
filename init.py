@@ -217,9 +217,9 @@ def InsertVideoAndAnalyze (ListOfFrames, videoNumber,filename):
             calculate_dkl = methods.calculate_dkl(arr[max(i-1,0)],arr[i])#TODO be SURE about order
 
             prev_vec = mixedVec
-            cossimilary = methods.printClosestVectorNames(mixedVec)
+            cossimilary = methods.getClosestVectorNamesCosine(mixedVec)
             ten_knn_emotions=methods.get_three_closest_knn(mixedVec)
-            closestVectorByCosSimilarity = methods.printClosestVectorNames(mixedVec)
+            closestVectorByCosSimilarity = methods.getClosestVectorNamesCosine(mixedVec)
             closestVectorCosSimName= closestVectorByCosSimilarity[1]
             closestVectorCosSimAngel= closestVectorByCosSimilarity[0]
 

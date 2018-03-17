@@ -38,14 +38,20 @@ def angleBetweenTwoVecs( vec1, vec2):
     #print(len(vec1))
     #print(len(vec2))
     result = 1 - spatial.distance.cosine(vec1, vec2)
+    #print result
+    #vec1 = normalize_vec_l2(vec1)
+    #vec2 = normalize_vec_l2(vec2)
     #mone=sum((a*b) for a, b in zip(vec1, vec2))
-    #sizeOfVecs=(sizeOfVec1*sizeOfVec2)
+    #sizeOfVecs=1 #normelize vec
     #ans=mone/sizeOfVecs
     #print ans
+    #print ans - result
+    #if abs(ans - result) >  2.22044604925e-15:
+    #    exit()
     return result
 
 
-def printClosestVectorNames( vec):
+def getClosestVectorNamesCosine( vec):
     templist=[]
     for i in range (1,init.num_of_vectors):
         newangle= angleBetweenTwoVecs(vec,getVectorOfEmotion(i))
@@ -58,7 +64,7 @@ def printClosestVectorNames( vec):
     result1 = (result[0], emotionIDToName(result[1]))
     return result1
 
-def printClosestVectorByCosSimilarity(vec):
+def getSortedListDistanceEmotionName(vec):
     templist=[]
     for i in range (1,init.num_of_vectors):
         newangle= angleBetweenTwoVecs(vec,getVectorOfEmotion(i))
@@ -66,10 +72,8 @@ def printClosestVectorByCosSimilarity(vec):
         templist.append((newangle,i))
     from operator import itemgetter
 
-
-    result = max(templist, key=itemgetter(0))  # faster solution
-    result1 = (result[0], emotionIDToName(result[1]))  #angel,emotion_name
-    return result1
+    result = sorted(templist, key=itemgetter(0), reverse=True)
+    return result
 
 
 def emotionIDToName(emotionID):
