@@ -27,11 +27,11 @@ def main():
     print V.shape
     #print_statistics(U, singularValues, V,emotion_vectors)
     finding_nearest_emotion(V)
-    basis = gram_schmidt(V[0:7])
+    basis = V[0:7]
     #basis = gram_schmidt(vectors)
     #dict_after_pertubation = pertubation(twitDict,ListOfEmotions)
-    #which_emotions_are_close(emotion_vectors,basis)
-
+    which_emotions_are_close(emotion_vectors,basis)
+    #get_clustering(emotion_vectors,basis)
 
 
 def get_orthoNormal():
@@ -84,7 +84,7 @@ def finding_nearest_emotion(V):
     for v in V:
         dist = methods.getSortedListDistanceEmotionName(v)
         desc = '\n'
-        for j in range(1,8):
+        for j in range(0,6):
             emo = dist[j]
             desc = desc + str(j)+ ".\t" + methods.emotionIDToName(emo[1]) + " " + "{:.4f}".format(emo[0]) +"\n"
         print "meta emotion V[%0d]: these are the closest emotions to it: %0s"%(i,desc)
@@ -108,11 +108,11 @@ def print_statistics(U, singularValues, V,twitDict):
     print(len(V))
 
 
-def print_histogram(space, basis):
+def create_histogram_from_space(space, basis):
     list_of_distance_from_space = list()
     count = 0
-    for i in range(1,len( space)):
-        v = space[i]
+    for i in range(1,len(space)):
+        v = space[i-1]
         print methods.emotionIDToName(i)
         z = v - np.sum(np.dot(v, b) * b for b in basis)
         if (np.linalg.norm(z) > 1e-10):
@@ -120,7 +120,6 @@ def print_histogram(space, basis):
         else:
             list_of_distance_from_space.append( 0 )
             count += 1
-            print methods.getClosestVectorNamesCosine(v)
 
     print count
     print max(list_of_distance_from_space)
@@ -136,16 +135,14 @@ def print_histogram(space, basis):
 def which_emotions_are_close(space,basis):
     list_of_distance_from_space = list()
     count = 0
-    for i in range(1, len(space)):
-        v = space[i]
-        #print methods.emotionIDToName(i)
+    for i in range(1, len(space)+1):
+        v = space[i-1]
         z = v - np.sum(np.dot(v, b) * b for b in basis)
         if (np.linalg.norm(z) > 1e-10):
             list_of_distance_from_space.append((np.linalg.norm(z), methods.emotionIDToName(i)))
         else:
             list_of_distance_from_space.append((0, methods.emotionIDToName(i)))
             count += 1
-            print methods.getClosestVectorNamesCosine(v)
 
     from operator import itemgetter
     sorted_distance_list = sorted(list_of_distance_from_space, key=itemgetter(0))
@@ -154,6 +151,30 @@ def which_emotions_are_close(space,basis):
 
     dist_list = [ item[0] for item in list_of_distance_from_space]
     print_histogram(dist_list)
+
+
+def get_clustering(space, basis):
+    x = list()
+    y = []
+    name = []
+    count = 0
+    for i in range(1, len(space)):
+        v = space[i-1]
+        # print methods.emotionIDToName(i)
+        x.append(np.sum(np.dot(v, basis[0])))
+        y.append( np.sum(np.dot(v, basis[1])) )
+        name.append(methods.emotionIDToName(i))
+
+    import matplotlib.pyplot as plt
+    fig, ax = plt.subplots()
+    ax.scatter(x, y)
+
+
+    for i in range(0, len(space)):
+        ax.annotate(name[i], (x[i], y[i]))
+        #ax.annotate('i', (x[i], y[i]))
+
+    ax.show()
 
 
 def print_histogram(dist_list):

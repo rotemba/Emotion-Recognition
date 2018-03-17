@@ -15,7 +15,7 @@ global chosen_vector_space_path
 
 
 
-working_with_twiter_space=0
+working_with_twiter_space=1
 
 
 if (working_with_twiter_space==1):
