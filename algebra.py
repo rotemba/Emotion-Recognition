@@ -1,16 +1,23 @@
 import numpy as np
 import methods
+import init
 import matplotlib.pyplot as plt
 #def getMixedVec1(NeutralScalar,HappyScalar,SadScalar,AngryScalar,SurprisedScalar,ScaredScalar,DisgustedScalar, listOfTheVecs):
+
+pathOfTwitter = "files/Twitter_only_vecs.csv"
+human_space = "files/human_space_algebra.csv"
 
 def main():
 
     #emotion = raw_input("put emotion name please to replace with neutral")
     emotion = "neutral"
-    pathOfTwitter = "files/Twitter_only_vecs.csv"
-    human_space =  "files/human_space_algebra.csv"
-    #twitDict = np.genfromtxt(pathOfTwitter, delimiter=',', dtype=None)
-    emotion_vectors = np.genfromtxt(pathOfTwitter, dtype=float, delimiter=',')
+
+    if (init.working_with_twiter_space == 1):
+        path_to_only_vecs = pathOfTwitter
+    else:
+        path_to_only_vecs = human_space
+
+    emotion_vectors = np.genfromtxt(path_to_only_vecs, dtype=float, delimiter=',')
     ListOfEmotions = [emotion, "happiness", "sadness", "anger", "surprise", "scare", "disgust"]
     listOfGeneralVecs= map(lambda x: methods.getVectorOfEmotion(methods.emotionNameToEmotionID(x)), ListOfEmotions)
     #vectors = np.array(listOfGeneralVecs)
@@ -85,16 +92,16 @@ def print_statistics(U, singularValues, V,twitDict):
     print (U)
     print ("singular")
     sum_singular = sum(singularValues)
-    #print sum_singular
-    #for i in range(0, len(singularValues)):
-    #    print ("%d : %0.4f   %0.4f" % (i, singularValues[i], sum(singularValues[:i + 1]) / sum_singular))
+    print sum_singular
+    for i in range(0, len(singularValues)):
+       print ("%d : %0.4f   %0.4f" % (i, singularValues[i], sum(singularValues[:i + 1]) / sum_singular))
 
     print ("V matrix")
     print V
 
-    #plt.scatter(list(range(1, len(singularValues) + 1)), singularValues)
-    #plt.show()
-    #print(len(V))
+    plt.scatter(list(range(1, len(singularValues) + 1)), singularValues)
+    plt.show()
+    print(len(V))
 
 
 def print_histogram(space, basis):
@@ -140,6 +147,17 @@ def which_emotions_are_close(space,basis):
     sorted_distance_list = sorted(list_of_distance_from_space, key=itemgetter(0))
     for i in range(0,int(len(sorted_distance_list)*0.3)):
         print "[%0d] emotion %s distance to space is %0.6f" %(i,sorted_distance_list[i][1],sorted_distance_list[i][0])
+
+    dist_list = [ item[0] for item in list_of_distance_from_space]
+    print_histogram(dist_list)
+
+
+def print_histogram(dist_list):
+    plt.hist(dist_list, align= 'mid', bins= 20)
+    plt.title('Histogram')
+    plt.ylabel('Frequency')
+    plt.xlabel('Distance')
+    plt.show()
 
 
 if __name__ == '__main__':

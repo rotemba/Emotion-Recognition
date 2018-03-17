@@ -15,7 +15,6 @@ global chosen_vector_space_path
 
 
 
-
 working_with_twiter_space=0
 
 
@@ -28,6 +27,7 @@ else:
     dimensions_of_vector= 25
     num_of_vectors = 415
     chosen_vector_space_path= "files/humanSpace-414-25d.csv"
+
 
 
 
