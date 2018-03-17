@@ -26,12 +26,12 @@ def main():
     print U.shape
     print V.shape
     #print_statistics(U, singularValues, V,emotion_vectors)
-    finding_nearest_emotion(V)
+    #finding_nearest_emotion(V)
     basis = V[0:7]
     #basis = gram_schmidt(vectors)
     #dict_after_pertubation = pertubation(twitDict,ListOfEmotions)
     which_emotions_are_close(emotion_vectors,basis)
-    #get_clustering(emotion_vectors,basis)
+    get_clustering(emotion_vectors,basis)
 
 
 def get_orthoNormal():
@@ -158,7 +158,7 @@ def get_clustering(space, basis):
     y = []
     name = []
     count = 0
-    for i in range(1, len(space)):
+    for i in range(1, len(space)+1):
         v = space[i-1]
         # print methods.emotionIDToName(i)
         x.append(np.sum(np.dot(v, basis[0])))
@@ -174,7 +174,7 @@ def get_clustering(space, basis):
         ax.annotate(name[i], (x[i], y[i]))
         #ax.annotate('i', (x[i], y[i]))
 
-    ax.show()
+    plt.show()
 
 
 def print_histogram(dist_list):
