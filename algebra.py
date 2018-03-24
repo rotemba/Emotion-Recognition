@@ -20,15 +20,21 @@ def main():
     emotion_vectors = np.genfromtxt(path_to_only_vecs, dtype=float, delimiter=',')
     ListOfEmotions = [emotion, "happiness", "sadness", "anger", "surprise", "scare", "disgust"]
     listOfGeneralVecs= map(lambda x: methods.getVectorOfEmotion(methods.emotionNameToEmotionID(x)), ListOfEmotions)
-    #vectors = np.array(listOfGeneralVecs)
+    vectors = np.array(listOfGeneralVecs)
     print emotion_vectors.shape
+    print "check"
+    print vectors.shape[1]
+    if (vectors.shape[1]  != init.dimensions_of_vector):
+        print ("!!rerun the program after deleting the DB")
+        exit()
+
     U, singularValues, V = svd_routine(emotion_vectors)
     print U.shape
     print V.shape
     #print_statistics(U, singularValues, V,emotion_vectors)
     #finding_nearest_emotion(V)
-    basis = V[0:7]
-    #basis = gram_schmidt(vectors)
+    basis = V[:7]
+    basis = gram_schmidt(basis)
     #dict_after_pertubation = pertubation(twitDict,ListOfEmotions)
     which_emotions_are_close(emotion_vectors,basis)
     get_clustering(emotion_vectors,basis)
@@ -47,6 +53,8 @@ def gram_schmidt(vectors):
         w = v - np.sum(np.dot(v, b)*b for b in basis )
         if (w > 1e-10).any():
             basis.append(w/np.linalg.norm(w))
+        if (w - v > 1e-10).any():
+            print "change in basis"
     return np.array(basis)
 
 
@@ -148,7 +156,7 @@ def which_emotions_are_close(space,basis):
     sorted_distance_list = sorted(list_of_distance_from_space, key=itemgetter(0))
     for i in range(0,int(len(sorted_distance_list)*0.3)):
         print "[%0d] emotion %s distance to space is %0.6f" %(i,sorted_distance_list[i][1],sorted_distance_list[i][0])
-
+        #print methods.getVectorOfEmotion(methods.emotionNameToEmotionID(sorted_distance_list[i][1]))#to verify
     dist_list = [ item[0] for item in list_of_distance_from_space]
     print_histogram(dist_list)
 
@@ -172,7 +180,6 @@ def get_clustering(space, basis):
 
     for i in range(0, len(space)):
         ax.annotate(name[i], (x[i], y[i]))
-        #ax.annotate('i', (x[i], y[i]))
 
     plt.show()
 
