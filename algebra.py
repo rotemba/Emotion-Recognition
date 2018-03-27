@@ -7,6 +7,15 @@ import matplotlib.pyplot as plt
 pathOfTwitter = "files/Twitter_only_vecs.csv"
 human_space = "files/human_space_algebra.csv"
 
+LABEL_COLOR_MAP = {0: 'r',
+                   1: 'k',
+                   2: 'b',
+                   3: 'g',
+                   4: 'c',
+                   5: 'm',
+                   6: 'y'
+}
+
 def main():
 
     #emotion = raw_input("put emotion name please to replace with neutral")
@@ -29,15 +38,17 @@ def main():
         exit()
 
     U, singularValues, V = svd_routine(emotion_vectors)
-    print U.shape
-    print V.shape
     #print_statistics(U, singularValues, V,emotion_vectors)
-    #finding_nearest_emotion(V)
+    finding_nearest_emotion(V)
     basis = V[:7]
     basis = gram_schmidt(basis)
     #dict_after_pertubation = pertubation(twitDict,ListOfEmotions)
     which_emotions_are_close(emotion_vectors,basis)
     get_clustering(emotion_vectors,basis)
+
+    basis = V[:7]
+    high_dimnesion_clustring(emotion_vectors,basis)
+
 
 
 def get_orthoNormal():
@@ -72,9 +83,7 @@ def svd_routine(twitDict):
     #     [2, 2, 5],
     # ]
     movieRatings = twitDict
-    print movieRatings
     U, singularValues, V = svd(movieRatings)
-    print U.shape
     return [U, singularValues, V]
 
 def pertubation(twitterdict,ListOfEmotions):
@@ -172,17 +181,25 @@ def get_clustering(space, basis):
         x.append(np.sum(np.dot(v, basis[0])))
         y.append( np.sum(np.dot(v, basis[1])) )
         name.append(methods.emotionIDToName(i))
-
+    data = np.array(list(zip(x, y)))
+    col = generate_clutering(data)
+    col = [LABEL_COLOR_MAP[l] for l in col]
     import matplotlib.pyplot as plt
     fig, ax = plt.subplots()
-    ax.scatter(x, y)
+    ax.scatter(x, y,color = col , s=50, linewidth=1)
 
 
     for i in range(0, len(space)):
         ax.annotate(name[i], (x[i], y[i]))
 
+
     plt.show()
 
+
+def generate_clutering(data, num_clustring = 2 ):
+    from sklearn.cluster import KMeans
+    kmeans = KMeans(n_clusters=num_clustring).fit_predict(data)
+    return kmeans
 
 def print_histogram(dist_list):
     plt.hist(dist_list, align= 'mid', bins= 20)
@@ -190,6 +207,38 @@ def print_histogram(dist_list):
     plt.ylabel('Frequency')
     plt.xlabel('Distance')
     plt.show()
+
+def high_dimnesion_clustring(space, basis):
+    x0 = []
+    x1 = []
+    x2 = []
+    x3 = []
+    x4 = []
+    x5 = []
+    x6 = []
+    name =list()
+    for i in range(1, len(space) + 1):
+        v = space[i - 1]
+        # print methods.emotionIDToName(i)
+        x0.append(np.sum(np.dot(v, basis[0])))
+        x1.append(np.sum(np.dot(v, basis[1])))
+        x2.append(np.sum(np.dot(v, basis[2])))
+        x3.append(np.sum(np.dot(v, basis[3])))
+        x4.append(np.sum(np.dot(v, basis[4])))
+        x5.append(np.sum(np.dot(v, basis[5])))
+        x6.append(np.sum(np.dot(v, basis[6])))
+        name.append(methods.emotionIDToName(i))
+    num_of_clusters = 3
+    data = np.array(list(zip(x0, x1 , x2 , x3, x4 , x5 , x6)))
+    col = generate_clutering(data,num_of_clusters)
+    c = [[] for x in xrange(num_of_clusters)]
+    vector_cluster = [[] for x in xrange(num_of_clusters)]
+    for i in range(0,len(space)):
+        c[col[i]].append(methods.emotionIDToName(i+1))
+        vector_cluster[col[i]].append(data[i])
+
+    for item in c:
+        print "number of emotion in cluster = %0d, emotions %s"%(len(item),item)
 
 
 if __name__ == '__main__':
