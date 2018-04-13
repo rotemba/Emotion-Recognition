@@ -2,11 +2,12 @@ import numpy as np
 import methods
 import init
 import matplotlib.pyplot as plt
+import csv
 #def getMixedVec1(NeutralScalar,HappyScalar,SadScalar,AngryScalar,SurprisedScalar,ScaredScalar,DisgustedScalar, listOfTheVecs):
 
 pathOfTwitter = "files/Twitter_only_vecs.csv"
 human_space = "files/human_space_algebra.csv"
-
+sentiment_file = "files/NRC_emotion_setiment.csv"
 LABEL_COLOR_MAP = {0: 'r',
                    1: 'k',
                    2: 'b',
@@ -181,9 +182,11 @@ def get_clustering(space, basis):
         x.append(np.sum(np.dot(v, basis[0])))
         y.append( np.sum(np.dot(v, basis[1])) )
         name.append(methods.emotionIDToName(i))
+
     data = np.array(list(zip(x, y)))
     col = generate_clutering(data)
     col = [LABEL_COLOR_MAP[l] for l in col]
+
     import matplotlib.pyplot as plt
     fig, ax = plt.subplots()
     ax.scatter(x, y,color = col , s=50, linewidth=1)
@@ -200,6 +203,11 @@ def generate_clutering(data, num_clustring = 2 ):
     from sklearn.cluster import KMeans
     kmeans = KMeans(n_clusters=num_clustring).fit_predict(data)
     return kmeans
+
+def sentiment_per_emotion():
+    sentimet = csv.reader(sentiment_file)
+
+
 
 def print_histogram(dist_list):
     plt.hist(dist_list, align= 'mid', bins= 20)
@@ -228,7 +236,7 @@ def high_dimnesion_clustring(space, basis):
         x5.append(np.sum(np.dot(v, basis[5])))
         x6.append(np.sum(np.dot(v, basis[6])))
         name.append(methods.emotionIDToName(i))
-    num_of_clusters = 3
+    num_of_clusters = 2
     data = np.array(list(zip(x0, x1 , x2 , x3, x4 , x5 , x6)))
     col = generate_clutering(data,num_of_clusters)
     c = [[] for x in xrange(num_of_clusters)]
