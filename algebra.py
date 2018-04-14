@@ -39,7 +39,7 @@ def main():
         exit()
 
     U, singularValues, V = svd_routine(emotion_vectors)
-    #print_statistics(U, singularValues, V,emotion_vectors)
+    print_statistics(U, singularValues, V,emotion_vectors)
     finding_nearest_emotion(V)
     basis = V[:7]
     basis = gram_schmidt(basis)
