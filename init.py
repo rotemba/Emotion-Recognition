@@ -31,6 +31,8 @@ else:
 
 
 
+
+
 def initTwitterTable(dbcon):
     print ("init twitter table")
 
@@ -48,8 +50,11 @@ def initEmoitionsDB():
         strOfVecs=(','.join("X%d REAL" % i for i in range(dimensions_of_vector)))
         with dbcon:
             cursor = dbcon.cursor()
-            cursor.execute("CREATE TABLE EmotionsID(ID INTEGER PRIMARY KEY NOT NULL ,Emotion_name VARCHAR(20) NOT NULL )")
-            cursor.execute("CREATE TABLE Twitter (%s)" % str )
+            cursor.execute("""CREATE TABLE EmotionsID(ID INTEGER PRIMARY KEY NOT NULL ,Emotion_name VARCHAR(20) NOT NULL)""")
+            cursor.execute("""CREATE TABLE EmotionsSentiment(ID INTEGER PRIMARY KEY NOT NULL ,
+                                                            Emotion_name VARCHAR(20) NOT NULL,
+                                                            Sentiment VARCHAR(20) NOT NULL)""")
+            cursor.execute("CREATE TABLE Twitter (%s)" % str)
             cursor.execute("""CREATE TABLE Cos_Similarity(X INTEGER NOT NULL,
                                                                   Y INTEGER NOT NULL,
                                                                  Angle REAL NOT NULL)""")
@@ -100,7 +105,7 @@ def initEmoitionsDB():
             pathOfEmotionRealations="files/emotionsAngelsToDB.csv"
             fileObject = csv.reader(pathOfTwitter)
 
-            twitDict = genfromtxt(pathOfTwitter, delimiter=',', dtype=None)
+            twitDict = genfromtxt(pathOfTwitter, delimiter=',', dtype=None,encoding=None)
             row_count = num_of_vectors
             print ("Inserting data to table")
 
@@ -126,6 +131,12 @@ def initEmoitionsDB():
             print ("Twitter vectors are inside the DB")
             for row in range(1, row_count):
                 cursor.execute('''INSERT INTO EmotionsID(ID, Emotion_name) VALUES (?,?)''' ,(row,twitDict[row][0]))
+            pathOfEmotionSentiment = "files/Emotions_with_sentiments.csv"
+            emotions_sentiment = genfromtxt(pathOfEmotionSentiment, delimiter=',', dtype=None,encoding=None)
+            num_of_emotions_human_space=415
+            for row in range(1,num_of_emotions_human_space):
+                cursor.execute('''INSERT INTO EmotionsSentiment(ID, Emotion_name,Sentiment) VALUES (?,?,?)'''
+                               ,(row, emotions_sentiment[row][0],emotions_sentiment[row][1]))
             dbcon.commit()
             print ("Twitter emotions names are inside the DB")
             print ("creating cartesian emotions table")
