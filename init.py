@@ -112,16 +112,16 @@ def initEmoitionsDB():
             str = '?'
             for x in range(0, dimensions_of_vector):
                 str = str + ',?'
-
+            dynamicPathOfSql="Twitter"
             for row in range(1, row_count):
                 if (dimensions_of_vector==50):
-                    cursor.execute('''INSERT INTO Twitter VALUES (%s)''' % str,(row, twitDict[row][1],twitDict[row][2],twitDict[row][3],twitDict[row][4],twitDict[row][5],twitDict[row][6],twitDict[row][7],twitDict[row][8],twitDict[row][9],twitDict[row][10],
+                    cursor.execute('''INSERT INTO %s VALUES (%s)''' %(dynamicPathOfSql,str) ,(row, twitDict[row][1],twitDict[row][2],twitDict[row][3],twitDict[row][4],twitDict[row][5],twitDict[row][6],twitDict[row][7],twitDict[row][8],twitDict[row][9],twitDict[row][10],
                                       twitDict[row][11],twitDict[row][12],twitDict[row][13],twitDict[row][14],twitDict[row][15],twitDict[row][16],twitDict[row][17],twitDict[row][18],twitDict[row][19],twitDict[row][20],
                                       twitDict[row][21],twitDict[row][22],twitDict[row][23],twitDict[row][24],twitDict[row][25],twitDict[row][26],twitDict[row][27],twitDict[row][28],twitDict[row][29],twitDict[row][30],
                                       twitDict[row][31],twitDict[row][32],twitDict[row][33],twitDict[row][34],twitDict[row][35],twitDict[row][36],twitDict[row][37],twitDict[row][38],twitDict[row][39],twitDict[row][40],
                                       twitDict[row][41],twitDict[row][42],twitDict[row][43],twitDict[row][44],twitDict[row][45],twitDict[row][46],twitDict[row][47],twitDict[row][48],twitDict[row][49],twitDict[row][50]))
                 else:
-                    cursor.execute('''INSERT INTO Twitter VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)''' , (
+                    cursor.execute('''INSERT INTO %s VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'''  % dynamicPathOfSql, (
                     row, twitDict[row][1], twitDict[row][2], twitDict[row][3], twitDict[row][4], twitDict[row][5],
                     twitDict[row][6], twitDict[row][7], twitDict[row][8], twitDict[row][9], twitDict[row][10],
                     twitDict[row][11], twitDict[row][12], twitDict[row][13], twitDict[row][14], twitDict[row][15],
