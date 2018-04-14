@@ -4,7 +4,7 @@ import init
 import matplotlib.pyplot as plt
 import csv
 #def getMixedVec1(NeutralScalar,HappyScalar,SadScalar,AngryScalar,SurprisedScalar,ScaredScalar,DisgustedScalar, listOfTheVecs):
-
+ListOfEmotions = ["neutral", "happiness", "sadness", "anger", "surprise", "scare", "disgust"]
 pathOfTwitter = "files/Twitter_only_vecs.csv"
 human_space = "files/human_space_algebra.csv"
 sentiment_file = "files/NRC_emotion_setiment.csv"
@@ -20,7 +20,6 @@ LABEL_COLOR_MAP = {0: 'r',
 def main():
 
     #emotion = raw_input("put emotion name please to replace with neutral")
-    emotion = "neutral"
 
     if (init.working_with_twiter_space == 1):
         path_to_only_vecs = pathOfTwitter
@@ -28,9 +27,10 @@ def main():
         path_to_only_vecs = human_space
 
     emotion_vectors = np.genfromtxt(path_to_only_vecs, dtype=float, delimiter=',')
-    ListOfEmotions = [emotion, "happiness", "sadness", "anger", "surprise", "scare", "disgust"]
+
     listOfGeneralVecs= map(lambda x: methods.getVectorOfEmotion(methods.emotionNameToEmotionID(x)), ListOfEmotions)
     vectors = np.array(listOfGeneralVecs)
+    orthonormal_vectors = gram_schmidt(vectors)
     print emotion_vectors.shape
     print "check"
     print vectors.shape[1]
@@ -40,15 +40,16 @@ def main():
 
     U, singularValues, V = svd_routine(emotion_vectors)
     #print_statistics(U, singularValues, V,emotion_vectors)
-    finding_nearest_emotion(V)
-    basis = V[:7]
-    basis = gram_schmidt(basis)
+    #finding_nearest_emotion(V)
+    #basis = V[:7]
+    #basis = gram_schmidt(basis)
     #dict_after_pertubation = pertubation(twitDict,ListOfEmotions)
-    which_emotions_are_close(emotion_vectors,basis)
-    get_clustering(emotion_vectors,basis)
+    #which_emotions_are_close(emotion_vectors,basis)
+    #get_clustering(emotion_vectors,basis)
 
-    basis = V[:7]
-    high_dimnesion_clustring(emotion_vectors,basis)
+    #basis = V[:7]
+    meta_emotion_combination(V, orthonormal_vectors)
+    #high_dimnesion_clustring(emotion_vectors,basis)
 
 
 
@@ -195,7 +196,6 @@ def get_clustering(space, basis):
     for i in range(0, len(space)):
         ax.annotate(name[i], (x[i], y[i]))
 
-
     plt.show()
 
 
@@ -248,6 +248,35 @@ def high_dimnesion_clustring(space, basis):
     for item in c:
         print "number of emotion in cluster = %0d, emotions %s"%(len(item),item)
 
+
+def meta_emotion_combination(V,basis):
+    x0 = []
+    x1 = []
+    x2 = []
+    x3 = []
+    x4 = []
+    x5 = []
+    x6 = []
+    dist= []
+    for v in V:
+        # print methods.emotionIDToName(i)
+        x0.append(np.sum(np.dot(v, basis[0])))
+        x1.append(np.sum(np.dot(v, basis[1])))
+        x2.append(np.sum(np.dot(v, basis[2])))
+        x3.append(np.sum(np.dot(v, basis[3])))
+        x4.append(np.sum(np.dot(v, basis[4])))
+        x5.append(np.sum(np.dot(v, basis[5])))
+        x6.append(np.sum(np.dot(v, basis[6])))
+        dist.append(np.linalg.norm(v - np.sum(np.dot(v, b) * b for b in basis)))
+    data = np.array(list(zip(x0, x1, x2, x3, x4, x5, x6)))
+    i=0
+    for item in data:
+        print "V[%0d] is combination of this values data: " %(i)
+        print ListOfEmotions
+        print ["{0:0.5f}".format(a) for a in item]
+        print "dist from space is %0.5f"%dist[i]
+        i = i + 1
+        print
 
 if __name__ == '__main__':
     main()
