@@ -88,7 +88,7 @@ def initEmoitionsDB():
                                                           Happy REAL NOT NULL,
                                                           Sad REAL NOT NULL,Angry REAL NOT NULL,
                                                           Surprised REAL NOT NULL,Scared REAL NOT NULL,
-                                                          DisgustedNeutral REAL NOT NULL)""")
+                                                          Disgusted REAL NOT NULL)""")
 
 
             print("DONE creating the tables")
@@ -186,12 +186,17 @@ def InsertVideoAndAnalyze (ListOfFrames, videoNumber,filename):
         cursor=dbcon.cursor()
         cursor.execute("INSERT OR REPLACE INTO Videos VALUES (?,?,?)", (videoNumber, name_of_main_emotion,video_path))
         for i in range (0, len(ListOfFrames)):
+            # This is to init neutral:
+            arr[i][0]=0.000000001
             arr[i]=methods.normalize_vec_l1( arr[i], 1)
             #print ("framte number: %0d / %0d" %(i,len(arr[0])))
             #if videoFrameArray[i][1]== 'FIND_FAILED' or videoFrameArray[i][1] == 'FIT_FAILED':
             #        print ("cant put inside DB")
             #        break
             #print videoFrameArray[i]
+
+
+
             cursor.execute("""INSERT INTO Video_Data_Raw VALUES (?,?,?,?,?,?,?,?,?)""",(videoNumber,i+1,
                                         arr[i][0],arr[i][1],arr[i][2],arr[i][3],arr[i][4],
                                         arr[i][5],arr[i][6]))
