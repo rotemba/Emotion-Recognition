@@ -216,7 +216,7 @@ def generate_clutering_from_sentiment(names):
     label = []
     with init.dbcon:
         cursor = init.dbcon.cursor()
-        for ii in range(1,init.num_of_vectors):
+        for ii in range(0,init.num_of_vectors):
             if (names[ii]=="worry"): break
             print names[ii]
             cursor.execute("SELECT Sentiment FROM EmotionsSentiment WHERE Emotion_name = (?)",  (names[ii],))
