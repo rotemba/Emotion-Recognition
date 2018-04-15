@@ -16,6 +16,12 @@ LABEL_COLOR_MAP = {0: 'r',
                    5: 'm',
                    6: 'y'
 }
+LABEL_COLOR_SENTIMENT = {
+    (u'Positive',): 'g',
+    (u'Negative',): 'r',
+    (u'Unknown',):  'b',
+    (u'Neutral',):  'k'
+}
 
 def main():
 
@@ -41,15 +47,15 @@ def main():
     U, singularValues, V = svd_routine(emotion_vectors)
     #print_statistics(U, singularValues, V,emotion_vectors)
     #finding_nearest_emotion(V)
-    #basis = V[:7]
-    #basis = gram_schmidt(basis)
+    basis = V[:7]
+    basis = gram_schmidt(basis)
     #dict_after_pertubation = pertubation(twitDict,ListOfEmotions)
     #which_emotions_are_close(emotion_vectors,basis)
-    #get_clustering(emotion_vectors,basis)
+    get_clustering(emotion_vectors,basis)
 
-    #basis = V[:7]
-    meta_emotion_combination(V, orthonormal_vectors)
-    #high_dimnesion_clustring(emotion_vectors,basis)
+    basis = V[:7]
+    #meta_emotion_combination(V, orthonormal_vectors)
+    high_dimnesion_clustring(emotion_vectors,basis)
 
 
 
@@ -185,8 +191,10 @@ def get_clustering(space, basis):
         name.append(methods.emotionIDToName(i))
 
     data = np.array(list(zip(x, y)))
-    col = generate_clutering(data)
-    col = [LABEL_COLOR_MAP[l] for l in col]
+    col = generate_clutering_from_sentiment(name)
+    col = [(LABEL_COLOR_SENTIMENT[l]) for l in col]
+    data = zip(name,col)
+    print data
 
     import matplotlib.pyplot as plt
     fig, ax = plt.subplots()
@@ -203,6 +211,22 @@ def generate_clutering(data, num_clustring = 2 ):
     from sklearn.cluster import KMeans
     kmeans = KMeans(n_clusters=num_clustring).fit_predict(data)
     return kmeans
+
+def generate_clutering_from_sentiment(names):
+    label = []
+    with init.dbcon:
+        cursor = init.dbcon.cursor()
+        for ii in range(1,init.num_of_vectors):
+            if (names[ii]=="worry"): break
+            print names[ii]
+            cursor.execute("SELECT Sentiment FROM EmotionsSentiment WHERE Emotion_name = (?)",  (names[ii],))
+            sentiment = cursor.fetchall()
+            print sentiment
+            label.append((sentiment[0]))
+
+    data = zip (names,label)
+    print data
+    return label
 
 def sentiment_per_emotion():
     sentimet = csv.reader(sentiment_file)

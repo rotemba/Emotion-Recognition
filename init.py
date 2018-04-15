@@ -105,7 +105,7 @@ def initEmoitionsDB():
             pathOfEmotionRealations="files/emotionsAngelsToDB.csv"
             fileObject = csv.reader(pathOfTwitter)
 
-            twitDict = genfromtxt(pathOfTwitter, delimiter=',', dtype=None,encoding=None)
+            twitDict = genfromtxt(pathOfTwitter, delimiter=',', dtype=None)
             row_count = num_of_vectors
             print ("Inserting data to table")
 
@@ -132,7 +132,7 @@ def initEmoitionsDB():
             for row in range(1, row_count):
                 cursor.execute('''INSERT INTO EmotionsID(ID, Emotion_name) VALUES (?,?)''' ,(row,twitDict[row][0]))
             pathOfEmotionSentiment = "files/Emotions_with_sentiments.csv"
-            emotions_sentiment = genfromtxt(pathOfEmotionSentiment, delimiter=',', dtype=None,encoding=None)
+            emotions_sentiment = genfromtxt(pathOfEmotionSentiment, delimiter=',', dtype=None)
             num_of_emotions_human_space=415
             for row in range(1,num_of_emotions_human_space):
                 cursor.execute('''INSERT INTO EmotionsSentiment(ID, Emotion_name,Sentiment) VALUES (?,?,?)'''
