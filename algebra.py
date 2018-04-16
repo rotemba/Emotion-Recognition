@@ -190,19 +190,32 @@ def get_clustering(space, basis):
         y.append( np.sum(np.dot(v, basis[1])) )
         name.append(methods.emotionIDToName(i))
 
-    data = np.array(list(zip(x, y)))
     col = generate_clutering_from_sentiment(name)
     col = [(LABEL_COLOR_SENTIMENT[l]) for l in col]
-    data = zip(name,col)
+    data = zip(x,y,col,name)
     print data
+    data = [x for x in data if x[2]!= 'b']
+    x = [i[0] for i in data]
+    y = [i[1] for i in data]
+    meanx = np.mean(np.array(x))
+    meany = np.mean(np.array(y))
+    # x = map(lambda z: z-meanx,x)
+    # y = map(lambda z: z-meany,y)
+    col = [i[2] for i in data]
+    name = [i[3] for i in data]
+    data = zip(x, y, col, name)
+    print "shown data is %s"%data
 
     import matplotlib.pyplot as plt
     fig, ax = plt.subplots()
-    ax.scatter(x, y,color = col , s=50, linewidth=1)
+    ax.scatter(x, y,color = col , s=50, linewidth=1, linewidths=5)
+    plt.axvline(x=meanx)
+    plt.axhline(y=meany)
 
-
-    for i in range(0, len(space)):
+    for i in range(0, len(x)):
         ax.annotate(name[i], (x[i], y[i]))
+
+    ax.set_xlim([0, 1])
 
     plt.show()
 
@@ -222,6 +235,8 @@ def generate_clutering_from_sentiment(names):
             cursor.execute("SELECT Sentiment FROM EmotionsSentiment WHERE Emotion_name = (?)",  (names[ii],))
             sentiment = cursor.fetchall()
             print sentiment
+            if (names[ii] == "unbelief"):
+                continue
             label.append((sentiment[0]))
 
     data = zip (names,label)
