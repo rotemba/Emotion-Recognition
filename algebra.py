@@ -3,7 +3,7 @@ import methods
 import init
 import matplotlib.pyplot as plt
 import csv
-#def getMixedVec1(NeutralScalar,HappyScalar,SadScalar,AngryScalar,SurprisedScalar,ScaredScalar,DisgustedScalar, listOfTheVecs):
+
 ListOfEmotions = ["neutral", "happiness", "sadness", "anger", "surprise", "scare", "disgust"]
 pathOfTwitter = "files/Twitter_only_vecs.csv"
 human_space = "files/human_space_algebra.csv"
@@ -51,7 +51,7 @@ def main():
     basis = gram_schmidt(basis)
     #dict_after_pertubation = pertubation(twitDict,ListOfEmotions)
     #which_emotions_are_close(emotion_vectors,basis)
-    get_clustering(emotion_vectors,basis)
+    #get_clustering(emotion_vectors,basis)
 
     basis = V[:7]
     #meta_emotion_combination(V, orthonormal_vectors)
@@ -183,41 +183,42 @@ def get_clustering(space, basis):
     y = []
     name = []
     count = 0
-    for i in range(1, len(space)+1):
-        v = space[i-1]
-        # print methods.emotionIDToName(i)
-        x.append(np.sum(np.dot(v, basis[0])))
-        y.append( np.sum(np.dot(v, basis[1])) )
-        name.append(methods.emotionIDToName(i))
+    for j in range(1,5):
+        for i in range(1, len(space)+1):
+            v = space[i-1]
+            # print methods.emotionIDToName(i)
+            x.append(np.sum(np.dot(v, basis[0])))
+            y.append( np.sum(np.dot(v, basis[j])) )
+            name.append(methods.emotionIDToName(i))
 
-    col = generate_clutering_from_sentiment(name)
-    col = [(LABEL_COLOR_SENTIMENT[l]) for l in col]
-    data = zip(x,y,col,name)
-    print data
-    data = [x for x in data if x[2]!= 'b']
-    x = [i[0] for i in data]
-    y = [i[1] for i in data]
-    meanx = np.mean(np.array(x))
-    meany = np.mean(np.array(y))
-    # x = map(lambda z: z-meanx,x)
-    # y = map(lambda z: z-meany,y)
-    col = [i[2] for i in data]
-    name = [i[3] for i in data]
-    data = zip(x, y, col, name)
-    print "shown data is %s"%data
+        col = generate_clutering_from_sentiment(name)
+        col = [(LABEL_COLOR_SENTIMENT[l]) for l in col]
+        data = zip(x,y,col,name)
+        print data
+        data = [x for x in data if x[2]!= 'b']
+        x = [i[0] for i in data]
+        y = [i[1] for i in data]
+        meanx = np.mean(np.array(x))
+        meany = np.mean(np.array(y))
+        # x = map(lambda z: z-meanx,x)
+        # y = map(lambda z: z-meany,y)
+        col = [i[2] for i in data]
+        name = [i[3] for i in data]
+        data = zip(x, y, col, name)
+        print "shown data is %s"%data
 
-    import matplotlib.pyplot as plt
-    fig, ax = plt.subplots()
-    ax.scatter(x, y,color = col , s=50, linewidth=1, linewidths=5)
-    plt.axvline(x=meanx)
-    plt.axhline(y=meany)
+        import matplotlib.pyplot as plt
+        fig, ax = plt.subplots()
+        ax.scatter(x, y,color = col , s=50, linewidth=1, linewidths=5)
+        plt.axvline(x=meanx)
+        plt.axhline(y=meany)
 
-    for i in range(0, len(x)):
-        ax.annotate(name[i], (x[i], y[i]))
+        for i in range(0, len(x)):
+            ax.annotate(name[i], (x[i], y[i]))
 
-    ax.set_xlim([0, 1])
+        ax.set_xlim([0, 1])
 
-    plt.show()
+        plt.show()
 
 
 def generate_clutering(data, num_clustring = 2 ):
@@ -235,18 +236,18 @@ def generate_clutering_from_sentiment(names):
             cursor.execute("SELECT Sentiment FROM EmotionsSentiment WHERE Emotion_name = (?)",  (names[ii],))
             sentiment = cursor.fetchall()
             print sentiment
-            if (names[ii] == "unbelief"):
-                continue
             label.append((sentiment[0]))
 
     data = zip (names,label)
     print data
     return label
 
-def sentiment_per_emotion():
-    sentimet = csv.reader(sentiment_file)
-
-
+def sentiment_per_emotion(emotion_name):
+    with init.dbcon:
+        cursor = init.dbcon.cursor()
+        cursor.execute("SELECT Sentiment FROM EmotionsSentiment WHERE Emotion_name = (?)", (emotion_name,))
+        sentiment = cursor.fetchall()
+    return sentiment
 
 def print_histogram(dist_list):
     plt.hist(dist_list, align= 'mid', bins= 20)
@@ -275,9 +276,11 @@ def high_dimnesion_clustring(space, basis):
         x5.append(np.sum(np.dot(v, basis[5])))
         x6.append(np.sum(np.dot(v, basis[6])))
         name.append(methods.emotionIDToName(i))
-    num_of_clusters = 2
+    num_of_clusters = 6
     data = np.array(list(zip(x0, x1 , x2 , x3, x4 , x5 , x6)))
     col = generate_clutering(data,num_of_clusters)
+    #col = generate_clutering_from_sentiment(name)
+
     c = [[] for x in xrange(num_of_clusters)]
     vector_cluster = [[] for x in xrange(num_of_clusters)]
     for i in range(0,len(space)):
@@ -285,7 +288,8 @@ def high_dimnesion_clustring(space, basis):
         vector_cluster[col[i]].append(data[i])
 
     for item in c:
-        print "number of emotion in cluster = %0d, emotions %s"%(len(item),item)
+        disterbution_of_emotion_for_cluster(item)
+        #print "number of emotion in cluster = %0d, emotions %s"%(len(item),item)
 
 
 def meta_emotion_combination(V,basis):
@@ -316,6 +320,18 @@ def meta_emotion_combination(V,basis):
         print "dist from space is %0.5f"%dist[i]
         i = i + 1
         print
+
+
+def disterbution_of_emotion_for_cluster(cluster):
+    label_per_cluster = []
+    for emo in cluster:
+        labeled = str(sentiment_per_emotion(emo)[0][0])
+        label_per_cluster.append( labeled )
+
+    from collections import Counter
+    print Counter(label_per_cluster)
+
+
 
 if __name__ == '__main__':
     main()
