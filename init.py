@@ -13,20 +13,41 @@ global num_of_vectors
 global working_with_twiter_space
 global chosen_vector_space_path
 
+#file_for_dictionary = Enum('old_glove', 'new_glove', 'Human','W2v','DSM')
+pathOfTwitter = "files/Twitter_only_vecs.csv"
+human_space = "files/human_space_algebra.csv"
 
+file_for_dictionary = 'DSM'
 
 working_with_twiter_space=1
 
-
-if (working_with_twiter_space==1):
+if (file_for_dictionary=='old_glove'):
     dimensions_of_vector = 50
     num_of_vectors = 374
-    chosen_vector_space_path="files/Twitter_normalize.csv"
-else:
-# Working with human space vectors.
+    chosen_vector_space_path= "files/spaces/old_glove.csv"
+    path_to_only_vecs = "files/spaces/old_glove_algebra.csv"
+elif (file_for_dictionary =='Human'):
     dimensions_of_vector= 25
     num_of_vectors = 415
-    chosen_vector_space_path= "files/humanSpace-414-25d.csv"
+    chosen_vector_space_path= "files/spaces/humanSpace.csv"
+    path_to_only_vecs = "files/spaces/humanSpace_algebra.csv"
+
+elif (file_for_dictionary =='W2v'):
+    dimensions_of_vector = 50
+    num_of_vectors = 367
+    chosen_vector_space_path = "files/spaces/W2V_vectors.csv"
+    path_to_only_vecs = "files/spaces/W2V_vectors_algebra.csv"
+
+elif (file_for_dictionary == 'new_glove'):
+    dimensions_of_vector = 50
+    num_of_vectors = 367
+    chosen_vector_space_path = "files/spaces/new_glove.csv"
+    path_to_only_vecs = "files/spaces/new_glove_algebra.csv"
+elif (file_for_dictionary == 'DSM'):
+    dimensions_of_vector = 25
+    num_of_vectors = 3102
+    chosen_vector_space_path = "files/spaces/dsm_model_25_2.csv"
+    path_to_only_vecs = "files/spaces/dsm_model_25_2_algebra.csv"
 
 
 
@@ -114,6 +135,9 @@ def initEmoitionsDB():
                 str = str + ',?'
             dynamicPathOfSql="Twitter"
             for row in range(1, row_count):
+                print "row number %d"%row
+                print twitDict[row]
+
                 if (dimensions_of_vector==50):
                     cursor.execute('''INSERT INTO %s VALUES (%s)''' %(dynamicPathOfSql,str) ,(row, twitDict[row][1],twitDict[row][2],twitDict[row][3],twitDict[row][4],twitDict[row][5],twitDict[row][6],twitDict[row][7],twitDict[row][8],twitDict[row][9],twitDict[row][10],
                                       twitDict[row][11],twitDict[row][12],twitDict[row][13],twitDict[row][14],twitDict[row][15],twitDict[row][16],twitDict[row][17],twitDict[row][18],twitDict[row][19],twitDict[row][20],

@@ -5,8 +5,6 @@ import matplotlib.pyplot as plt
 import csv
 
 ListOfEmotions = ["neutral", "happiness", "sadness", "anger", "surprise", "scare", "disgust"]
-pathOfTwitter = "files/Twitter_only_vecs.csv"
-human_space = "files/human_space_algebra.csv"
 sentiment_file = "files/NRC_emotion_setiment.csv"
 LABEL_COLOR_MAP = {0: 'r',
                    1: 'k',
@@ -26,13 +24,13 @@ LABEL_COLOR_SENTIMENT = {
 def main():
 
     #emotion = raw_input("put emotion name please to replace with neutral")
+    #
+    # if (init.working_with_twiter_space == 1):
+    #     init.path_to_only_vecs = pathOfTwitter
+    # else:
+    #     init.path_to_only_vecs = human_space
 
-    if (init.working_with_twiter_space == 1):
-        path_to_only_vecs = pathOfTwitter
-    else:
-        path_to_only_vecs = human_space
-
-    emotion_vectors = np.genfromtxt(path_to_only_vecs, dtype=float, delimiter=',')
+    emotion_vectors = np.genfromtxt(init.path_to_only_vecs, dtype=float, delimiter=',')
 
     listOfGeneralVecs= map(lambda x: methods.getVectorOfEmotion(methods.emotionNameToEmotionID(x)), ListOfEmotions)
     vectors = np.array(listOfGeneralVecs)
@@ -51,11 +49,11 @@ def main():
     basis = gram_schmidt(basis)
     #dict_after_pertubation = pertubation(twitDict,ListOfEmotions)
     #which_emotions_are_close(emotion_vectors,basis)
-    #get_clustering(emotion_vectors,basis)
+    get_clustering(emotion_vectors,basis)
 
     basis = V[:7]
     #meta_emotion_combination(V, orthonormal_vectors)
-    high_dimnesion_clustring(emotion_vectors,basis)
+    #high_dimnesion_clustring(emotion_vectors,basis)
 
 
 
@@ -183,12 +181,14 @@ def get_clustering(space, basis):
     y = []
     name = []
     count = 0
-    for j in range(1,5):
+    for j in range(1,2):
         for i in range(1, len(space)+1):
             v = space[i-1]
             # print methods.emotionIDToName(i)
             x.append(np.sum(np.dot(v, basis[0])))
             y.append( np.sum(np.dot(v, basis[j])) )
+            print i
+            print methods.emotionIDToName(i)
             name.append(methods.emotionIDToName(i))
 
         col = generate_clutering_from_sentiment(name)
@@ -216,7 +216,7 @@ def get_clustering(space, basis):
         for i in range(0, len(x)):
             ax.annotate(name[i], (x[i], y[i]))
 
-        ax.set_xlim([0, 1])
+        ax.set_xlim([min(x), max(x)])
 
         plt.show()
 
@@ -230,7 +230,7 @@ def generate_clutering_from_sentiment(names):
     label = []
     with init.dbcon:
         cursor = init.dbcon.cursor()
-        for ii in range(0,init.num_of_vectors):
+        for ii in range(0,init.num_of_vectors-1):
             if (names[ii]=="worry"): break
             print names[ii]
             cursor.execute("SELECT Sentiment FROM EmotionsSentiment WHERE Emotion_name = (?)",  (names[ii],))

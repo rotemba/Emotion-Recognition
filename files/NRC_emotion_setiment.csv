@@ -26170,8 +26170,8 @@ truce,negative,0
 truce,positive,1
 truck,negative,0
 truck,positive,0
-true,negative,0
-true,positive,1
+TRUE,negative,0
+TRUE,positive,1
 truism,negative,0
 truism,positive,0
 trump,negative,0
@@ -28362,3 +28362,5 @@ zoology,negative,0
 zoology,positive,0
 zoom,negative,0
 zoom,positive,0
+wryness,positive,1
+wryness,negative,0
