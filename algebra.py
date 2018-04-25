@@ -23,18 +23,13 @@ LABEL_COLOR_SENTIMENT = {
 
 def main():
 
-    #emotion = raw_input("put emotion name please to replace with neutral")
-    #
-    # if (init.working_with_twiter_space == 1):
-    #     init.path_to_only_vecs = pathOfTwitter
-    # else:
-    #     init.path_to_only_vecs = human_space
-
+    init.get_paths()
+    print init.path_to_only_vecs
     emotion_vectors = np.genfromtxt(init.path_to_only_vecs, dtype=float, delimiter=',')
 
     listOfGeneralVecs= map(lambda x: methods.getVectorOfEmotion(methods.emotionNameToEmotionID(x)), ListOfEmotions)
     vectors = np.array(listOfGeneralVecs)
-    orthonormal_vectors = gram_schmidt(vectors)
+    #orthonormal_vectors = gram_schmidt(vectors)
     print emotion_vectors.shape
     print "check"
     print vectors.shape[1]
@@ -43,7 +38,7 @@ def main():
         exit()
 
     U, singularValues, V = svd_routine(emotion_vectors)
-    #print_statistics(U, singularValues, V,emotion_vectors)
+    print_statistics(U, singularValues, V,emotion_vectors)
     #finding_nearest_emotion(V)
     basis = V[:7]
     basis = gram_schmidt(basis)
@@ -51,9 +46,9 @@ def main():
     #which_emotions_are_close(emotion_vectors,basis)
     get_clustering(emotion_vectors,basis)
 
-    basis = V[:7]
+    #basis = V[:7]
     #meta_emotion_combination(V, orthonormal_vectors)
-    #high_dimnesion_clustring(emotion_vectors,basis)
+    high_dimnesion_clustring(emotion_vectors,basis)
 
 
 
@@ -121,14 +116,13 @@ def print_statistics(U, singularValues, V,twitDict):
     sum_singular = sum(singularValues)
     print sum_singular
     for i in range(0, len(singularValues)):
-       print ("%d : %0.4f   %0.4f" % (i, singularValues[i], sum(singularValues[:i + 1]) / sum_singular))
+       print ("%d : %0.4f   %0.4f" % (i, singularValues[i]/sum_singular*100, sum(singularValues[:i + 1]) / sum_singular*100))
 
-    print ("V matrix")
-    print V
+    # print ("V matrix")
+    # print V
 
     plt.scatter(list(range(1, len(singularValues) + 1)), singularValues)
     plt.show()
-    print(len(V))
 
 
 def create_histogram_from_space(space, basis):
@@ -187,14 +181,14 @@ def get_clustering(space, basis):
             # print methods.emotionIDToName(i)
             x.append(np.sum(np.dot(v, basis[0])))
             y.append( np.sum(np.dot(v, basis[j])) )
-            print i
-            print methods.emotionIDToName(i)
+            #print i
+            #print methods.emotionIDToName(i)
             name.append(methods.emotionIDToName(i))
 
         col = generate_clutering_from_sentiment(name)
         col = [(LABEL_COLOR_SENTIMENT[l]) for l in col]
         data = zip(x,y,col,name)
-        print data
+        #print data
         data = [x for x in data if x[2]!= 'b']
         x = [i[0] for i in data]
         y = [i[1] for i in data]
@@ -223,6 +217,12 @@ def get_clustering(space, basis):
 
 def generate_clutering(data, num_clustring = 2 ):
     from sklearn.cluster import KMeans
+    from sklearn.metrics import silhouette_score
+    for k in range(2,10):
+        kmeans = KMeans(n_clusters=k).fit(data)
+        label = kmeans.labels_
+        sil_coeff = silhouette_score(data, label, metric='euclidean')
+        print("For n_clusters={}, The Silhouette Coefficient is {}".format(k, sil_coeff))
     kmeans = KMeans(n_clusters=num_clustring).fit_predict(data)
     return kmeans
 
@@ -232,14 +232,14 @@ def generate_clutering_from_sentiment(names):
         cursor = init.dbcon.cursor()
         for ii in range(0,init.num_of_vectors-1):
             if (names[ii]=="worry"): break
-            print names[ii]
+            #print names[ii]
             cursor.execute("SELECT Sentiment FROM EmotionsSentiment WHERE Emotion_name = (?)",  (names[ii],))
             sentiment = cursor.fetchall()
-            print sentiment
+            #print sentiment
             label.append((sentiment[0]))
 
     data = zip (names,label)
-    print data
+    #print data
     return label
 
 def sentiment_per_emotion(emotion_name):
@@ -276,7 +276,7 @@ def high_dimnesion_clustring(space, basis):
         x5.append(np.sum(np.dot(v, basis[5])))
         x6.append(np.sum(np.dot(v, basis[6])))
         name.append(methods.emotionIDToName(i))
-    num_of_clusters = 6
+    num_of_clusters = 2
     data = np.array(list(zip(x0, x1 , x2 , x3, x4 , x5 , x6)))
     col = generate_clutering(data,num_of_clusters)
     #col = generate_clutering_from_sentiment(name)

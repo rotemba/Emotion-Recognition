@@ -9,45 +9,45 @@ import methods
 
 global dimensions_of_vector
 global num_of_vectors
-
-global working_with_twiter_space
+global path_to_only_vecs
 global chosen_vector_space_path
 
-#file_for_dictionary = Enum('old_glove', 'new_glove', 'Human','W2v','DSM')
-pathOfTwitter = "files/Twitter_only_vecs.csv"
-human_space = "files/human_space_algebra.csv"
+#file_for_dictionary = Enum('old_glove', 'new_glove', 'Human','W2v','DSM25')
 
-file_for_dictionary = 'DSM'
+file_for_dictionary = 'old_glove'
 
-working_with_twiter_space=1
+def get_paths():
+    global dimensions_of_vector
+    global num_of_vectors
+    global path_to_only_vecs
+    global chosen_vector_space_path
+    if (file_for_dictionary=='old_glove'):
+        dimensions_of_vector = 50
+        num_of_vectors = 374
+        chosen_vector_space_path= "files/spaces/old_glove.csv"
+        path_to_only_vecs = "files/spaces/old_glove_algebra.csv"
+    elif (file_for_dictionary =='Human'):
+        dimensions_of_vector= 25
+        num_of_vectors = 415
+        chosen_vector_space_path= "files/spaces/humanSpace.csv"
+        path_to_only_vecs = "files/spaces/humanSpace_algebra.csv"
 
-if (file_for_dictionary=='old_glove'):
-    dimensions_of_vector = 50
-    num_of_vectors = 374
-    chosen_vector_space_path= "files/spaces/old_glove.csv"
-    path_to_only_vecs = "files/spaces/old_glove_algebra.csv"
-elif (file_for_dictionary =='Human'):
-    dimensions_of_vector= 25
-    num_of_vectors = 415
-    chosen_vector_space_path= "files/spaces/humanSpace.csv"
-    path_to_only_vecs = "files/spaces/humanSpace_algebra.csv"
+    elif (file_for_dictionary =='W2v'):
+        dimensions_of_vector = 50
+        num_of_vectors = 367
+        chosen_vector_space_path = "files/spaces/W2V_vectors.csv"
+        path_to_only_vecs = "files/spaces/W2V_vectors_algebra.csv"
 
-elif (file_for_dictionary =='W2v'):
-    dimensions_of_vector = 50
-    num_of_vectors = 367
-    chosen_vector_space_path = "files/spaces/W2V_vectors.csv"
-    path_to_only_vecs = "files/spaces/W2V_vectors_algebra.csv"
-
-elif (file_for_dictionary == 'new_glove'):
-    dimensions_of_vector = 50
-    num_of_vectors = 367
-    chosen_vector_space_path = "files/spaces/new_glove.csv"
-    path_to_only_vecs = "files/spaces/new_glove_algebra.csv"
-elif (file_for_dictionary == 'DSM'):
-    dimensions_of_vector = 25
-    num_of_vectors = 3102
-    chosen_vector_space_path = "files/spaces/dsm_model_25_2.csv"
-    path_to_only_vecs = "files/spaces/dsm_model_25_2_algebra.csv"
+    elif (file_for_dictionary == 'new_glove'):
+        dimensions_of_vector = 50
+        num_of_vectors = 367
+        chosen_vector_space_path = "files/spaces/new_glove.csv"
+        path_to_only_vecs = "files/spaces/new_glove_algebra.csv"
+    elif (file_for_dictionary == 'DSM25'):
+        dimensions_of_vector = 25
+        num_of_vectors = 373
+        chosen_vector_space_path = "files/spaces/dsm_model_25_2.csv"
+        path_to_only_vecs = "files/spaces/dsm_model_25_2_algebra.csv"
 
 
 
@@ -63,6 +63,7 @@ def initEmotionIDTable(dbcon):
 
 
 def initEmoitionsDB():
+    get_paths()
     databaseexisted = os.path.isfile('Emotions.db')
     global dbcon
     dbcon = sqlite3.connect("Emotions.db")
