@@ -387,10 +387,6 @@ def main():
 
     print pd.__file__
     init.initEmoitionsDB()
-    z = map(lambda x: x[1], methods.getSortedListDistanceEmotionName(getMixedVec(0,0,1,1,0,1)))
-    z = map( lambda x: methods.emotionIDToName(x),z)
-    print z
-    exit()
     algebra.main()
     #basicQueries()
     #workingWithVecs()
