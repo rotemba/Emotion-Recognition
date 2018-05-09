@@ -29,7 +29,7 @@ def main():
 
     listOfGeneralVecs= map(lambda x: methods.getVectorOfEmotion(methods.emotionNameToEmotionID(x)), ListOfEmotions)
     vectors = np.array(listOfGeneralVecs)
-    #orthonormal_vectors = gram_schmidt(vectors)
+    orthonormal_vectors = gram_schmidt(vectors)
     print emotion_vectors.shape
     print "check"
     print vectors.shape[1]
@@ -39,15 +39,16 @@ def main():
 
     U, singularValues, V = svd_routine(emotion_vectors)
     print_statistics(U, singularValues, V,emotion_vectors)
-    #finding_nearest_emotion(V)
+    finding_nearest_emotion(V)
     basis = V[:7]
     basis = gram_schmidt(basis)
     #dict_after_pertubation = pertubation(twitDict,ListOfEmotions)
-    #which_emotions_are_close(emotion_vectors,basis)
+    which_emotions_are_close(emotion_vectors,basis)
     get_clustering(emotion_vectors,basis)
 
     #basis = V[:7]
-    #meta_emotion_combination(V, orthonormal_vectors)
+
+    meta_emotion_combination(V, orthonormal_vectors)
     high_dimnesion_clustring(emotion_vectors,basis)
 
 
@@ -180,7 +181,7 @@ def get_clustering(space, basis):
             v = space[i-1]
             # print methods.emotionIDToName(i)
             x.append(np.sum(np.dot(v, basis[0])))
-            y.append( np.sum(np.dot(v, basis[j])) )
+            y.append( np.sum(np.dot(v, basis[1])) )
             #print i
             #print methods.emotionIDToName(i)
             name.append(methods.emotionIDToName(i))
@@ -204,8 +205,8 @@ def get_clustering(space, basis):
         import matplotlib.pyplot as plt
         fig, ax = plt.subplots()
         ax.scatter(x, y,color = col , s=50, linewidth=1, linewidths=5)
-        plt.axvline(x=meanx)
-        plt.axhline(y=meany)
+        plt.axvline(x=0)
+        plt.axhline(y=0)
 
         for i in range(0, len(x)):
             ax.annotate(name[i], (x[i], y[i]))
@@ -235,6 +236,8 @@ def generate_clutering_from_sentiment(names):
             #print names[ii]
             cursor.execute("SELECT Sentiment FROM EmotionsSentiment WHERE Emotion_name = (?)",  (names[ii],))
             sentiment = cursor.fetchall()
+            if (len(sentiment) == 0):
+                continue
             #print sentiment
             label.append((sentiment[0]))
 
@@ -325,6 +328,8 @@ def meta_emotion_combination(V,basis):
 def disterbution_of_emotion_for_cluster(cluster):
     label_per_cluster = []
     for emo in cluster:
+        if (len(sentiment_per_emotion(emo)) == 0):
+            continue
         labeled = str(sentiment_per_emotion(emo)[0][0])
         label_per_cluster.append( labeled )
 

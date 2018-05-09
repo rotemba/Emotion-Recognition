@@ -12,9 +12,9 @@ global num_of_vectors
 global path_to_only_vecs
 global chosen_vector_space_path
 
-#file_for_dictionary = Enum('old_glove', 'new_glove', 'Human','W2v','DSM25')
+#file_for_dictionary = Enum('old_glove', 'new_glove', 'Human_25','Human_50','W2v', 'W2v_emotion_25','W2v_emotion_50','DSM25')
 
-file_for_dictionary = 'old_glove'
+file_for_dictionary = 'Human_25'
 
 def get_paths():
     global dimensions_of_vector
@@ -26,12 +26,16 @@ def get_paths():
         num_of_vectors = 374
         chosen_vector_space_path= "files/spaces/old_glove.csv"
         path_to_only_vecs = "files/spaces/old_glove_algebra.csv"
-    elif (file_for_dictionary =='Human'):
+    elif (file_for_dictionary =='Human_25'):
         dimensions_of_vector= 25
         num_of_vectors = 415
-        chosen_vector_space_path= "files/spaces/humanSpace.csv"
-        path_to_only_vecs = "files/spaces/humanSpace_algebra.csv"
-
+        chosen_vector_space_path= "files/spaces/Human_25.csv"
+        path_to_only_vecs = "files/spaces/Human_25_algebra.csv"
+    elif (file_for_dictionary =='Human_50'):
+        dimensions_of_vector= 50
+        num_of_vectors = 415
+        chosen_vector_space_path= "files/spaces/Human_50.csv"
+        path_to_only_vecs = "files/spaces/Human_50_algebra.csv"
     elif (file_for_dictionary =='W2v'):
         dimensions_of_vector = 50
         num_of_vectors = 367
@@ -48,6 +52,16 @@ def get_paths():
         num_of_vectors = 373
         chosen_vector_space_path = "files/spaces/dsm_model_25_2.csv"
         path_to_only_vecs = "files/spaces/dsm_model_25_2_algebra.csv"
+    elif (file_for_dictionary == 'W2v_emotion_25'):
+        dimensions_of_vector = 25
+        num_of_vectors = 367
+        chosen_vector_space_path = "files/spaces/W2V_emotional_words_25.csv"
+        path_to_only_vecs = "files/spaces/W2V_emotional_words_25_algebra.csv"
+    elif (file_for_dictionary == 'W2v_emotion_50'):
+        dimensions_of_vector = 50
+        num_of_vectors = 367
+        chosen_vector_space_path = "files/spaces/W2V_emotional_words_50.csv"
+        path_to_only_vecs = "files/spaces/W2V_emotional_words_50_algebra.csv"
 
 
 
@@ -158,7 +172,7 @@ def initEmoitionsDB():
                 cursor.execute('''INSERT INTO EmotionsID(ID, Emotion_name) VALUES (?,?)''' ,(row,twitDict[row][0]))
             pathOfEmotionSentiment = "files/Emotions_with_sentiments.csv"
             emotions_sentiment = genfromtxt(pathOfEmotionSentiment, delimiter=',', dtype=None)
-            num_of_emotions_human_space=415
+            num_of_emotions_human_space=416
             for row in range(1,num_of_emotions_human_space):
                 cursor.execute('''INSERT INTO EmotionsSentiment(ID, Emotion_name,Sentiment) VALUES (?,?,?)'''
                                ,(row, emotions_sentiment[row][0],emotions_sentiment[row][1]))
