@@ -49,9 +49,9 @@ def get_paths():
         path_to_only_vecs = "files/spaces/new_glove_algebra.csv"
     elif (file_for_dictionary == 'DSM25'):
         dimensions_of_vector = 25
-        num_of_vectors = 373
-        chosen_vector_space_path = "files/spaces/dsm_model_25_2.csv"
-        path_to_only_vecs = "files/spaces/dsm_model_25_2_algebra.csv"
+        num_of_vectors = 206
+        chosen_vector_space_path = "files/spaces/dsm_model_25.csv"
+        path_to_only_vecs = "files/spaces/dsm_model_25_algebra.csv"
     elif (file_for_dictionary == 'W2v_emotion_25'):
         dimensions_of_vector = 25
         num_of_vectors = 367
@@ -139,7 +139,6 @@ def initEmoitionsDB():
             pathOfTwitter = chosen_vector_space_path
 
             pathOfEmotionRealations="files/emotionsAngelsToDB.csv"
-            fileObject = csv.reader(pathOfTwitter)
 
             twitDict = genfromtxt(pathOfTwitter, delimiter=',', dtype=None)
             row_count = num_of_vectors
