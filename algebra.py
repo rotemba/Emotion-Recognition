@@ -38,18 +38,18 @@ def main():
         exit()
 
     U, singularValues, V = svd_routine(emotion_vectors)
-    print_statistics(U, singularValues, V,emotion_vectors)
-    finding_nearest_emotion(V)
+    #print_statistics(U, singularValues, V,emotion_vectors)
+    #finding_nearest_emotion(V)
     basis = V[:7]
-    basis = gram_schmidt(basis)
+    #basis = gram_schmidt(basis)
     #dict_after_pertubation = pertubation(twitDict,ListOfEmotions)
-    which_emotions_are_close(emotion_vectors,basis)
+    #which_emotions_are_close(emotion_vectors,basis)
     get_clustering(emotion_vectors,basis)
 
     #basis = V[:7]
 
-    meta_emotion_combination(V, orthonormal_vectors)
-    high_dimnesion_clustring(emotion_vectors,basis)
+    # meta_emotion_combination(V, orthonormal_vectors)
+    # high_dimnesion_clustring(emotion_vectors,basis)
 
 
 
@@ -199,20 +199,62 @@ def get_clustering(space, basis):
         # y = map(lambda z: z-meany,y)
         col = [i[2] for i in data]
         name = [i[3] for i in data]
-        data = zip(x, y, col, name)
+        data_to_split = zip(x, y, col, name)
         print "shown data is %s"%data
 
-        import matplotlib.pyplot as plt
+        pos = [l for l in data_to_split if l[2] == 'g']
+        neg = [l for l in data_to_split if l[2] == 'r']
+        unknown = [l for l in data_to_split if l[2] == 'k']
+
         fig, ax = plt.subplots()
-        ax.scatter(x, y,color = col , s=50, linewidth=1, linewidths=5)
+
+        #
+
+
+        #
+        # Plot something
+        x = [l[0] for l in pos]
+        y = [l[1] for l in pos]
+
+        p1 = plt.scatter(x, y, color='g')
+        x = [l[0] for l in neg]
+        y = [l[1] for l in neg]
+        p2 = plt.scatter(x, y, color='r')
+
+        x = [l[0] for l in unknown]
+        y = [l[1] for l in unknown]
+        p3 = plt.scatter(x, y, color='k')
+
+        # Create legend from custom artist/label lists
+
+        plt.legend((p1,p2,p3),
+                   ('Positive', 'Negative', 'Neutral'),
+                   scatterpoints=1,
+                   #loc='lower left',
+                   ncol=5,
+                   fontsize=12)
+
+        # import matplotlib.pyplot as plt
+        # fig, ax = plt.subplots()
+        # ax.legend(x, y ,color = col , s=50, linewidth=1, linewidths=5)
+
         plt.axvline(x=0)
         plt.axhline(y=0)
 
+        #plt.legend((lo, ll, l, a, h, hh, ho),
+           # ('Low Outlier', 'LoLo', 'Lo', 'Average', 'Hi', 'HiHi', 'High Outlier'),
+           # scatterpoints=1,
+           # loc='lower left',
+           # ncol=3,
+           # fontsize=8)
+
+        x = [i[0] for i in data]
+        y = [i[1] for i in data]
         for i in range(0, len(x)):
             ax.annotate(name[i], (x[i], y[i]))
 
-        ax.set_xlim([min(x), max(x)])
-
+        # ax.set_xlim([min(x), max(x)])
+        ax.grid(True)
         plt.show()
 
 
@@ -253,8 +295,8 @@ def sentiment_per_emotion(emotion_name):
     return sentiment
 
 def print_histogram(dist_list):
-    plt.hist(dist_list, align= 'mid', bins= 20)
-    plt.title('Histogram')
+    plt.hist(dist_list, align= 'mid', bins= 20 , range= (0,1))
+    plt.title('Histogram Human Dissimilarity Space')
     plt.ylabel('Frequency')
     plt.xlabel('Distance')
     plt.show()

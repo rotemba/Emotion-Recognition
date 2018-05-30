@@ -12,9 +12,9 @@ global num_of_vectors
 global path_to_only_vecs
 global chosen_vector_space_path
 
-#file_for_dictionary = Enum('old_glove', 'new_glove', 'Human_25','Human_50','W2v', 'W2v_emotion_25','W2v_emotion_50','DSM25')
-
-file_for_dictionary = 'Human_25'
+# file_for_dictionary = Enum('old_glove', 'new_glove', 'Human_25','Human_50','W2v', 'W2v_emotion_25','W2v_emotion_50','DSM25')
+# 'W2v_emotion_50','DSM25'
+file_for_dictionary = 'W2v_emotion_50'
 
 def get_paths():
     global dimensions_of_vector
@@ -230,15 +230,18 @@ def InsertVideoAndAnalyze (ListOfFrames, videoNumber,filename):
     prev_vec = methods.getMixedVec(ListOfFrames[0][0], ListOfFrames[0][1], ListOfFrames[0][2], ListOfFrames[0][3],
                            ListOfFrames[0][4], ListOfFrames[0][5], ListOfFrames[0][6],listOfGeneralVecs)
     arr=ListOfFrames
+    print ("len of frames %0d"%len(arr))
+
     video_path = 'files/Videos/'+filename[(filename.index("ShortVideos" )+12):filename.index("_")] + ".mp4"
     with dbcon:
         cursor=dbcon.cursor()
         cursor.execute("INSERT OR REPLACE INTO Videos VALUES (?,?,?)", (videoNumber, name_of_main_emotion,video_path))
+        #print "!!!!!!11111!!!!!!!!"
         for i in range (0, len(ListOfFrames)):
             # This is to init neutral:
-            arr[i][0]=0.000000001
+            # arr[i][0]=0.000000001
             arr[i]=methods.normalize_vec_l1( arr[i], 1)
-            #print ("framte number: %0d / %0d" %(i,len(arr[0])))
+            print ("framte number: %0d / %0d" %(i,len(arr[0])))
             #if videoFrameArray[i][1]== 'FIND_FAILED' or videoFrameArray[i][1] == 'FIT_FAILED':
             #        print ("cant put inside DB")
             #        break
@@ -293,7 +296,6 @@ def InsertVideoAndAnalyze (ListOfFrames, videoNumber,filename):
                                                                                            methods.emotionIDToName(ten_knn_emotions[8][1]), ten_knn_emotions[8][0],
                                                                                            methods.emotionIDToName(ten_knn_emotions[9][1]), ten_knn_emotions[9][0],
                                                                                             closestVectorCosSimName,closestVectorCosSimAngel,calculate_dkl))
-
 
     dbcon.commit()
     print ("finished proccesing video [%0d] " % videoNumber)
