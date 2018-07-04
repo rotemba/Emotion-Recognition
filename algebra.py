@@ -29,26 +29,29 @@ def main():
 
     listOfGeneralVecs= map(lambda x: methods.getVectorOfEmotion(methods.emotionNameToEmotionID(x)), ListOfEmotions)
     vectors = np.array(listOfGeneralVecs)
-    orthonormal_vectors = gram_schmidt(vectors)
+    #orthonormal_vectors = gram_schmidt(vectors)
     print emotion_vectors.shape
+    print "%s"%str(emotion_vectors[-1])
+    print "%s"%methods.emotionIDToName(len(emotion_vectors))
     print "check"
     print vectors.shape[1]
     if (vectors.shape[1]  != init.dimensions_of_vector):
         print ("!!rerun the program after deleting the DB")
         exit()
-
-    U, singularValues, V = svd_routine(emotion_vectors)
+    create_similarity_matrix(emotion_vectors)
+    #U, singularValues, V = svd_routine(emotion_vectors)
     #print_statistics(U, singularValues, V,emotion_vectors)
     #finding_nearest_emotion(V)
-    basis = V[:7]
+    #basis = V[:7]
     #basis = gram_schmidt(basis)
     #dict_after_pertubation = pertubation(twitDict,ListOfEmotions)
     #which_emotions_are_close(emotion_vectors,basis)
-    get_clustering(emotion_vectors,basis)
+    #get_clustering_no_sentiment(emotion_vectors,basis)
+    #get_clustering(emotion_vectors,basis)
 
     #basis = V[:7]
 
-    # meta_emotion_combination(V, orthonormal_vectors)
+    #meta_emotion_combination(emotion_vectors, orthonormal_vectors)
     # high_dimnesion_clustring(emotion_vectors,basis)
 
 
@@ -231,7 +234,7 @@ def get_clustering(space, basis):
                    ('Positive', 'Negative', 'Neutral'),
                    scatterpoints=1,
                    #loc='lower left',
-                   ncol=5,
+                   ncol=50,
                    fontsize=12)
 
         # import matplotlib.pyplot as plt
@@ -247,13 +250,19 @@ def get_clustering(space, basis):
            # loc='lower left',
            # ncol=3,
            # fontsize=8)
-
+        z = []
         x = [i[0] for i in data]
         y = [i[1] for i in data]
+        s = [20  for n in range(len(x))]
         for i in range(0, len(x)):
-            ax.annotate(name[i], (x[i], y[i]))
+            if (i % 10 == 0 and name[i]!='agreement' and name[i]!='blues' and name[i]!='unhappiness' and name[i]!='strength'):
+                z.append(name[i])
+                ax.annotate(name[i], (x[i], y[i]),size=16)
 
         # ax.set_xlim([min(x), max(x)])
+        print "11111"
+        print z
+        print "11111"
         ax.grid(True)
         plt.show()
 
@@ -359,7 +368,7 @@ def meta_emotion_combination(V,basis):
     data = np.array(list(zip(x0, x1, x2, x3, x4, x5, x6)))
     i=0
     for item in data:
-        print "V[%0d] is combination of this values data: " %(i)
+        print "emotion %s is combination of this values data: " %(methods.emotionIDToName(i+1))
         print ListOfEmotions
         print ["{0:0.5f}".format(a) for a in item]
         print "dist from space is %0.5f"%dist[i]
@@ -378,6 +387,84 @@ def disterbution_of_emotion_for_cluster(cluster):
     from collections import Counter
     print Counter(label_per_cluster)
 
+
+def get_clustering_no_sentiment(space, basis):
+    x = list()
+    y = []
+    name = []
+    count = 0
+    for i in range(1, len(space)+1):
+        v = space[i-1]
+        # print methods.emotionIDToName(i)
+        x.append(np.sum(np.dot(v, basis[0])))
+        y.append( np.sum(np.dot(v, basis[1])) )
+        name.append(methods.emotionIDToName(i))
+
+    import matplotlib.pyplot as plt
+    fig, ax = plt.subplots()
+    ax.scatter(x, y, c='r')
+
+
+    for i in range(0, len(space)):
+        if (name[i] in ['abhorrence', 'anxious', 'aversion', 'change', 'completion', 'coolness', 'deflation', 'disappointment', 'disinterest', 'dizziness', 'empathy', 'expectation', 'furious', 'grim', 'hope', 'indifference', 'joyfulness', 'mediocrity', 'neutral', 'perplexity', 'push', 'repulsion', 'satisfaction', 'skepticism', 'terror', 'tranquility']):
+            ax.annotate(name[i], (x[i], y[i]),size =16)
+
+    plt.axvline(x=0)
+    plt.axhline(y=0)
+    ax.grid(True)
+    plt.show()
+
+
+def create_similarity_matrix(space):
+    list_of_rows = []
+    print "len_space %0d"%len(space)
+    exit()
+    for i in range(1,len(space)+1):
+        row_list =[]
+        row_emotion = methods.getVectorOfEmotion(i)
+        for j in range(1, len(space) + 1):
+            print "(%d,%d)"%(i,j)
+            checked_emotion = methods.getVectorOfEmotion(j)
+            row_list.append(methods.angleBetweenTwoVecs(row_emotion, checked_emotion ))
+        list_of_rows.append(row_list)
+
+    print "done"
+    import csv
+    with open("output.csv", "wb") as f:
+        writer = csv.writer(f)
+        writer.writerows(list_of_rows)
+
+    exit()
+
+
+
+    download_dir = "exampleCsv.csv"  # where you want the file to be downloaded to
+
+    csv = open(download_dir, "w")
+    # "w" indicates that you're writing strings to the file
+
+    firstrow = methods.emotionIDToName(1) + ','
+    for i in range(2,len(space)+1):
+        firstrow = firstrow +',' + methods.emotionIDToName(i)
+
+    firstrow = firstrow + '\n'
+    csv.write(firstrow)
+    for i in range(1,len(space)+1):
+        row_to_write = ''
+        row_emotion = methods.getVectorOfEmotion(i)
+        for j in range(1, len(space) + 1):
+            checked_emotion = methods.getVectorOfEmotion(j)
+
+
+
+    for key in dic.keys():
+        name = key
+        email = dic[key]
+        row = name + "," + email + "\n"
+        csv.write(row)
+
+    # for i in range(len(space)):
+    #     for j in range(len(space)):
 
 
 if __name__ == '__main__':

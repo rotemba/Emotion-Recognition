@@ -230,6 +230,8 @@ def getMixedVec(NeutralScalar = 0,HappyScalar = 0,SadScalar = 0,AngryScalar = 0 
         list_analyzed = [NeutralScalar,HappyScalar,SadScalar,AngryScalar,SurprisedScalar,ScaredScalar,DisgustedScalar]
     else:
         list_analyzed = given_list
+    print "Neutral,    Happy,    Sad,    Angry,   Surprised,  Scared,    Disgusted"
+    print methods.print_nicely_vec(list_analyzed)
     list_analyzed = convertScalarsToListtuples(list_analyzed)
     listWithVecs = map(lambda x: methods.getVectorOfEmotion(methods.emotionNameToEmotionID(x[1])), list_analyzed)
 
@@ -307,27 +309,29 @@ def visualizeData(videoid):
     print ("visualize data function")
 
     df = get_sql_query(videoid)
-    print df
+    #df = df[600+50:900-50]
+    #print df
     # print(data)
     plot_data1 = df['Angle_To_Main_Emotion']
-    plot_data2 = df['Angle_To_Prev_Vec']
+    #plot_data2 = df['Angle_To_Prev_Vec']
     plot_data3 = df['DKL_VALUE']
+    print plot_data3
 
-    plt.figure(figsize=(12, 12))
-    plt.subplot(3, 1, 1)
+    plt.figure(figsize=(12, 9 ))
+    plt.subplot(1, 1, 1)
     #plt.xlabel('Frame_number')
-    plt.ylabel('angle_To_Main_Emotion')
-    plt.title('angle_To_Main_Emotion')
-    plt.plot(plot_data1, 'g' ,label='My Data')
+    # plt.ylabel('angle_To_Main_Emotion')
+    # plt.title('angle_To_Main_Emotion')
+    # plt.plot(plot_data1, 'g' ,label='My Data')
 
-    plt.subplot(3,1,2)
+    #plt.subplot(3,1,2)
     #plt.xlabel('Frame_number')
-    plt.ylabel('Cos similarity')
-    plt.title('angle_To_Prev_Vec')
-    plt.plot(plot_data2, 'b' ,label='My Data')
+    # plt.ylabel('Cos similarity')
+    # plt.title('angle_To_Prev_Vec')
+    # plt.plot(plot_data2, 'b' ,label='My Data')
 
 
-    plt.subplot(3,1,3)
+    plt.subplot(1,1,1)
     plt.xlabel('Frame_number')
     plt.ylabel('DKL')
     plt.title('DKL_VALUE')
@@ -365,15 +369,18 @@ def fakeVideos():
 def createRandomFrame():
     result_list = list()
     c = [0,0,0,0,0,0,0]
-    for j in range(1,10):
+    for j in range(1,100):
         for i in range(0,len(c)):
             c[i] = random.random()
+            #if i==1: c[i] = c[i]*5
+            #if i==4: c[i] = c[i]*5
         c = methods.normalize_vec_l1(c)
         frame_vector = getMixedVec(given_list= c)
-        print c
-        result = methods.getClosestVectorNamesCosine(frame_vector)
-        result_list.append( result[1] )
-        print result[1]
+        methods.print_nicely_vec(c)
+        result = methods.getSortedListDistanceEmotionName(frame_vector)
+        z = methods.emotionIDToName(result[0][1])
+        result_list.append( z )
+        print z
 
     from collections import Counter
     emotion_counts = Counter(result_list)
@@ -387,6 +394,12 @@ def main():
 
     print pd.__file__
     init.initEmoitionsDB()
+    # Neutral,Happy,Sad,Angry,Surprised,Scared,Disgusted                                    # Neutral,Happy,Sad,Angry,Surprised,Scared,Disgusted
+    # z = map(lambda x: x[1], methods.getSortedListDistanceEmotionName(getMixedVec(0,0,0.11,0.1,0.5,0,given_list =  methods.normalize_vec_l1([0.16254, 0.50480, -0.14402, -0.26405, 0.17496, 0.06472, 0.00997]) )))
+    # z = map( lambda x: methods.emotionIDToName(x),z)
+    # print z
+
+    #createRandomFrame()
     algebra.main()
     #basicQueries()
     #workingWithVecs()

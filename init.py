@@ -13,8 +13,8 @@ global path_to_only_vecs
 global chosen_vector_space_path
 
 # file_for_dictionary = Enum('old_glove', 'new_glove', 'Human_25','Human_50','W2v', 'W2v_emotion_25','W2v_emotion_50','DSM25')
-# 'W2v_emotion_50','DSM25'
-file_for_dictionary = 'W2v_emotion_50'
+# 'W2v_emotion_50','DSM25'Human_25, W2v_emotion_25
+file_for_dictionary = 'W2v_emotion_25'
 
 def get_paths():
     global dimensions_of_vector
