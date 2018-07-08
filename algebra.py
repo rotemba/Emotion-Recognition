@@ -30,9 +30,9 @@ def main():
     listOfGeneralVecs= map(lambda x: methods.getVectorOfEmotion(methods.emotionNameToEmotionID(x)), ListOfEmotions)
     vectors = np.array(listOfGeneralVecs)
     #orthonormal_vectors = gram_schmidt(vectors)
-    print emotion_vectors.shape
-    print "%s"%str(emotion_vectors[-1])
-    print "%s"%methods.emotionIDToName(len(emotion_vectors))
+    print len(emotion_vectors)
+    #print "%s"%str(emotion_vectors[-1])
+    print "emotion %s"%methods.emotionIDToName(len(emotion_vectors))
     print "check"
     print vectors.shape[1]
     if (vectors.shape[1]  != init.dimensions_of_vector):
@@ -417,8 +417,6 @@ def get_clustering_no_sentiment(space, basis):
 
 def create_similarity_matrix(space):
     list_of_rows = []
-    print "len_space %0d"%len(space)
-    exit()
     for i in range(1,len(space)+1):
         row_list =[]
         row_emotion = methods.getVectorOfEmotion(i)
@@ -428,44 +426,12 @@ def create_similarity_matrix(space):
             row_list.append(methods.angleBetweenTwoVecs(row_emotion, checked_emotion ))
         list_of_rows.append(row_list)
 
-    print "done"
+
     import csv
-    with open("output.csv", "wb") as f:
+    with open("output_globe.csv", "wb") as f:
         writer = csv.writer(f)
         writer.writerows(list_of_rows)
-
-    exit()
-
-
-
-    download_dir = "exampleCsv.csv"  # where you want the file to be downloaded to
-
-    csv = open(download_dir, "w")
-    # "w" indicates that you're writing strings to the file
-
-    firstrow = methods.emotionIDToName(1) + ','
-    for i in range(2,len(space)+1):
-        firstrow = firstrow +',' + methods.emotionIDToName(i)
-
-    firstrow = firstrow + '\n'
-    csv.write(firstrow)
-    for i in range(1,len(space)+1):
-        row_to_write = ''
-        row_emotion = methods.getVectorOfEmotion(i)
-        for j in range(1, len(space) + 1):
-            checked_emotion = methods.getVectorOfEmotion(j)
-
-
-
-    for key in dic.keys():
-        name = key
-        email = dic[key]
-        row = name + "," + email + "\n"
-        csv.write(row)
-
-    # for i in range(len(space)):
-    #     for j in range(len(space)):
-
+    print "done"
 
 if __name__ == '__main__':
     main()
